@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Enterprise Action -->
+        <record id="marketplace_ent_sale_report_action_dashboard" model="ir.actions.act_window">
+            <field name="name">Marketplace Sales Analysis</field>
+            <field name="res_model">sale.report</field>
+            <field name="view_mode">pivot,graph</field>
+            <field name="search_view_id" ref="sale.view_order_product_search"/>
+            <field name="context" eval="{'search_default_marketplace': 1, 'search_default_filter_date': 1}"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No data yet!
+                </p>
+                <p>
+                    Create a new sales order
+                </p>
+            </field>
+        </record>
+
+        <!-- Community Action -->
+        <record id="marketplace_comm_sale_report_action_dashboard" model="ir.actions.act_window">
+            <field name="name">Marketplace Sales Analysis</field>
+            <field name="res_model">sale.report</field>
+            <field name="view_mode">graph,pivot</field>
+            <field name="view_id"></field>  <!-- force empty -->
+            <field name="search_view_id" ref="sale.view_order_product_search"/>
+            <field name="context">{
+                'search_default_marketplace': 1,
+                'group_by_no_leaf': 1,
+                'group_by': []}
+            </field>
+            <field name="help">This report performs analysis on your Marketplace quotations and sales orders. Analysis check your sales revenues and sort it by different group
+                criteria (salesman, partner, product, marketplace, etc.) Use this report to perform analysis on sales not having invoiced yet.
+            </field>
+        </record>
+
+        <!--Show Sales Report Based on Odoo version-->
+        <record id="action_redirect_sales_report" model="ir.actions.server">
+            <field name="name">Marketplace: Sales Analysis</field>
+            <field name="model_id" ref="model_sale_report"/>
+            <field name="state">code</field>
+            <field name="code">action = model.redirect_to_mk_sale_report()</field>
+        </record>
+
+        <record id="view_marketplace_report_search_inherit" model="ir.ui.view">
+            <field name="name">view.marketplace.report.search.inherit</field>
+            <field name="model">sale.report</field>
+            <field name="inherit_id" ref="sale.view_order_product_search"/>
+            <field name="arch" type="xml">
+                <field name="date" position="after">
+                    <field name="mk_instance_id"/>
+                    <field name="marketplace_type"/>
+                </field>
+                <xpath expr="//filter[@name='Sales']" position="after">
+                    <separator/>
+                    <filter name="mk_instance_id" string="Instance" domain="[('mk_instance_id', '!=', False)]"/>
+                    <filter name="marketplace" string="Marketplace" domain="[('marketplace_type', '!=', False)]"/>
+                </xpath>
+                <xpath expr="//filter[@name='company']" position="after">
+                    <filter string="Marketplace Instance" name="marketplace_instance" context="{'group_by':'mk_instance_id'}"/>
+                    <filter string="Marketplace Type" name="marketplace_type" context="{'group_by':'marketplace_type'}"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

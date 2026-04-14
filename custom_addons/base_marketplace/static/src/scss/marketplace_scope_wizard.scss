@@ -1,0 +1,89 @@
+.o_marketplace_scope_modal .modal-content {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 32px;
+  max-width: 640px;
+  margin: auto;
+}
+.o_marketplace_scope_modal .modal-header {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+.o_marketplace_scope_modal .modal-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #111827; /* near-black */
+  display: flex;
+  align-items: center;
+}
+.o_marketplace_scope_modal .modal-title i {
+  background: #facc15; /* bright yellow */
+  color: #1f2937;      /* dark grey icon */
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+  text-align: center;
+  margin-right: 12px;
+  font-size: 18px;
+}
+.o_marketplace_scope_modal .modal-body p {
+  margin-top: 16px;
+  margin-bottom: 24px;
+  color: #374151; /* mid-grey */
+  font-size: 16px;
+  line-height: 1.5;
+}
+.o_marketplace_scope_modal .scope-container {
+  display: flex;
+  gap: 32px;
+  margin-bottom: 32px;
+}
+.o_marketplace_scope_modal .scope-column {
+  flex: 1;
+}
+.o_marketplace_scope_modal .scope-column h6 {
+  font-weight: 500;
+  margin-bottom: 12px;
+  color: #111827;
+}
+.o_marketplace_scope_modal .scope-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 14px;
+  margin: 4px 4px 4px 0;
+}
+.o_marketplace_scope_modal .scope-chip.missing {
+  background: #fef2f2;
+  color: #991b1b;
+}
+.o_marketplace_scope_modal .scope-chip.granted {
+  background: #ecfdf5;
+  color: #065f46;
+}
+.o_marketplace_scope_modal .modal-footer {
+  border-top: none;
+  padding-top: 0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+}
+.o_marketplace_scope_modal .modal-footer .btn-outline-secondary {
+  border-color: #065f46;
+  color: #065f46;
+}
+.o_marketplace_scope_modal .modal-footer .btn-primary {
+  background-color: #065f46;
+  border-color: #065f46;
+}
+
+.o_marketplace_scope_modal .scope-chip i {
+  margin-right: 6px;
+  font-size: 1em;        /* match your text size */
+  vertical-align: middle;
+}
+/* ensure the icon inherits the pill’s text color */
+.o_marketplace_scope_modal .scope-chip.missing i { color: #991b1b; }
+.o_marketplace_scope_modal .scope-chip.granted i { color: #065f46; }

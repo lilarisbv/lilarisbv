@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="marketplace_adjustment_product" model="product.product">
+            <field name="name">Adjustment Product</field>
+            <field name="type">service</field>
+            <field name="default_code">MKT_ADJ_PROD</field>
+        </record>
+    </data>
+</odoo>

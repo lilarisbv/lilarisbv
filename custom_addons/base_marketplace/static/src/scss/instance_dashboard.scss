@@ -1,0 +1,57 @@
+.o_marketplace_kanban .o_kanban_renderer {
+
+  .o_kanban_record {
+    border-radius: 10px;
+
+    &:not(.o_kanban_ghost) {
+      min-height: 150px;
+    }
+
+    @include media-breakpoint-up(sm) {
+      button.oe_kanban_action {
+        margin-bottom: 5px;
+      }
+    }
+
+    .o_dashboard_star {
+      font-size: 12px;
+
+      &.fa-star-o {
+        color: $o-main-color-muted;
+
+        &:hover {
+          color: gold;
+        }
+      }
+
+      &.fa-star {
+        color: gold;
+      }
+    }
+
+    .o_dashboard_graph {
+      margin-bottom: -$o-horizontal-padding/2;
+      height:120px;
+    }
+
+    .o_field_widget.o_field_kanban_vat_activity {
+      display: block;
+    }
+  }
+
+  &.o_kanban_ungrouped {
+    @include media-breakpoint-down(lg) {
+      --KanbanRecord-width: 100vw;
+    }
+    @include media-breakpoint-up(lg) {
+      --KanbanRecord-width: 30vw;
+    }
+
+    &:has(> .o_kanban_record:nth-child(12)) {
+      // 3 cards per row for large screens if there are more than 5 cards (+ 6 ghost cards)
+      @include media-breakpoint-up(xxl, $o-extra-grid-breakpoints) {
+        --KanbanRecord-width: 35vw;
+      }
+    }
+  }
+}

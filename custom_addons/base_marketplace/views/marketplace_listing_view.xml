@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+        <record id="mk_listing_form_view" model="ir.ui.view">
+            <field name="name">mk.listing.form.view</field>
+            <field name="model">mk.listing</field>
+            <field name="arch" type="xml">
+                <form string="Listing" create="false" edit="true" duplicate="false">
+                    <header>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="%(base_marketplace.action_listing_items_from_listing)d" type="action" icon="fa-sitemap" class="oe_stat_button" invisible="item_count &lt;= 1">
+                                <field string="Items" name="item_count" widget="statinfo"/>
+                            </button>
+                            <button type="object" name="open_listing_in_marketplace" class="oe_stat_button" icon='fa-eye' string="Show in Marketplace" invisible="not mk_id"/>
+                        </div>
+                        <div class="oe_title">
+                            <label class="oe_edit_only" for="name" string="Listing Name"/>
+                            <h1>
+                                <field name="name" placeholder="Listing Name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="product_tmpl_id" readonly="1"/>
+                                <field name="product_category_id"/>
+                                <field name="is_listed" readonly="1"/>
+                                <field name="mk_id" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="mk_instance_id" readonly="1"/>
+                                <field name="mk_id" readonly="1" invisible="1"/>
+                                <field name="marketplace" invisible="1"/>
+                                <field name="listing_create_date" readonly="1"/>
+                                <field name="listing_update_date" readonly="1"/>
+                                <field name="listing_publish_date" readonly="1"/>
+                                <field name="is_published" invisible="1"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Description" name="description">
+                                <field name="description"/>
+                            </page>
+                            <page string="Variants" name="variant_count">
+                                <field name="listing_item_ids"/>
+                            </page>
+                            <page string="Product Images" name="product_images">
+                                <field colspan="2"
+                                       name="image_ids"
+                                       class="o_listing_image_list"
+                                       context="{'default_name': name}"
+                                       mode="kanban"
+                                       add-label="Add Image"
+                                       nolabel="1"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <record id="mk_listing_tree_view" model="ir.ui.view">
+            <field name="name">mk.listing.list.view</field>
+            <field name="model">mk.listing</field>
+            <field name="arch" type="xml">
+                <list string="Listing" create="0" edit="0" decoration-success="is_listed">
+                    <header>
+                        <button name="%(base_marketplace.action_listing_operation_to_marketplace)d" icon="fa-edit" type="action" string="Export/Update to Marketplace"/>
+                    </header>
+                    <field name="name"/>
+                    <field name="product_tmpl_id"/>
+                    <field name="mk_instance_id"/>
+                    <field name="listing_item_ids"/>
+                    <field name="is_listed" readonly="1"/>
+                    <field name="is_published" readonly="1"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="mk_listing_search_view" model="ir.ui.view">
+            <field name="name">mk.listing.search.view</field>
+            <field name="model">mk.listing</field>
+            <field name="arch" type="xml">
+                <search string="Listing Search">
+                    <field name="name" filter_domain="['|', '|', '|', ('name', 'ilike', self), ('mk_id', '=', self), ('listing_item_ids.default_code', 'ilike', self), ('listing_item_ids.barcode', '=', self)]"/>
+                    <field name="mk_id"/>
+                    <field name="mk_instance_id"/>
+
+                    <separator/>
+                    <filter string="Published" name="published" domain="[('is_published', '=', True)]"/>
+                    <filter string="UnPublished" name="unpublished" domain="[('is_published', '=', False)]"/>
+
+                    <separator/>
+                    <filter string="Listed" name="listed" domain="[('is_listed', '=', True)]"/>
+                    <filter string="Not Listed" name="not_listed" domain="[('is_listed', '=', False)]"/>
+
+                    <group>
+                        <filter string="Instance" name="group_by_instance" context="{'group_by': 'mk_instance_id'}"/>
+                    </group>
+                    <searchpanel>
+                        <field name="mk_instance_id" icon="fa-shopping-bag" enable_counters="1"/>
+                    </searchpanel>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_marketplace_listing_all" model="ir.actions.act_window">
+            <field name="name">Listing</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">mk.listing</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p>
+                </p>
+            </field>
+        </record>
+
+        <record id="action_marketplace_listing_kanban" model="ir.actions.act_window">
+            <field name="name">Listing</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">mk.listing</field>
+            <field name="view_mode">list,form</field>
+            <field name="view_id" ref="mk_listing_tree_view"/>
+            <field name="domain">[('mk_instance_id','=',active_id)]</field>
+        </record>
+    </data>
+</odoo>

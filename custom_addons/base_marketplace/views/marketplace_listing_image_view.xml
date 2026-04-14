@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+        <record id="view_listing_image_form" model="ir.ui.view">
+            <field name="name">mk.listing.image.form</field>
+            <field name="model">mk.listing.image</field>
+            <field name="arch" type="xml">
+                <form string="Listing Images">
+                    <div class="row o_website_sale_image_modal">
+                        <div class="col-md-6 col-xl-5">
+                            <div class="oe_title">
+                                <label class="small text-muted" for="name" string="Image Name"/>
+                                <h2>
+                                    <field name="name" placeholder="Image Name" required="True"/>
+                                </h2>
+                                <field name="mk_listing_id" invisible="1"/>
+                            </div>
+                            <group>
+                                <field name="sequence"/>
+                                <field name="marketplace" invisible="1"/>
+                                <field name="mk_instance_id" invisible="1"/>
+                            </group>
+                        </div>
+                        <div class="col-md-6 col-xl-7 text-center o_website_sale_image_modal_container">
+                            <field name="image" widget="image"/>
+                        </div>
+                    </div>
+                    <group></group>
+                    <group>
+                        <field name="url"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_listing_image_kanban" model="ir.ui.view">
+            <field name="name">mk.listing.image.kanban</field>
+            <field name="model">mk.listing.image</field>
+            <field name="arch" type="xml">
+                <kanban string="Listing Images">
+                    <field name="id"/>
+                    <field name="name"/>
+                    <field name="image"/>
+                    <field name="mk_listing_item_ids"/>
+                    <field name="sequence" widget="handle"/>
+                    <templates>
+                        <t t-name="card">
+                            <div class="card oe_kanban_global_click p-0">
+                                <t t-if="record.mk_listing_item_ids.raw_value &amp;&amp; !record.mk_listing_item_ids.raw_value[0]">
+                                    <div class="ribbon ribbon-top-right mt-0">
+                                        <span class="text-bg-primary">Template</span>
+                                    </div>
+                                </t>
+                                <t t-if="record.mk_listing_item_ids.raw_value &amp;&amp; record.mk_listing_item_ids.raw_value[0]">
+                                    <div class="ribbon ribbon-top-right mt-0">
+                                        <span class="text-bg-secondary">Variant</span>
+                                    </div>
+                                </t>
+                                <div>
+                                    <field name="image" widget="image" class="card-img-top" t-att-alt="record.name.value"/>
+                                </div>
+                                <div class="card-body p-0">
+                                    <h4 class="card-title p-2 m-0 bg-200">
+                                        <small>
+                                            <field name="name"/>
+                                        </small>
+                                    </h4>
+                                </div>
+                                <!-- below 100 Kb: good -->
+                                <t t-if="record.image.raw_value.length &lt; 100*1000">
+                                    <t t-set="size_status" t-value="'badge-success'"/>
+                                    <t t-set="message">Acceptable file size</t>
+                                </t>
+                                <!-- below 1000 Kb: decent -->
+                                <t t-elif="record.image.raw_value.length &lt; 1000*1000">
+                                    <t t-set="size_status" t-value="'badge-warning'"/>
+                                    <t t-set="message">Huge file size. The image should be optimized/reduced.</t>
+                                </t>
+                                <!-- above 1000 Kb: bad -->
+                                <t t-else="1">
+                                    <t t-set="size_status" t-value="'badge-danger'"/>
+                                    <t t-set="message">Optimization required! Reduce the image size or increase your compression settings.</t>
+                                </t>
+                                <span t-attf-class="badge #{size_status} o_product_image_size" t-esc="record.image.value" t-att-title="message"/>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+    </data>
+</odoo>

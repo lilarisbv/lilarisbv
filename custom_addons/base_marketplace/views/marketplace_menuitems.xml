@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Top menu item -->
+        <menuitem name="Marketplaces" id="menu_marketplace" sequence="40" web_icon="base_marketplace,static/description/icon.png" groups="group_base_marketplace">
+
+            <!-- Overview -->
+            <menuitem id="menu_mk_overview" name="Overview" sequence="10" action="action_marketplace_overview"/>
+
+            <!-- General Dashboard -->
+            <menuitem id="menu_mk_dashboard" name="Dashboard" groups="base_marketplace.group_base_marketplace_manager" sequence="13" action="ir_actions_server_mk_general_dashboard"/>
+
+            <!-- Orders -->
+            <menuitem id="menu_mk_order_root" name="Orders" sequence="15">
+                <menuitem id="menu_sale_quotations" sequence="1" action="action_marketplace_quotation" groups="sales_team.group_sale_salesman"/>
+                <menuitem id="menu_sale_order" name="Orders" sequence="5" action="action_marketplace_orders" groups="sales_team.group_sale_salesman"/>
+                <menuitem id="menu_invoices" name="Invoices" sequence="10" action="action_marketplace_invoice" groups="account.group_account_readonly"/>
+                <menuitem id="menu_credit_notes" name="Credit Notes" sequence="15" action="action_marketplace_credit_notes" groups="account.group_account_readonly"/>
+                <menuitem id="menu_customer" name="Customers" action="action_marketplace_customer" sequence="20"/>
+            </menuitem>
+
+            <!-- Product -->
+            <menuitem id="menu_product_root" name="Products" sequence="20">
+                <menuitem id="menu_product_catalog" name="Products" sequence="1" action="sale.product_template_action"/>
+                <menuitem id="menu_products" name="Product Variants" groups="product.group_product_variant" sequence="2" action="product.product_normal_action_sell"/>
+            </menuitem>
+
+            <!-- Listing -->
+            <menuitem id="menu_marketplace_listing_main" name="Listing" sequence="30">
+                <menuitem id="menu_marketplace_listing_all" name="All Listing" sequence="5" action="action_marketplace_listing_all"/>
+                <menuitem id="menu_marketplace_listing_all_items" name="All Listing Items" sequence="10" action="action_marketplace_listing_items_all"/>
+            </menuitem>
+
+            <!-- Queue -->
+            <menuitem id="menu_marketplace_queues_main" name="Queues" sequence="40">
+                <menuitem id="menu_marketplace_queue" name="Queues" action="action_queue_job_all" sequence="5"/>
+                <menuitem id="menu_marketplace_logs_main" name="Logs" sequence="10" action="action_marketplace_log"/>
+            </menuitem>
+
+            <!--Reporting-->
+            <menuitem id="menu_mk_sale_report" name="Reporting" sequence="45" groups="sales_team.group_sale_manager,base_marketplace.group_base_marketplace_manager">
+                <menuitem id="menu_report_product_all" name="Sales" action="action_redirect_sales_report" sequence="10"/>
+            </menuitem>
+
+            <!-- Configuration -->
+            <!-- TODO: Group needed (Marketplace wise or general)? -->
+            <menuitem id="menu_marketplace_configuration" name="Configuration" sequence="100">
+                <menuitem id="menu_marketplace_instance" name="Instance" sequence="5" action="action_marketplace_instance"/>
+                <menuitem id="menu_menu_marketplace_automation" name="Marketplace Automation" action="action_order_workflow" sequence="50"/>
+            </menuitem>
+
+        </menuitem>
+    </data>
+</odoo>
+
