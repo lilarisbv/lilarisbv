@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+        <record id="cancel_in_bol_form_view" model="ir.ui.view">
+            <field name="name">mk.cancel.order.form.view</field>
+            <field name="model">mk.cancel.order</field>
+            <field name="arch" type="xml">
+                <form string="Cancel In Bol.com">
+                    <separator string="Order Item(s) to be cancelled"/>
+                    <field name="bol_cancel_item_line_ids" nolabel="1">
+                        <list string="Order Item" editable="top" create="false" delete="true">
+                            <field name="order_line_id" string="Order Item" readonly="1" force_save="1"/>
+                            <field name="bol_cancel_reason" force_save="1" required="1"/>
+                        </list>
+                    </field>
+                    <p class="alert alert-warning" style="border-radius: 1em;" role="alert">
+                        <h3 class="alert alert-heading" role="alert"><strong>Note:</strong></h3>
+                        <ul>
+                            <li>
+                                You can delete item if you don't wish to cancel in a case of multiple order items.
+                            </li>
+                            <li>
+                                Using the reason <strong>REQUESTED BY CUSTOMER</strong> without a customer cancellation request will impact your performance scores negatively.
+                            </li>
+                            <li>
+                                When doing partial cancellation, System will reconfirm current order after modifying order quality to 0 (Zero) for cancelled line.
+                            </li>
+                        </ul>
+                    </p>
+                    <footer>
+                        <button string="Cancel Order" class="oe_highlight" type="object" name="do_cancel_in_bol" icon="fa-cloud-upload" confirm="Are you sure you want to cancel items? You can verify items and cancel reason because this action can't be undone."/>
+                        <button string="Keep Order" class="btn-secondary" icon="fa-close" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

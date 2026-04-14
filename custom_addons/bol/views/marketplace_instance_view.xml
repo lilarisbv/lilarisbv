@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+        <record id="bol_marketplace_instance_form_view" model="ir.ui.view">
+            <field name="name">bol.marketplace.instance.form</field>
+            <field name="model">mk.instance</field>
+            <field name="inherit_id" ref="base_marketplace.marketplace_instance_form_view"/>
+            <field name="arch" type="xml">
+                <div name="last_import_date" position="inside">
+                    <div class="col-xs-12 col-md-6 o_setting_box" name="bol_last_return_sync_on" invisible="marketplace != 'bol'">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane">
+                            <label string="Last Return Imported On" for="bol_last_return_sync_on"/>
+                            <div class="text-muted">
+                                Date when returns are imported from Bol.com
+                            </div>
+                            <div class="text-muted">
+                                <b>
+                                    <field name="bol_last_return_sync_on"/>
+                                </b>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <page name="product_config" position="inside">
+                    <div class="row mt16 o_settings_container" invisible="marketplace != 'bol'">
+                        <div class="col-xs-12 col-md-6 o_setting_box" name="bol_managing_excluded_taxes_on_product">
+                            <div class="o_setting_left_pane">
+                                <b>
+                                    <field name="bol_managing_excluded_taxes_on_product"/>
+                                </b>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label string="Managing Excluded Taxes on Odoo Product?" for="bol_managing_excluded_taxes_on_product"/>
+                                <div class="text-muted">
+                                    The unit price of the order line will automatically adjust to accommodate Bol.com's practice of providing tax included price. <br/><br/>
+                                    <strong>Note:</strong> To ensure accurate calculations and prevent potential rounding issues, we recommend setting the taxes as "included" on Odoo products. By doing so, the taxes will be included in the product price, eliminating any discrepancies during calculations.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </page>
+                <page name="credentials" position="inside">
+                    <div class="row mt16 o_settings_container" invisible="marketplace != 'bol'">
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_left_pane"/>
+                            <div class="o_setting_right_pane">
+                                <label string="Client ID" for="bol_client_id"/>
+                                <div class="text-muted">
+                                    API key used for authentication.
+                                </div>
+                                <div class="text-muted">
+                                    <b>
+                                        <field name="bol_client_id" readonly="state == 'confirmed'" required="marketplace == 'bol'"/>
+                                    </b>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_left_pane"/>
+                            <div class="o_setting_right_pane">
+                                <label string="Client Secret" for="bol_client_secret"/>
+                                <div class="text-muted">
+                                    Client Secret used for authentication.
+                                </div>
+                                <div class="text-muted">
+                                    <b>
+                                        <field name="bol_client_secret" readonly="state == 'confirmed'" required="marketplace == 'bol'" password="True"/>
+                                    </b>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </page>
+                <div id="warehouse" position="before">
+                    <div class="col-xs-12 col-md-6 o_setting_box" id="use_bol_operation_for" invisible="marketplace != 'bol'">
+                        <div class="o_setting_right_pane">
+                            <label string="Use Operation For" for="bol_operation_type"/>
+                            <div class="text-muted">
+                                Select Fulfilment method that you are using for this bol instance.
+                            </div>
+                            <div class="text-muted">
+                                <b>
+                                    <field name="bol_operation_type" readonly="state == 'confirmed'" required="marketplace == 'bol'"/>
+                                </b>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-md-6 o_setting_box" id="bol_import_return_for_status" invisible="marketplace != 'bol'">
+                        <div class="o_setting_right_pane">
+                            <label string="Import Return for Status" for="bol_import_return"/>
+                            <div class="text-muted">
+                                Select which type of FBR and FBB Return you would like to import.
+                            </div>
+                            <div class="text-muted">
+                                <b>
+                                    <field name="bol_import_return" readonly="state == 'confirmed'" required="marketplace == 'bol'"/>
+                                </b>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="warehouse" position="after">
+                    <div class="col-xs-12 col-md-6 o_setting_box" id="warehouse" invisible="marketplace != 'bol' or bol_operation_type == 'FBR'">
+                        <div class="o_setting_right_pane">
+                            <label string="FBB Warehouse" for="bol_fbb_warehouse_id"/>
+                            <div class="text-muted">
+                                Fulfilment by bol Warehouse
+                            </div>
+                            <div class="text-muted">
+                                <b>
+                                    <field name="bol_fbb_warehouse_id" readonly="state == 'confirmed'" required="bol_operation_type != 'FBR' and marketplace == 'bol'" options="{'no_create' : True}"/>
+                                </b>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="warehouse" position="attributes">
+                    <attribute name="invisible">marketplace == 'bol' and bol_operation_type == 'FBB'</attribute>
+                </div>
+                <page name="order_config" position="inside">
+                    <div class="row mt16 o_settings_container" name="bol_order_config" invisible="marketplace != 'bol'">
+                        <div class="col-xs-12 col-md-6 o_setting_box" name="bol_order_status" groups="base.group_no_one">
+                            <div class="o_setting_right_pane">
+                                <label string="Order Status" for="bol_order_status"/>
+                                <div class="text-muted">
+                                    Filter orders by their fulfillment status at the time of Import Orders.
+                                </div>
+                                <div class="text-muted">
+                                    <b>
+                                        <field name="bol_order_status" readonly="state == 'confirmed'" required="marketplace == 'bol'"/>
+                                    </b>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6 o_setting_box" name="bol_payment_term_id">
+                            <div class="o_setting_right_pane">
+                                <label string="Payment Terms" for="bol_payment_term_id"/>
+                                <div class="text-muted">
+                                    The chosen payment terms will be set for the order.
+                                </div>
+                                <div class="text-muted">
+                                    <b>
+                                        <field name="bol_payment_term_id" readonly="state == 'confirmed'"/>
+                                    </b>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6 o_setting_box" name="bol_export_invoice">
+                            <div class="o_setting_left_pane" invisible="marketplace != 'bol'">
+                                <b>
+                                    <field name="bol_export_invoice" />
+                                </b>
+                            </div>
+                            <div class="o_setting_right_pane" invisible="marketplace != 'bol'">
+                                <label string="Export Invoices to Bol.com?" for="bol_export_invoice"/>
+                                <div class="text-muted">
+                                    Export invoice PDFs to Bol.com using the selected report template after the configured delay when an invoice request is received from the customer.
+                                </div>
+                                <div class="content-group"  invisible="not bol_export_invoice">
+                                    <div class="row mt16" id="bol_invoice_report_id">
+                                        <label for="bol_invoice_report_id" class="col-lg-3"/>
+                                        <field name="bol_invoice_report_id" required="bol_export_invoice" />
+                                    </div>
+                                    <div class="row mt16" id="bol_export_invoice_delay">
+                                        <label for="bol_export_invoice_delay" class="col-lg-3"/>
+                                        <field name="bol_export_invoice_delay" required="bol_export_invoice" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </page>
+                <page name="workflow_config" position="inside">
+                    <group invisible="marketplace != 'bol'">
+                        <group>
+                            <field name="bol_fbr_workflow_id" invisible="bol_operation_type not in ['FBR', 'Both']" required="bol_operation_type in ['FBR', 'Both'] and marketplace == 'bol'"/>
+                            <field name="bol_fbb_workflow_id" invisible="bol_operation_type not in ['FBB', 'Both']" required="bol_operation_type in ['FBB', 'Both'] and marketplace == 'bol'"/>
+                        </group>
+                    </group>
+                </page>
+                <field name="marketplace" position="after">
+                    <a href='https://docs.teqstars.com/19.0/applications/bol/setup.html' invisible="marketplace != 'bol'" target='_blank'><i class="fa fa-question-circle" title="Help" style="font-size: 1.1rem;"/> Setup Guide</a>
+                </field>
+            </field>
+        </record>
+    </data>
+</odoo>

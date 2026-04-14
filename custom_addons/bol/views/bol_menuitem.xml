@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Top menu item -->
+        <menuitem name="Bol.com" id="menu_bol" parent="base_marketplace.menu_marketplace" sequence="43" groups="base_marketplace.group_base_marketplace"/>
+
+        <menuitem id="menu_bol_return" name="Returns" parent="bol.menu_bol" sequence="10" action="action_bol_return_all"/>
+        <menuitem id="menu_bol_transporter" name="Transporters" parent="bol.menu_bol" sequence="20" action="action_bol_transporter"/>
+        <menuitem id="menu_bol_process_status" name="Process Status" parent="bol.menu_bol" sequence="30" action="action_bol_process_status_all"/>
+
+        <menuitem id="menu_invoice_request" name="Invoice Request" parent="bol.menu_bol" sequence="10" action="action_bol_import_all_invoice_request"/>
+    </data>
+</odoo>
+

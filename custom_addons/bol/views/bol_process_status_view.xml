@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+        <record id="bol_process_status_form_view" model="ir.ui.view">
+            <field name="name">bol.process.status.form.view</field>
+            <field name="model">bol.process.status</field>
+            <field name="arch" type="xml">
+                <form string="Process Status" create="0" edit="0">
+                    <header>
+                        <button name="do_fetch_offer_data" string="Retrieve Offer(s)" type="object" class="btn-primary" invisible="event_type != 'CREATE_OFFER_EXPORT'"/>
+                        <button name="get_process_status" string="Get Status" type="object" class="btn-primary" invisible="state != 'pending'"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button" name="action_open_queue" type="object" icon="fa-tasks" invisible="not queue_id">
+                                <span class="o_stat_text">Queue</span>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <label class="oe_edit_only" for="mk_id" string="Bol Identification"/>
+                            <h1>
+                                <field name="mk_id" placeholder="Bol Identification"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="mk_instance_id"/>
+                                <field name="entity_id"/>
+                                <field name="event_type"/>
+                                <field name="update_existing_product" invisible="event_type != 'CREATE_OFFER_EXPORT'"/>
+                                <field name="update_product_price" invisible="event_type != 'CREATE_OFFER_EXPORT'"/>
+                            </group>
+                            <group>
+                                <field name="mk_create_date"/>
+                                <field name="user_id"/>
+                                <field name="description"/>
+                                <field name="queue_id" invisible="1"/>
+                            </group>
+                        </group>
+                        <group string="Failure Message">
+                            <field name="error_message" nolabel="1"/>
+                        </group>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <record id="bol_process_status_search_view" model="ir.ui.view">
+            <field name="name">bol.process.status.search.view</field>
+            <field name="model">bol.process.status</field>
+            <field name="arch" type="xml">
+                <search string="Process Status">
+                    <field name="mk_id" filter_domain="[('mk_id', 'ilike', self)]"/>
+                    <field name="entity_id"/>
+                    <field name="mk_instance_id"/>
+                    <separator/>
+
+                    <filter string="Pending" name="pending" domain="[('state', '=', 'pending')]"/>
+                    <filter string="Success" name="success" domain="[('state', '=', 'success')]"/>
+                    <filter string="Failure" name="failure" domain="[('state', '=', 'failure')]"/>
+                    <filter string="Timeout" name="timeout" domain="[('state', '=', 'timeout')]"/>
+
+                    <group>
+                        <filter string="Instance" name="group_by_instance" context="{'group_by': 'mk_instance_id'}"/>
+                        <filter string="State" name="group_by_state" context="{'group_by': 'state'}"/>
+                        <filter string="Type" name="group_by_type" context="{'group_by': 'event_type'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="bol_process_status_tree_view" model="ir.ui.view">
+            <field name="name">bol.process.status.list.view</field>
+            <field name="model">bol.process.status</field>
+            <field name="arch" type="xml">
+                <list string="Process Status" create="0" edit="0" decoration-success="state=='success'" decoration-danger="state=='failure'">
+                    <field name="mk_id"/>
+                    <field name="entity_id"/>
+                    <field name="event_type"/>
+                    <field name="mk_instance_id"/>
+                    <field name="state"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="action_bol_process_status_all" model="ir.actions.act_window">
+            <field name="name">Process Status</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">bol.process.status</field>
+            <field name="view_mode">list,form</field>
+            <field name="context">{}</field>
+            <field name="help" type="html">
+                <p>
+                </p>
+            </field>
+        </record>
+    </data>
+</odoo>

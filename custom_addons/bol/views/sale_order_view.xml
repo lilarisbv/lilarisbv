@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+        <record id="view_order_form_bol" model="ir.ui.view">
+            <field name="name">sale.order.form.bol</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="base_marketplace.marketplace_sale_order_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@name='button_box']" position="after">
+                    <div name="bol_fbr_pill" class="badge rounded-pill float-end fs-6 text-white border-0" style="background-color: #1000A4; font-size: 1.08333333rem !important;"
+                         invisible="marketplace != 'bol' or bol_fulfilment_method != 'FBR'"><field name="marketplace" style="margin-bottom: auto;"/> (FBR)
+                    </div>
+                    <div name="bol_fbb_pill" class="badge rounded-pill float-end fs-6 text-white border-0" style="background-color: #1000A4; font-size: 1.08333333rem !important;"
+                         invisible="marketplace != 'bol' or bol_fulfilment_method != 'FBB'"><field name="marketplace" style="margin-bottom: auto;"/> (FBB)
+                    </div>
+                </xpath>
+                <field name="mk_order_number" position="after">
+                    <field name="bol_fulfilment_method" readonly="1" string="Fulfilment Method" invisible="marketplace != 'bol'" />
+                </field>
+                <xpath expr="//field[@name='tax_totals']" position="after">
+                    <div class="d-flex float-end" colspan="2" invisible="marketplace != 'bol'">
+                        <label for="bol_commission" groups="base.group_user" />
+                        <div groups="base.group_user">
+                            <field name="bol_commission" class="oe_inline"/>
+                            <field name="amount_untaxed" invisible="1"/>
+                            <span class="oe_inline" invisible="amount_untaxed == 0">
+                                (<field name="bol_commission_percent" nolabel="1" class="oe_inline" widget="percentage"/>)
+                            </span>
+                        </div>
+                    </div>
+                </xpath>
+                <button name="action_cancel" position="after">
+                    <button name="cancel_in_bol" string="Cancel In Bol.com" type="object" icon="fa-close"
+                            invisible="state != 'cancel' or canceled_in_marketplace or not mk_instance_id or marketplace != 'bol'"
+                            class="oe_highlight">
+                    </button>
+                </button>
+            </field>
+        </record>
+    </data>
+</odoo>

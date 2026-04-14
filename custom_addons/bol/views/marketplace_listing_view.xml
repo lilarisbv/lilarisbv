@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+        <record id="bol_mk_listing_form_view" model="ir.ui.view">
+            <field name="name">bol.marketplace.listing.form.view</field>
+            <field name="model">mk.listing</field>
+            <field name="inherit_id" ref="base_marketplace.mk_listing_form_view"/>
+            <field name="arch" type="xml">
+                <button name="open_listing_in_marketplace" position="before">
+                    <button class="oe_stat_button o_stat_text o_value text-danger" name="bol_published"
+                            type="object" icon="fa-globe"
+                            invisible="not is_listed or is_published or marketplace != 'bol'"
+                            string="Unpublished" confirm="Are you sure you want to publish listing? This action directly reflect on Bol.com.">
+                    </button>
+                    <button class="oe_stat_button o_stat_text o_value text-success" name="bol_published"
+                            type="object" icon="fa-globe"
+                            invisible="not is_listed or not is_published or marketplace != 'bol'"
+                            string="Published" confirm="Are you sure you want to unpublish listing? This action directly reflect on Bol.com">
+                    </button>
+                </button>
+                <page name="description" position="after">
+
+                    <page string="Information" invisible="marketplace != 'bol'">
+                        <group>
+                            <group>
+                                <field name="bol_fulfilment_method" widget="radio" required="marketplace == 'bol'"/>
+                                <field name="bol_delivery_code" required="marketplace == 'bol'"/>
+                            </group>
+                            <group>
+                                <field name="bol_condition" required="marketplace == 'bol'"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="bol_not_publishable_reasons" readonly="1"/>
+                        </group>
+                    </page>
+                </page>
+            </field>
+        </record>
+    </data>
+</odoo>
