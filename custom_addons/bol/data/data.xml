@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="bol_delivery" model="product.product">
+            <field name="name">Bol.com Delivery</field>
+            <field name="type">service</field>
+            <field name="default_code">bol_delivery</field>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="list_price">0.0</field>
+            <field name="invoice_policy">order</field>
+        </record>
+
+        <record id="res_partner_category_bol" model="res.partner.category">
+            <field name="name">Bol.com</field>
+            <field name="color" eval="4"/>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_picking_form_inherit_bol" model="ir.ui.view">
+        <field name="name">stock.picking.form.inherit.base.bol</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="after">
+                <div name="bol_pill" class="badge rounded-pill float-end fs-6 text-white border-0"
+                     style="background-color: #1000A4; font-size: 1.08333333rem !important;"
+                     invisible="marketplace != 'bol'"><field name="marketplace" style="margin-bottom: auto;"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

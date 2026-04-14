@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+        <record id="bol_return_form_view" model="ir.ui.view">
+            <field name="name">bol.return.form.view</field>
+            <field name="model">bol.return</field>
+            <field name="arch" type="xml">
+                <form string="Bol Return" create="0" edit="1">
+                    <header>
+                        <button name="create_return_order" string="Create Return Order" type="object" class="btn-primary" invisible="is_return_order_created or state != 'unhandled'" />
+                        <button name="do_handle_return" string="Handle Return" type="object" class="btn-primary" invisible="state != 'unhandled'"
+                                confirm="Are you sure you want to process this return? You can verify Received Quantity and Handling Action because this action can't be undone."/>
+                        <button name="do_get_status" string="Get Status" type="object" class="btn-primary" invisible="state != 'unhandled'"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button" name="action_open_picking_from_return" type="object" icon="fa-truck">
+                                <span class="o_stat_text">Transfers</span>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <label for="rma_id" string="RMA #" readonly="1"/>
+                            <h1>
+                                <field name="rma_id" placeholder="RMA" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="order_id" readonly="1"/>
+                                <field name="partner_id" readonly="1"/>
+                                <field name="product_id" readonly="1"/>
+                                <field name="return_reason" readonly="1"/>
+                                <field name="mk_instance_id" readonly="1"/>
+                                <field name="is_return_order_created" invisible="1"/>
+                            </group>
+                            <group>
+                                <field name="registration_date" readonly="1"/>
+                                <field name="mk_id" string="Return number" readonly="1"/>
+                                <field name="expected_quantity" readonly="1"/>
+                                <field name="received_quantity" readonly="state == 'handled'" required="state != 'unhandled'" />
+                                <field name="handling_action" readonly="state != 'unhandled'" invisible="state == 'handled'" />
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Comment by Customer">
+                                <field name="return_reason_comments" nolabel="1" readonly="1"/>
+                            </page>
+                            <page string="Processing Results">
+                                <field name="processing_result_ids" nolabel="1" readonly="1">
+                                    <list editable="bottom" default_order="date desc">
+                                        <field name="date"/>
+                                        <field name="processing_result"/>
+                                        <field name="handling_result"/>
+                                        <field name="quantity"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <record id="bol_return_search_view" model="ir.ui.view">
+            <field name="name">bol.return.search.view</field>
+            <field name="model">bol.return</field>
+            <field name="arch" type="xml">
+                <search string="Bol Return">
+                    <field name="rma_id" filter_domain="['|',('rma_id','ilike', self), ('mk_id', 'ilike', self)]" string="RMA/Return"/>
+                    <field name="mk_instance_id"/>
+                    <field name="order_id"/>
+                    <field name="product_id"/>
+                    <field name="partner_id"/>
+                    <separator/>
+
+                    <filter string="To Handle" name="unhandled" domain="[('state', '=', 'unhandled')]"/>
+                    <filter string="Handled" name="handled" domain="[('state', '=', 'handled')]"/>
+
+                    <group>
+                        <filter string="Instance" name="group_by_instance" context="{'group_by': 'mk_instance_id'}"/>
+                        <filter string="State" name="group_by_state" context="{'group_by': 'state'}"/>
+                        <filter string="Handling Action" name="group_by_handling_action" context="{'group_by': 'handling_action'}"/>
+                        <filter string="Product" name="group_by_product_id" context="{'group_by': 'product_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="bol_return_tree_view" model="ir.ui.view">
+            <field name="name">bol.return.list.view</field>
+            <field name="model">bol.return</field>
+            <field name="arch" type="xml">
+                <list string="Bol Return" create="0" edit="1" decoration-muted="state=='handled'">
+                    <field name="rma_id"/>
+                    <field name="mk_id" string="Return Number"/>
+                    <field name="registration_date"/>
+                    <field name="order_id"/>
+                    <field name="partner_id"/>
+                    <field name="product_id"/>
+                    <field name="expected_quantity"/>
+                    <field name="mk_instance_id"/>
+                    <field name="state"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="action_bol_return_all" model="ir.actions.act_window">
+            <field name="name">Bol Returns</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">bol.return</field>
+            <field name="view_mode">list,form</field>
+            <field name="context">{'search_default_unhandled': 1}</field>
+        </record>
+    </data>
+</odoo>

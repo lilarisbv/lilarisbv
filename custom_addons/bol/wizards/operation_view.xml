@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+        <record id="mk_operation_update_listing_to_bol_view" model="ir.ui.view">
+            <field name="name">mk.operation.update.listing.to.bol.form.view</field>
+            <field name="model">mk.operation</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group>
+                            <field name="is_update_product" widget="boolean_toggle"/>
+                            <field name="is_set_quantity" widget="boolean_toggle"/>
+                        </group>
+                        <group>
+                            <field name="is_set_price" widget="boolean_toggle"/>
+                            <field name="bol_publish_in_store" />
+                        </group>
+                    </group>
+                    <footer>
+                        <button string="Update Offer" type="object" class="btn-primary" icon="fa-cloud-upload" name="update_listing_to_mk"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel" icon="fa-close" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="bol_mk_operation_form_view" model="ir.ui.view">
+            <field name="name">mk.operation.export.form.view</field>
+            <field name="model">mk.operation</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group>
+                            <field name="mk_instance_id" required="1" options='{"no_open": True, "no_create": True}' readonly="1"/>
+                            <field name="marketplace" invisible="1"/>
+                            <field name="bol_operation_type" required="1" widget="radio" options="{'horizontal': true}"/>
+                        </group>
+                        <group></group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="bol_fbr_operations" required="bol_operation_type == 'FBR'" invisible="bol_operation_type != 'FBR'" widget="radio"/>
+                            <field name="bol_fbb_operations" required="bol_operation_type == 'FBB'" invisible="bol_operation_type != 'FBB'" widget="radio"/>
+                            <field name="bol_operations" required="bol_operation_type == 'Both'" invisible="bol_operation_type != 'Both'" widget="radio"/>
+                            <field name="restricted_operation" invisible="1" />
+                            <field name="cron_message" invisible="1" />
+                        </group>
+                        <group>
+                            <field name="bol_validate_inventory_adjustment" widget="boolean_toggle"
+                                   invisible="bol_operation_type != 'FBB' or bol_fbb_operations != 'import_stock'"/>
+                            <!--<field name="is_create_product" widget="boolean_toggle"
+                                   attrs="{'invisible': ['|', ('bol_operation_type', '!=', 'Both'), ('bol_operations', '!=', 'import_product')]}"/>-->
+                            <field name="update_existing_product" string="Update Existing Offer/Listing?" widget="boolean_toggle"
+                                   invisible="bol_operation_type != 'Both' or bol_operations != 'import_product'"/>
+                            <field name="update_product_price" widget="boolean_toggle"
+                                   invisible="not update_existing_product or bol_operation_type != 'Both' or bol_operations != 'import_product'"/>
+                            <field name="mk_order_id" placeholder="1580015XXX, 158218XXXX" string="Marketplace ID(s)"
+                                   invisible="bol_operation_type != 'Both' or bol_operations != 'import_order_by_ids'" required="bol_operation_type == 'Both' and bol_operations == 'import_order_by_ids'"/>
+                            <field name="bol_return_import_from_date" string="Import Return After"
+                                   invisible="bol_operation_type != 'Both' or bol_fbb_operations != 'import_return'" required="bol_operation_type == 'Both' and bol_operations == 'import_return'"/>
+                        </group>
+                    </group>
+                    <p class="alert alert-danger" style="border-radius: 1em;" role="alert" invisible="not restricted_operation or  not cron_message">
+                        <b>
+                            <field name="cron_message" readonly="1"/>
+                        </b>
+                    </p>
+
+                    <!-- Notes for FBR Operations -->
+                    <p class="alert alert-warning" style="border-radius: 1em;" role="alert" invisible="bol_operation_type != 'FBR' or bol_fbr_operations != 'import_order'">
+                        <h3 class="alert alert-heading" role="alert"><strong>Note:</strong></h3>
+                        <ul>
+                            <li>
+                                Import open FBR orders from Bol.com to Odoo, which will create a new order queue (Marketplace > Queue).
+                            </li>
+                            <li>
+                                A Scheduled Job will begin processing the Queues one after another in the background.
+                            </li>
+                        </ul>
+                    </p>
+                    <p class="alert alert-warning" style="border-radius: 1em;" role="alert" invisible="bol_operation_type != 'FBR' or bol_fbr_operations != 'update_order'">
+                        <h3 class="alert alert-heading" role="alert"><strong>Note:</strong></h3>
+                        <ul>
+                            <li>
+                                To update the tracking information from Odoo to Bol.com for orders that have been shipped from Odoo.
+                            </li>
+                        </ul>
+                    </p>
+                    <p class="alert alert-warning" style="border-radius: 1em;" role="alert" invisible="bol_operation_type != 'FBR' or bol_fbr_operations != 'export_stock'">
+                        <h3 class="alert alert-heading" role="alert"><strong>Note:</strong></h3>
+                        <ul>
+                            <li>
+                                This feature enables you to export your offer/product stock from your instance in Odoo to Bol.com based on the configured warehouse. It will export only those
+                                product stocks that have been synced with Bol.com.
+                            </li>
+                            <li>
+                                It will attempt to export the stock of offer/products that have been updated since the last execution of the operation. In case the details of the last
+                                execution are not available, it will consider all offer/products.
+                            </li>
+                        </ul>
+                    </p>
+                    <!-- Notes for FBB Operations -->
+                    <p class="alert alert-warning" style="border-radius: 1em;" role="alert" invisible="bol_operation_type != 'FBB' or bol_fbb_operations != 'import_order'">
+                        <h3 class="alert alert-heading" role="alert"><strong>Note:</strong></h3>
+                        <ul>
+                            <li>
+                                Import open FBB orders from Bol.com to Odoo, which will create a new order queue (Marketplace > Queue).
+                            </li>
+                            <li>
+                                A Scheduled Job will begin processing the Queues one after another in the background.
+                            </li>
+                        </ul>
+                    </p>
+                    <p class="alert alert-warning" style="border-radius: 1em;" role="alert" invisible="bol_operation_type != 'FBB' or bol_fbb_operations != 'import_stock'">
+                        <h3 class="alert alert-heading" role="alert"><strong>Note:</strong></h3>
+                        <ul>
+                            <li>
+                                Allows you to import FBB stock from Bol.com to Odoo.
+                            </li>
+                            <li>
+                                The stock will be imported to the FBB warehouse based on the configuration set under "Instance > Configuration > FBB Warehouse".
+                            </li>
+                            <li>
+                                This operation creates Inventory adjustments record in Odoo for each offer/products under Inventory > Operations > Inventory Adjustments.
+                            </li>
+                            <li>
+                                If the <strong>Auto Validate Inventory Adjustment</strong> configuration is enabled, the stock changes will be applied automatically. However, if this
+                                configuration is not
+                                enabled, you will need to manually process the inventory adjustment transaction records to apply imported stocks.
+                            </li>
+                        </ul>
+                    </p>
+                    <!-- Notes for FBR and FBB Operations -->
+                    <p class="alert alert-warning" style="border-radius: 1em;" role="alert" invisible="bol_operation_type != 'Both' or bol_operations != 'import_product'">
+                        <h3 class="alert alert-heading" role="alert"><strong>Note:</strong></h3>
+                        <ul>
+                            <li>
+                                This feature enables you to synchronize your offers/products from Bol.com to Odoo.
+                            </li>
+                            <!--<li>
+                                <strong>Auto Create Product: </strong> if enabled, new Odoo product will be created if not found in Odoo. However, if this is not
+                                enabled, product will be skipped.
+                            </li>-->
+                            <li>
+                                <strong>Update Existing Product:</strong> if enabled, update the existing listing with the latest information from bol.com. if this isn't enabled, already
+                                existing listing will be skipped.
+                            </li>
+                            <li>
+                                <strong>Update Price</strong> if enabled, each offer/product price will be updated on instance's pricelist as Computation type Fixed Price.
+                            </li>
+                            <li>
+                                You can see process status on Marketplaces > Bol.com > Process Status. There you will be able to check status and retrieve offer and system
+                                will create offer/product import queue.
+                            </li>
+                        </ul>
+                    </p>
+                    <p class="alert alert-warning" style="border-radius: 1em;" role="alert" invisible="bol_operation_type != 'Both' or bol_operations != 'import_order_by_ids'">
+                        <h3 class="alert alert-heading" role="alert"><strong>Note:</strong></h3>
+                        <ul>
+                            <li>
+                                You can import multiple orders by separating the IDs with a comma (','). For example: 1580015XXX, 158218XXXX.
+                            </li>
+                            <li>
+                                If the order is not found as open in Bol.com, it will be skipped since Bol.com's APIs only allows for importing open orders. You can see detailed log under
+                                Marketplace >> Logs
+                            </li>
+                        </ul>
+                    </p>
+                    <p class="alert alert-warning" style="border-radius: 1em;" role="alert" invisible="bol_operation_type != 'Both' or bol_operations != 'import_shipments'">
+                        <h3 class="alert alert-heading" role="alert"><strong>Note:</strong></h3>
+                        <ul>
+                            <li>
+                                It will check for open orders and search for a shipment in bol.com. If a shipment is found in bol.com, it will then proceed to process the corresponding order
+                                in Odoo.
+                            </li>
+                        </ul>
+                    </p>
+                    <p class="alert alert-warning" style="border-radius: 1em;" role="alert" invisible="bol_operation_type != 'Both' or bol_operations != 'import_return'">
+                        <h3 class="alert alert-heading" role="alert"><strong>Note:</strong></h3>
+                        <ul>
+                            <li>
+                                With this feature, you can import Bol.com returns created after a specified date into Odoo.
+                            </li>
+                            <li>
+                                Once imported, you can view the returns on the <strong>Marketplaces > Bol.com > Returns</strong> page. From there, you can easily manage the returns within Odoo and create a
+                                return order with just one click.
+                            </li>
+                        </ul>
+                    </p>
+                    <p class="alert alert-warning" style="border-radius: 1em;" role="alert" invisible="bol_operation_type != 'Both' or bol_operations != 'import_shipped_order'">
+                        <h3 class="alert alert-heading" role="alert"><strong>Note:</strong></h3>
+                        <ul>
+                            <li>
+                                By using this operation, you can import shipped orders from the past 90 days, which will create a new order queue (Marketplace > Queue)
+                            </li>
+                            <li>
+                                A Scheduled Job will begin processing the Queues one after another in the background.
+                            </li>
+                        </ul>
+                    </p>
+                    <p class="alert alert-warning" style="border-radius: 1em;" role="alert" invisible="bol_operation_type != 'Both' or bol_operations != 'export_price'">
+                        <h3 class="alert alert-heading" role="alert"><strong>Note:</strong></h3>
+                        <ul>
+                            <li>
+                                Enables you to change the price of your offer or product on Bol.com, with the updated price being calculated according to variant type rules defined in the pricelist configured on the
+                                instance. System will no longer update the product prices in the marketplace if the price is set to zero.
+                            </li>
+                        </ul>
+                    </p>
+                    <footer>
+                        <button string="Process" type="object" class="btn-primary" name="do_bol_operations" icon="fa-exchange" invisible="restricted_operation"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel" icon="fa-close" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="mk_operation_add_to_listing" model="ir.ui.view">
+            <field name="name">mk.operation.add.to.listing.form.view.bol</field>
+            <field name="model">mk.operation</field>
+            <field name="inherit_id" ref="base_marketplace.mk_operation_add_to_listing"/>
+            <field name="arch" type="xml">
+                <field name="mk_instance_ids" position="after">
+                    <field name="bol_show_fulfillment_type" invisible="1"/>
+                    <field name="bol_fulfilment_method" widget="radio" string="Bol Fulfilment Method" invisible="not bol_show_fulfillment_type"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="mk_operation_export_listing_to_bol_view" model="ir.ui.view">
+            <field name="name">mk.operation.export.listing.to.bol.form.view</field>
+            <field name="model">mk.operation</field>
+            <field name="arch" type="xml">
+                <form>
+                    <div class="alert alert-warning" style="border-radius: 1em;" role="alert">
+                        <h3 class="alert alert-heading" role="alert"><strong>Notes</strong></h3>
+                        <p colspan="2" class="my-0">
+                            <strong>
+                                <ol>
+                                    <li>
+                                        Please carefully review the offer details, including the name, fulfillment method, promised delivery time, condition, and other relevant information, as this action cannot be reversed.
+                                    </li>
+                                    <li>
+                                        Limit of 80 products can be handled at a time and already exported offer will be skipped.
+                                    </li>
+                                </ol>
+                            </strong>
+                        </p>
+                    </div>
+                    <footer>
+                        <button string="Export Offer" type="object" class="btn-primary" name="export_listing_to_mk" icon="fa-cloud-upload"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel" icon="fa-close" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

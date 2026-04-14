@@ -1,0 +1,30 @@
+id,name,code
+bol_transporter_01,Briefpost,BRIEFPOST
+bol_transporter_02,UPS,UPS
+bol_transporter_03,PostNL,TNT
+bol_transporter_04,PostNL extra@home,TNT-EXTRA
+bol_transporter_05,PostNL Briefpost,TNT_BRIEF
+bol_transporter_06,TNT Express,TNT-EXPRESS
+bol_transporter_07,Dynalogic,DYL
+bol_transporter_08,DPD Nederland,DPD-NL
+bol_transporter_09,DPD België,DPD-BE
+bol_transporter_10,Bpost België,BPOST_BE
+bol_transporter_11,Bpost Briefpost,BPOST_BRIEF
+bol_transporter_12,DHLFORYOU,DHLFORYOU
+bol_transporter_13,GLS,GLS
+bol_transporter_14,FedEx Nederland,FEDEX_NL
+bol_transporter_15,FedEx Belgie,FEDEX_BE
+bol_transporter_16,Anders,OTHER
+bol_transporter_17,DHL,DHL
+bol_transporter_18,DHL Germany,DHL_DE
+bol_transporter_19,DHL Global mail,DHL-GLOBAL-MAIL
+bol_transporter_20,Transportservice Nederland,TSN
+bol_transporter_21,Fiege,FIEGE
+bol_transporter_22,TransMission,TRANSMISSION
+bol_transporter_23,Parcel.nl,PARCEL-NL
+bol_transporter_24,LogoiX,LOGOIX
+bol_transporter_25,Packs,PACKS
+bol_transporter_26,Bezorgafspraak,COURIER
+bol_transporter_27,NedWRK (Red je pakketje),RJP
+bol_transporter_28,Parts Express,PES
+bol_transporter_29,DHL Parcel,SLV
