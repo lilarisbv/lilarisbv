@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+        <record id="bol_import_all_invoice_request_form" model="ir.ui.view">
+            <field name="name">bol.import.all.invoice.request.form</field>
+            <field name="model">bol.invoice.request</field>
+            <field name="arch" type="xml">
+                <form string="Bol Invoice Request" create="0" edit="0">
+                    <header>
+                        <button name="process_manually" string="Upload Invoice" type="object" class="btn-primary"
+                                invisible="not show_manual_button"/>
+                        <button name="sync_invoice_request_status" string="Get Status" type="object" class="btn-secondary" invisible="status == 'FINISHED'" groups="base.group_no_one"/>
+                        <field name="status" widget="statusbar" statusbar_visible="INVOICE_REQUESTED,INVOICE_UPLOADED,FINISHED"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button" type="object"
+                                    name="action_view_invoices"
+                                    icon="fa-pencil-square-o">
+                                <field string="Invoices" name="invoice_count" widget="statinfo"/>
+                            </button>
+                            <button class="oe_stat_button" type="object"
+                                    name="action_view_sale_order"
+                                    icon="fa-shopping-cart">
+                                <field string="Sale Order" name="order_count" widget="statinfo"/>
+                            </button>
+                            <button class="oe_stat_button" name="action_view_retry_logs" type="object" icon="fa-refresh">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_value">
+                                        <field name="no_of_retry_count" readonly="1"/>
+                                        / 3
+                                    </span>
+                                    <span class="o_stat_text">Retry Count</span>
+                                </div>
+                            </button>
+                        </div>
+                        <div name="pending_pill" class="badge rounded-pill float-end fs-6 text-white border-0 text-bg-info" style="font-size: 1.08333333rem !important;"
+                             invisible="not bol_process_status_id"> Awaiting Bol.com Confirmation
+                        </div>
+                        <div class="oe_title">
+                            <label for="shipment_id" class="oe_inline"/>
+                            <h1>
+                                <field name="shipment_id" readonly="1"/>
+                            </h1>
+                        </div>
+
+                        <group>
+                            <group>
+                                <field name="partner_id" readonly="1"/>
+                                <field name="sale_order_id" readonly="1"/>
+                                <field name="mk_instance_id"/>
+                            </group>
+                            <group>
+                                <field name="request_date"/>
+                                <field name="last_update_date" readonly="1" />
+                                <field name="bol_process_status_id" readonly="0" groups="base.group_no_one"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Status Transitions" name="status_transitions">
+                                <group>
+                                    <field name="transitions_line_ids" nolabel="1" >
+                                        <list string="Status Transition" editable="top">
+                                            <field name="date" width="500px"/>
+                                            <field name="status"/>
+                                        </list>
+                                    </field>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <record id="bol_import_all_invoice_request_tree" model="ir.ui.view">
+            <field name="name">bol.import.all.invoice.request.tree</field>
+            <field name="model">bol.invoice.request</field>
+            <field name="arch" type="xml">
+                <list string="Bol Invoice Request" create="0" edit="1" decoration-muted="status == 'FINISHED'"
+                      decoration-danger="status in ['INVOICE_INCORRECT', 'INVOICE_VIRUS_DETECTED']" decoration-success="status == 'INVOICE_UPLOADED'">
+                    <field name="order_id"/>
+                    <field name="shipment_id"/>
+                    <field name="status"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="bol_import_all_invoice_request_search" model="ir.ui.view">
+            <field name="name">bol.import.all.invoice.request.search</field>
+            <field name="model">bol.invoice.request</field>
+            <field name="arch" type="xml">
+                <search string="Bol Invoice Request">
+                    <field name="sale_order_id" string="Sale Order"/>
+                    <field name="shipment_id" string="Shipment ID"/>
+                    <field name="partner_id" string="Customer"/>
+                    <filter string="Invoice Requested" name="invoice_requested" domain="[('status', '=', 'INVOICE_REQUESTED')]"/>
+                    <filter string="Invoice Uploaded" name="invoice_uploaded" domain="[('status', '=', 'INVOICE_UPLOADED')]"/>
+                    <filter string="Failed" name="failed" domain="[('status', 'in', ['INVOICE_INCORRECT', 'INVOICE_VIRUS_DETECTED'])]"/>
+                    <filter string="Finished" name="finished" domain="[('status', '=', 'FINISHED')]"/>
+                    <separator/>
+                    <group>
+                        <filter string="Customer" name="group_by_customer" context="{'group_by': 'partner_id'}"/>
+                        <filter string="Sale Order" name="group_by_order" context="{'group_by': 'sale_order_id'}"/>
+                        <filter string="Status" name="group_by_status" context="{'group_by': 'status'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_bol_import_all_invoice_request" model="ir.actions.act_window">
+            <field name="name">Bol Invoice Request</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">bol.invoice.request</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="bol_import_all_invoice_request_search"/>
+            <field name="context">{'search_default_invoice_requested': 1}</field>
+        </record>
+    </data>
+</odoo>
