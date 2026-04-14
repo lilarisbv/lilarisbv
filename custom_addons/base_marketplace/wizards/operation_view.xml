@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+        <record id="mk_operation_add_to_listing" model="ir.ui.view">
+            <field name="name">mk.operation.add.to.listing.form.view</field>
+            <field name="model">mk.operation</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="mk_instance_ids" required="1" widget="many2many_tags" options='{"no_open": True, "no_create": True}'/>
+                    </group>
+                    <footer>
+                        <button string="Add to Listing" type="object" class="btn-primary" name="mk_add_to_listing"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="mk_operation_import_form_view" model="ir.ui.view">
+            <field name="name">mk.operation.import.form.view</field>
+            <field name="model">mk.operation</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="mk_instance_id" required="1" options='{"no_open": True, "no_create": True}'/>
+                        <field name="marketplace" invisible="1"/>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="import_customers" widget="boolean_toggle"/>
+                            <field name="import_products" widget="boolean_toggle"/>
+                            <field name="update_existing_product" invisible="not import_products" widget="boolean_toggle"/>
+                            <field name="update_product_price" invisible="not import_products or not update_existing_product" widget="boolean_toggle"/>
+                            <field name="mk_listing_id" invisible="not import_products"/>
+                            <field name="import_stock" widget="boolean_toggle"/>
+                        </group>
+                        <group>
+                            <field name="import_orders" widget="boolean_toggle"/>
+                            <field name="from_date" invisible="not import_products" required="import_products"/>
+                            <field name="to_date" invisible="not import_products" required="import_products"/>
+                            <field name="mk_order_id" invisible="not import_products"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button string="Import" type="object" class="btn-primary" name="do_import_operations"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="mk_operation_export_form_view" model="ir.ui.view">
+            <field name="name">mk.operation.export.form.view</field>
+            <field name="model">mk.operation</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="mk_instance_id" required="1" options='{"no_open": True, "no_create": True}'/>
+                        <field name="marketplace" invisible="1"/>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="is_export_products" widget="boolean_toggle"/>
+                            <field name="is_update_products" widget="boolean_toggle"/>
+                            <field name="is_set_price" widget="boolean_toggle" invisible="not is_export_products and not is_update_products"/>
+                            <field name="is_set_quantity" widget="boolean_toggle" invisible="not is_export_products and not is_update_products"/>
+                            <field name="is_set_images" widget="boolean_toggle" invisible="not is_export_products and not is_update_products"/>
+                            <field name="is_publish_in_store" widget="boolean_toggle" invisible="not is_export_products"/>
+                        </group>
+                        <group>
+                            <field name="is_update_order_status" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button string="Export" type="object" class="btn-primary" name="do_export_operations"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="mk_operation_export_listing_to_mk_view" model="ir.ui.view">
+            <field name="name">mk.operation.export.listing.to.mk.form.view</field>
+            <field name="model">mk.operation</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group>
+                            <field name="is_set_price" widget="boolean_toggle"/>
+                            <field name="is_set_quantity" widget="boolean_toggle"/>
+                            <field name="is_set_images" widget="boolean_toggle"/>
+                        </group>
+                        <group>
+                            <field name="is_publish_in_store" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button string="Export Listing" type="object" class="btn-primary" name="export_listing_to_mk"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="mk_operation_update_listing_to_mk_view" model="ir.ui.view">
+            <field name="name">mk.operation.update.listing.to.mk.form.view</field>
+            <field name="model">mk.operation</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group>
+                            <field name="is_update_product" widget="boolean_toggle"/>
+                            <field name="is_set_price" widget="boolean_toggle"/>
+                            <field name="is_set_quantity" widget="boolean_toggle"/>
+                        </group>
+                        <group>
+                            <field name="is_set_images" widget="boolean_toggle"/>
+                            <field name="is_publish_in_store" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button string="Update Listing" type="object" class="btn-primary" name="update_listing_to_mk"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="mk_operation_update_listing_item_to_mk_view" model="ir.ui.view">
+            <field name="name">mk.operation.update.listing.item.to.mk.form.view</field>
+            <field name="model">mk.operation</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="is_set_price" widget="boolean_toggle"/>
+                        <field name="is_set_quantity" widget="boolean_toggle"/>
+                    </group>
+                    <footer>
+                        <button string="Update Listing Item" type="object" class="btn-primary" name="update_listing_item_to_mk"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="mk_operation_form_view" model="ir.ui.view">
+            <field name="name">mk.operation.export.form.view</field>
+            <field name="model">mk.operation</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="mk_instance_id" required="1" options='{"no_open": True, "no_create": True}'/>
+                        <field name="marketplace" invisible="1"/>
+                    </group>
+                    <group name="marketplace_options">
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_marketplace_operation" model="ir.actions.act_window">
+            <field name="name">Perform Operation</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">mk.operation</field>
+            <field name="view_mode">form</field>
+            <field name="context">{'default_mk_instance_id':active_id}</field>
+            <field name="view_id" ref="mk_operation_form_view"/>
+            <field name="target">new</field>
+        </record>
+
+        <record id="action_marketplace_export_operation" model="ir.actions.act_window">
+            <field name="name">Export Operation</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">mk.operation</field>
+            <field name="view_mode">form</field>
+            <field name="context">{'default_mk_instance_id':active_id}</field>
+            <field name="view_id" ref="mk_operation_export_form_view"/>
+            <field name="target">new</field>
+        </record>
+
+        <record id="action_marketplace_import_operation" model="ir.actions.act_window">
+            <field name="name">Import Operation</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">mk.operation</field>
+            <field name="view_mode">form</field>
+            <field name="context">{'default_mk_instance_id':active_id}</field>
+            <field name="view_id" ref="mk_operation_import_form_view"/>
+            <field name="target">new</field>
+        </record>
+
+        <record id="action_product_add_to_listing" model="ir.actions.act_window">
+            <field name="name">Add to Listing</field>
+            <field name="res_model">mk.operation</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="binding_model_id" ref="model_product_template"/>
+            <field name="view_id" ref="mk_operation_add_to_listing"/>
+        </record>
+
+        <record id="action_product_export_to_marketplace" model="ir.actions.act_window">
+            <field name="name">Export New Products in Marketplace</field>
+            <field name="res_model">mk.operation</field>
+            <field name="view_mode">form</field>
+            <field name="context">{}</field>
+            <field name="view_id" ref="mk_operation_export_listing_to_mk_view"/>
+            <field name="target">new</field>
+        </record>
+
+        <record id="action_listing_update_to_marketplace" model="ir.actions.act_window">
+            <field name="name">Update Listing in Marketplace</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">mk.operation</field>
+            <field name="view_mode">form</field>
+            <field name="context">{}</field>
+            <field name="view_id" ref="mk_operation_update_listing_to_mk_view"/>
+            <field name="target">new</field>
+        </record>
+
+        <record id="action_update_listing_item_to_marketplace" model="ir.actions.act_window">
+            <field name="name">Update Listing Item in Marketplace</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">mk.operation</field>
+            <field name="view_mode">form</field>
+            <field name="context">{}</field>
+            <field name="view_id" ref="mk_operation_update_listing_item_to_mk_view"/>
+            <field name="target">new</field>
+        </record>
+
+        <record id="action_listing_operation_to_marketplace" model="ir.actions.server">
+            <field name="name">Export/Update Listing in Marketplace</field>
+            <field name="type">ir.actions.server</field>
+            <field name="model_id" ref="model_mk_operation"/>
+            <field name="binding_model_id" ref="model_mk_listing"/>
+            <field name="binding_view_types">form</field>
+            <field name="state">code</field>
+            <field name="code">action = env['mk.listing'].action_open_listing_operation_view()</field>
+        </record>
+
+        <record id="action_listing_item_operation_to_marketplace" model="ir.actions.server">
+            <field name="name">Update Listing Item in Marketplace</field>
+            <field name="type">ir.actions.server</field>
+            <field name="model_id" ref="model_mk_operation"/>
+            <field name="binding_model_id" ref="model_mk_listing_item"/>
+            <field name="binding_view_types">form</field>
+            <field name="state">code</field>
+            <field name="code">action = env['mk.listing.item'].action_open_listing_item_operation_view()</field>
+        </record>
+    </data>
+</odoo>

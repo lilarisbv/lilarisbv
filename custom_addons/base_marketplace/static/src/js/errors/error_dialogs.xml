@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="base_marketplace.MarketplaceErrorDialog">
+      <Dialog header="false" size="'md'" footer="true" contentClass="'o_error_dialog'">
+          <div role="alert">
+              <h1 class="text-danger">:(</h1>
+              <h1 class="text-danger"><t t-esc="title"/></h1>
+              <p t-esc="message" class="text-prewrap"/>
+          </div>
+          <t t-set-slot="footer">
+              <button class="btn btn-primary o-default-button" t-on-click="props.close"><i class="fa fa-close"/> Close</button>
+              <t t-if="additionalContext and additionalContext.show_traceback">
+                  <button class="btn btn-secondary" t-on-click="onClickClipboard">
+                    <i class="fa fa-clipboard mr8"/><t>Copy error to clipboard</t>
+                  </button>
+              </t>
+          </t>
+      </Dialog>
+    </t>
+</templates>

@@ -1,0 +1,822 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+        <record id="marketplace_instance_form_view" model="ir.ui.view">
+            <field name="name">mk.instance.form.view</field>
+            <field name="model">mk.instance</field>
+            <field name="arch" type="xml">
+                <form string="Marketplace Instance">
+                    <header>
+                        <button type="object" name="action_confirm" string="Confirm" invisible="state not in ['draft','error']"/>
+                        <button type="object" name="reset_to_draft" string="Reset" invisible="state != 'confirmed'" groups="base_marketplace.group_base_marketplace_manager"/>
+                        <button type="object" name="action_test_connection" string="Test Connection"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,confirmed"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="%(base_marketplace.action_marketplace_listing_kanban)d" type="action"
+                                    icon="fa-product-hunt" class="oe_stat_button" invisible="mk_listing_count &lt;= 0">
+                                <field string="Listing" name="mk_listing_count" widget="statinfo"/>
+                            </button>
+                            <button name="%(base_marketplace.action_marketplace_orders_kanban)d" type="action"
+                                    icon="fa-usd" class="oe_stat_button" invisible="mk_order_count &lt;= 0">
+                                <field string="Orders" name="mk_order_count" widget="statinfo"/>
+                            </button>
+                            <button name="%(base_marketplace.action_marketplace_queue_job_kanban)d" type="action"
+                                    icon="fa-tasks" class="oe_stat_button" invisible="mk_queue_count &lt;= 0">
+                                <field string="Queue" name="mk_queue_count" widget="statinfo"/>
+                            </button>
+                            <button name="%(base_marketplace.action_marketplace_log_kanban)d" type="action" string="Logs"
+                                    icon="fa-history" class="oe_stat_button" invisible="not mk_log_ids">
+                            </button>
+                        </div>
+                        <field name="image" widget='image' class="oe_avatar" options='{"preview_image": "image_medium", "size": [90, 90]}'/>
+                        <div class="oe_title">
+                            <label class="oe_edit_only" for="name" string="Instance Name"/>
+                            <h1>
+                                <field name="name" placeholder="Instance Name" readonly="state == 'confirmed'"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group col="3">
+                                <label for="marketplace"/>
+                                <div name="marketplace_div" class="o_row">
+                                    <field name="marketplace" required="1" readonly="id != False"/>
+                                </div>
+                                <field name="mk_log_ids" invisible="1"/>
+                                <field name="kanban_badge_color" invisible="1"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="Last Processed On" name="last_import_dates" invisible="state == 'draft'">
+                                <div class="row mt16 o_settings_container" name="last_import_date">
+                                    <div class="col-xs-12 col-md-6 o_setting_box" name="last_order_sync_date">
+                                        <div class="o_setting_left_pane"/>
+                                        <div class="o_setting_right_pane">
+                                            <label string="Last Order Imported On" for="last_order_sync_date"/>
+                                            <div class="text-muted">
+                                                Date where order are imported.
+                                            </div>
+                                            <div class="text-muted">
+                                                <b>
+                                                    <field name="last_order_sync_date"/>
+                                                </b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-md-6 o_setting_box" name="last_listing_import_date">
+                                        <div class="o_setting_left_pane"/>
+                                        <div class="o_setting_right_pane">
+                                            <label string="Last Listing Imported On" for="last_listing_import_date"/>
+                                            <div class="text-muted">
+                                                Date were listing are imported.
+                                            </div>
+                                            <div class="text-muted">
+                                                <b>
+                                                    <field name="last_listing_import_date"/>
+                                                </b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-md-6 o_setting_box" name="last_listing_price_update_date">
+                                        <div class="o_setting_left_pane"/>
+                                        <div class="o_setting_right_pane">
+                                            <label string="Last Listing's Price Updated On" for="last_listing_price_update_date"/>
+                                            <div class="text-muted">
+                                                Date were listing's price are updated in marketplace.
+                                            </div>
+                                            <div class="text-muted">
+                                                <b>
+                                                    <field name="last_listing_price_update_date"/>
+                                                </b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-md-6 o_setting_box" name="last_stock_import_date">
+                                        <div class="o_setting_left_pane"/>
+                                        <div class="o_setting_right_pane">
+                                            <label string="Last Stock Imported On" for="last_stock_import_date"/>
+                                            <div class="text-muted">
+                                                Date where Stock are imported from Marketplace.
+                                            </div>
+                                            <div class="text-muted">
+                                                <b>
+                                                    <field name="last_stock_import_date"/>
+                                                </b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-md-6 o_setting_box" name="last_stock_update_date">
+                                        <div class="o_setting_left_pane"/>
+                                        <div class="o_setting_right_pane">
+                                            <label string="Last Stock Exported On" for="last_stock_update_date"/>
+                                            <div class="text-muted">
+                                                Date were stock updated to marketplace.
+                                            </div>
+                                            <div class="text-muted">
+                                                <b>
+                                                    <field name="last_stock_update_date"/>
+                                                </b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-md-6 o_setting_box" name="last_customer_import_date">
+                                        <div class="o_setting_left_pane"/>
+                                        <div class="o_setting_right_pane">
+                                            <label string="Last Customer Imported On" for="last_customer_import_date"/>
+                                            <div class="text-muted">
+                                                Date where customers are imported.
+                                            </div>
+                                            <div class="text-muted">
+                                                <b>
+                                                    <field name="last_customer_import_date"/>
+                                                </b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </page>
+                            <page name="credentials" string="Credentials"></page>
+                            <page string="Configuration" name="configuration">
+                                <div class="row mt16 o_settings_container">
+                                    <div class="col-xs-12 col-md-6 o_setting_box" id="warehouse" name="warehouse_id">
+                                        <div class="o_setting_right_pane">
+                                            <label string="Warehouse" for="warehouse_id"/>
+                                            <div class="text-muted">
+                                                Warehouse related to Instance.
+                                            </div>
+                                            <div class="text-muted">
+                                                <b>
+                                                    <field name="warehouse_id" required="1" readonly="state == 'confirmed'" options="{'no_create' : True}"/>
+                                                </b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-md-6 o_setting_box" name="country_id">
+                                        <div class="o_setting_left_pane"/>
+                                        <div class="o_setting_right_pane">
+                                            <label string="Country" for="country_id"/>
+                                            <div class="text-muted">
+                                                Country related to Instance.
+                                            </div>
+                                            <div class="text-muted">
+                                                <b>
+                                                    <field name="country_id" required="1" options="{'no_create' : True}" readonly="state == 'confirmed'"/>
+                                                </b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-md-6 o_setting_box" name="company_id">
+                                        <div class="o_setting_left_pane"/>
+                                        <div class="o_setting_right_pane">
+                                            <label string="Company" for="company_id"/>
+                                            <div class="text-muted">
+                                                Company related to this Instance.
+                                            </div>
+                                            <div class="text-muted">
+                                                <b>
+                                                    <field name="company_id" required="1" options="{'no_create' : True}" readonly="state == 'confirmed'"/>
+                                                </b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-md-6 o_setting_box" name="lang">
+                                        <div class="o_setting_left_pane"/>
+                                        <div class="o_setting_right_pane">
+                                            <label string="Language" for="lang"/>
+                                            <div class="text-muted">
+                                                Language related to Instance.
+                                            </div>
+                                            <div class="text-muted">
+                                                <b>
+                                                    <field name="lang" required="1"/>
+                                                </b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-md-6 o_setting_box" name="log_level">
+                                        <div class="o_setting_left_pane"/>
+                                        <div class="o_setting_right_pane">
+                                            <label string="Log Level" for="log_level"/>
+                                            <div class="text-muted">
+                                                Which type of logs you want to create for import/export operation.
+                                            </div>
+                                            <div class="text-muted">
+                                                <b>
+                                                    <field name="log_level"/>
+                                                </b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-md-6 o_setting_box" groups="base.group_no_one" name="queue_batch_limit">
+                                        <div class="o_setting_left_pane"/>
+                                        <div class="o_setting_right_pane">
+                                            <label string="Queue Batch Limit" for="queue_batch_limit"/>
+                                            <div class="text-muted">
+                                                Batch size of process queues
+                                            </div>
+                                            <div class="text-muted">
+                                                <b>
+                                                    <field name="queue_batch_limit"/>
+                                                </b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-md-6 o_setting_box" name="api_limit">
+                                        <div class="o_setting_left_pane"/>
+                                        <div class="o_setting_right_pane">
+                                            <label string="API Fetch record limit?" for="api_limit"/>
+                                            <div class="text-muted">
+                                                Record fetch limit while perform api calling.
+                                            </div>
+                                            <div class="text-muted">
+                                                <b>
+                                                    <field name="api_limit"/>
+                                                </b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </page>
+                            <page string="Products" name="product_config">
+                                <div class="row mt16 o_settings_container">
+                                    <div class="col-xs-12 col-md-6 o_setting_box" name="sync_product_with">
+                                        <div class="o_setting_left_pane"/>
+                                        <div class="o_setting_right_pane">
+                                            <label string="Sync Listings Based On" for="sync_product_with"/>
+                                            <div class="text-muted">
+                                                You have the flexibility to choose the synchronization behavior of your listings by selecting either Barcode, SKU, or Barcode/SKU.
+                                            </div>
+                                            <div class="content-group">
+                                                <div class="mt16">
+                                                    <field name="sync_product_with" required="1" widget="radio"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-md-6 o_setting_box" name="pricelist_id">
+                                        <div class="o_setting_right_pane">
+                                            <label string="Pricelist" for="pricelist_id"/>
+                                            <div class="text-muted">
+                                                Default Pricelist (If not set, Automatically set at the time of instance confirmation)
+                                            </div>
+                                            <div class="text-muted">
+                                                <b>
+                                                    <field name="pricelist_id" readonly="state == 'confirmed'" options="{'no_create' : True}"/>
+                                                </b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-md-6 o_setting_box" name="is_export_product_sale_price">
+                                        <div class="o_setting_left_pane">
+                                            <b>
+                                                <field name="is_export_product_sale_price"/>
+                                            </b>
+                                        </div>
+                                        <div class="o_setting_right_pane">
+                                            <label string="Export Odoo Product's Sale Price?" for="is_export_product_sale_price"/>
+                                            <div class="text-muted">
+                                                Exporting the sale price of the Odoo product directly, rather than using the price from the pricelist. However, it still updates the price of
+                                                the pricelist item.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-md-6 o_setting_box" name="is_create_products">
+                                        <div class="o_setting_left_pane">
+                                            <b>
+                                                <field name="is_create_products"/>
+                                            </b>
+                                        </div>
+                                        <div class="o_setting_right_pane">
+                                            <label string="Create Odoo Products?" for="is_create_products"/>
+                                            <div class="text-muted">
+                                                Create Odoo product if not found while doing sync operation.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-md-6 o_setting_box" name="is_update_odoo_product_category">
+                                        <div class="o_setting_left_pane">
+                                            <b>
+                                                <field name="is_update_odoo_product_category"/>
+                                            </b>
+                                        </div>
+                                        <div class="o_setting_right_pane">
+                                            <label string="Update Category in Odoo Products?" for="is_update_odoo_product_category"/>
+                                            <div class="text-muted">
+                                                Automatically set category to newly created Odoo products.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-md-6 o_setting_box" name="is_sync_images">
+                                        <div class="o_setting_left_pane">
+                                            <b>
+                                                <field name="is_sync_images"/>
+                                            </b>
+                                        </div>
+                                        <div class="o_setting_right_pane">
+                                            <label string="Sync Listing Images?" for="is_sync_images"/>
+                                            <div class="text-muted">
+                                                Images will be sync at the time of Import Listing.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </page>
+                            <page string="Stock" name="stock_config">
+                                <div class="row mt16 o_settings_container">
+                                    <div class="col-xs-12 col-md-6 o_setting_box" name="stock_field_id" groups="base.group_system">
+                                        <div class="o_setting_left_pane"/>
+                                        <div class="o_setting_right_pane">
+                                            <label string="Stock Based On" for="stock_field_id"/>
+                                            <div class="text-muted">
+                                                Product Quantity will be export according to selected field.
+                                            </div>
+                                            <div><b>Forecasted Quantity:</b> Quantity on Hand - Outgoing + Incoming</div>
+                                            <div><b>Free To Use Quantity:</b> Quantity on Hand - Reserved Quantity</div>
+                                            <div class="content-group">
+                                                <div class="mt16">
+                                                    <field name="stock_field_id" required="1" widget="radio"
+                                                           domain="[('model_id.model','=','product.product'),('name','in',['qty_available','virtual_available', 'free_qty'])]"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-md-6 o_setting_box" name="is_validate_adjustment">
+                                        <div class="o_setting_left_pane">
+                                            <b>
+                                                <field name="is_validate_adjustment"/>
+                                            </b>
+                                        </div>
+                                        <div class="o_setting_right_pane">
+                                            <label string="Validate Inventory Adjustment?"
+                                                   for="is_validate_adjustment"/>
+                                            <div class="text-muted">
+                                                Auto validate inventory adjustment right after inventory import process.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </page>
+                            <page string="Orders" name="order_config">
+                                <div class="row mt16 o_settings_container">
+                                    <div class="col-xs-12 col-md-6 o_setting_box" name="use_marketplace_sequence">
+                                        <div class="o_setting_left_pane">
+                                            <b>
+                                                <field name="use_marketplace_sequence"/>
+                                            </b>
+                                        </div>
+                                        <div class="o_setting_right_pane">
+                                            <label string="Use Marketplace's Order Sequence?" for="use_marketplace_sequence"/>
+                                            <div class="text-muted">
+                                                Order will name according to the marketplace order number instead of Odoo sequence.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-md-6 o_setting_box" name="order_prefix" invisible="not use_marketplace_sequence">
+                                        <div class="o_setting_right_pane">
+                                            <label string="Order Prefix" for="order_prefix"/>
+                                            <div class="text-muted">
+                                                Order name will be set with given Prefix while importing Orders.
+                                            </div>
+                                            <div class="text-muted">
+                                                <b>
+                                                    <field name="order_prefix"/>
+                                                </b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-md-6 o_setting_box" name="fbm_order_prefix" invisible="not use_marketplace_sequence">
+                                        <div class="o_setting_right_pane">
+                                            <label string="Order Prefix (FBM)" for="fbm_order_prefix"/>
+                                            <div class="text-muted">
+                                                Order name will be set with given Prefix while importing fulfillment by marketplace orders.
+                                            </div>
+                                            <div class="text-muted">
+                                                <b>
+                                                    <field name="fbm_order_prefix"/>
+                                                </b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-md-6 o_setting_box" name="use_marketplace_currency">
+                                        <div class="o_setting_left_pane">
+                                            <b>
+                                                <field name="use_marketplace_currency"/>
+                                            </b>
+                                        </div>
+                                        <div class="o_setting_right_pane">
+                                            <label string="Use Marketplace's Order Currency?" for="use_marketplace_currency"/>
+                                            <div class="text-muted">
+                                                If it's true, the order will be imported with the currency that is available in the marketplace. Otherwise, it will use the company's
+                                                currency.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-md-6 o_setting_box" name="discount_product_id" groups="base.group_no_one">
+                                        <div class="o_setting_left_pane"/>
+                                        <div class="o_setting_right_pane">
+                                            <label string="Discount Product" for="discount_product_id"/>
+                                            <div class="text-muted">
+                                                The product used to model the discount.
+                                            </div>
+                                            <div class="text-muted">
+                                                <b>
+                                                    <field name="discount_product_id" required="0"/>
+                                                </b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-md-6 o_setting_box" name="delivery_product_id" groups="base.group_no_one">
+                                        <div class="o_setting_left_pane"/>
+                                        <div class="o_setting_right_pane">
+                                            <label string="Delivery Product" for="delivery_product_id"/>
+                                            <div class="text-muted">
+                                                The product used to model the delivery charge or while creating new delivery method.
+                                            </div>
+                                            <div class="text-muted">
+                                                <b>
+                                                    <field name="delivery_product_id" required="1"/>
+                                                </b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-md-6 o_setting_box" name="team_id">
+                                        <div class="o_setting_left_pane"/>
+                                        <div class="o_setting_right_pane">
+                                            <label string="Sales Team" for="team_id"/>
+                                            <div class="text-muted">
+                                                Sales Team used for imported order.
+                                            </div>
+                                            <div class="text-muted">
+                                                <b>
+                                                    <field name="team_id" required="1"/>
+                                                </b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-md-6 o_setting_box" name="salesperson_user_id">
+                                        <div class="o_setting_left_pane"/>
+                                        <div class="o_setting_right_pane">
+                                            <label string="Salesperson" for="salesperson_user_id"/>
+                                            <div class="text-muted">
+                                                Selected sales person will be used to process order. Make sure to set user with enough access rights.
+                                            </div>
+                                            <div class="text-muted">
+                                                <b>
+                                                    <field name="salesperson_user_id" domain="['|', ('active', '=', True), ('active', '=', False), ('share', '=', False)]"
+                                                           options='{"no_create": True}'/>
+                                                </b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-md-6 o_setting_box" name="import_order_after_date">
+                                        <div class="o_setting_left_pane"/>
+                                        <div class="o_setting_right_pane">
+                                            <label string="Import Order After" for="import_order_after_date"/>
+                                            <div class="text-muted">
+                                                Import orders that are created after the specified date. Any orders created prior to the given date will be skipped.
+                                            </div>
+                                            <div class="text-muted">
+                                                <b>
+                                                    <field name="import_order_after_date"/>
+                                                </b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-md-6 o_setting_box" name="tax_system">
+                                        <div class="o_setting_left_pane"/>
+                                        <div class="o_setting_right_pane">
+                                            <label string="Tax System" for="tax_system"/>
+                                            <div class="text-muted">
+                                                Default Tax System
+                                            </div>
+                                            <div class="text-muted">
+                                                <b>
+                                                    <field name="tax_system" required="1"/>
+                                                </b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-md-6 o_setting_box" name="tax_account_id" invisible="tax_system == 'default'">
+                                        <div class="o_setting_left_pane"/>
+                                        <div class="o_setting_right_pane">
+                                            <label string="Tax Account" for="tax_account_id"/>
+                                            <div class="text-muted">
+                                                Account that will be set while creating tax.
+                                            </div>
+                                            <div class="text-muted">
+                                                <b>
+                                                    <field name="tax_account_id" options="{'no_create' : True}" required="tax_system != 'default'"
+                                                           domain="[('company_ids', 'parent_of', company_id), ('account_type', 'not in', ('asset_receivable', 'liability_payable', 'off_balance'))]" />
+                                                </b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-md-6 o_setting_box" name="tax_refund_account_id" invisible="tax_system == 'default'">
+                                        <div class="o_setting_left_pane"/>
+                                        <div class="o_setting_right_pane">
+                                            <label string="Tax Account on Credit Notes" for="tax_refund_account_id"/>
+                                            <div class="text-muted">
+                                                Account that will be set while creating tax.
+                                            </div>
+                                            <div class="text-muted">
+                                                <b>
+                                                    <field name="tax_refund_account_id" options="{'no_create' : True}" required="tax_system != 'default'"
+                                                           domain="[('company_ids', 'parent_of', company_id), ('account_type', 'not in', ('asset_receivable', 'liability_payable', 'off_balance'))]" />
+                                                </b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-md-6 o_setting_box" name="tax_rounding" invisible="tax_system == 'default'">
+                                        <div class="o_setting_left_pane"/>
+                                        <div class="o_setting_right_pane">
+                                            <label string="Tax Rounding" for="tax_rounding"/>
+                                            <div class="text-muted">
+                                                While searching/creating tax rounding will be applied according to configuration. If set zero means no rounding.
+                                            </div>
+                                            <div class="text-muted">
+                                                <b>
+                                                    <field name="tax_rounding"/>
+                                                </b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-md-6 o_setting_box" name="analytic_distribution" groups="analytic.group_analytic_accounting">
+                                        <div class="o_setting_left_pane"/>
+                                        <div class="o_setting_right_pane">
+                                            <label string="Analytic Account" for="analytic_distribution"/>
+                                            <div class="text-muted">
+                                                The configured analytic account for this instance will be assigned to all sale order lines created by the connector. This means that the Analytic Default
+                                                Rule set up in Odoo will not be applied to Marketplace orders.
+                                            </div>
+                                            <group class="text-muted">
+                                                <field name="analytic_distribution" widget="analytic_distribution" groups="analytic.group_analytic_accounting" nolabel="1"/>
+                                            </group>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-md-6 o_setting_box" name="is_create_single_invoice" groups="base.group_no_one">
+                                        <div class="o_setting_left_pane">
+                                            <b>
+                                                <field name="is_create_single_invoice"/>
+                                            </b>
+                                        </div>
+                                        <div class="o_setting_right_pane">
+                                            <label string="Create Single Invoice?" for="is_create_single_invoice"/>
+                                            <div class="text-muted">
+                                                Create invoice only when all products are ready to be invoiced.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </page>
+                            <page string="Customer" name="customer_config">
+                                <div class="row mt16 o_settings_container">
+                                    <div class="col-xs-12 col-md-6 o_setting_box" name="account_receivable_id">
+                                        <div class="o_setting_right_pane">
+                                            <label string="Receivable Account" for="account_receivable_id"/>
+                                            <div class="text-muted">
+                                                While creating Customer set this field in Account Receivable instead of default.
+                                            </div>
+                                            <div class="text-muted">
+                                                <b>
+                                                    <field name="account_receivable_id" options="{'no_create' : True}"/>
+                                                </b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </page>
+                            <page string="Workflow" name="workflow_config">
+                            </page>
+                            <page string="Automatic Jobs" name="cron_config" groups="base.group_system">
+                                <p class="alert alert-warning" style="border-radius: 1em;" role="alert">
+                                    <h3>Note:</h3>
+                                    <ul>
+                                        <li>
+                                            We only update the price of <strong>variant types price rules</strong> in the pricelist when performing the <strong> Update/Export Product's Price in
+                                            marketplace </strong> Schedule action. System will no
+                                            longer update the product prices in the marketplace if the price is set to zero.
+                                        </li>
+                                    </ul>
+                                </p>
+                                <button type="object" class="float-end btn btn-primary" name="create_update_schedule_actions" icon="fa-cogs" string="Refresh" groups="base.group_no_one"/>
+                                <br/>
+                                <field name="cron_ids" context="{'active_test': False}">
+                                    <list editable="bottom" create="false" delete="false">
+                                        <field name="name" required="1"/>
+                                        <field name="interval_number" required="1"/>
+                                        <field name="interval_type" required="1"/>
+                                        <field name="nextcall" required="1"/>
+                                        <field name="user_id" required="1" options='{"no_create": True}'/>
+                                        <field name="active" widget="boolean_toggle"/>
+                                        <button name="method_direct_trigger" type="object" title="Run Manually" class="btn btn-link" string="Run Manually" icon="fa-play-circle"/>
+                                    </list>
+                                </field>
+                            </page>
+                            <page string="Notification &amp; Alerts" name="notification_config">
+                                <group string="Activity Configuration">
+                                    <p colspan="2" class="alert alert-warning" style="border-radius: 1em;" role="alert">
+                                        <h3>Help</h3>
+                                        <ul>
+                                            <li>
+                                                When a queue job line process will fail, it will create activity based on the below configuration.
+                                            </li>
+                                        </ul>
+                                    </p>
+                                    <group>
+                                        <field name="mk_activity_type_id" options="{'no_create': True, 'no_open': True}"/>
+                                    </group>
+                                    <group>
+                                        <label for="activity_date_deadline_range"/>
+                                        <div class="o_row">
+                                            <field name="activity_date_deadline_range" required="mk_activity_type_id"/>
+                                            <field name="activity_date_deadline_range_type" required="mk_activity_type_id"/>
+                                        </div>
+                                        <field name="activity_user_ids" widget="many2many_tags" required="mk_activity_type_id" options='{"no_create": True}'/>
+                                    </group>
+                                </group>
+                                <separator string="Smart Notification Configuration"/>
+                                <field name="notification_ids">
+                                    <list editable="bottom">
+                                        <field name="user_id" required="1" options='{"no_create": True}'/>
+                                        <field name="type" required="1"/>
+                                        <field name="is_sticky" widget="boolean_toggle"/>
+                                        <field name="is_order_create" widget="boolean_toggle"/>
+                                        <field name="is_product_import" widget="boolean_toggle"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <record id="marketplace_dashboard_kanban" model="ir.ui.view">
+            <field name="name">mk.instance.kanban</field>
+            <field name="model">mk.instance</field>
+            <field name="arch" type="xml">
+                <kanban highlight_color="color" group_create="0" create="0" class="o_marketplace_kanban">
+                    <field name="id"/>
+                    <field name="name"/>
+                    <field name="marketplace"/>
+                    <field name="color"/>
+                    <field name="kanban_badge_color"/>
+                    <field name="image"/>
+                    <field name="is_sample_data"/>
+
+                    <templates>
+                        <t t-name="card" style="border-radius: 10px;">
+                            <t t-call="InstanceTop"/>
+                            <t t-call="KanbanButtons"/>
+                            <t t-call="CardContent"/>
+                            <t t-call="MarketplaceBodyGraph"/>
+                        </t>
+
+                        <t t-name="InstanceTop">
+                            <div class="d-flex align-items-center">
+                                <field name="image_small" widget="image" class="oe_avatar" options='{"preview_image": "image", "size": [35, 40]}'/>
+                                <a type="object" name="action_marketplace_open_instance_view" style="margin-left: 8px;">
+                                    <field name="name" class="fw-bold fs-4"/>
+                                </a>
+                            </div>
+                            <br/>
+                        </t>
+
+                        <t t-name="KanbanButtons">
+                            <div class="row mt-3">
+                                <div class="col-8">
+                                    <div class="col mb-3 mb-sm-0 o_kanban_primary_left">
+                                        <div name="bank_cash_buttons" class="d-flex gap-1">
+                                            <button type="object" name="get_marketplace_operation_wizard" class="btn btn-primary o_border_round m-1">
+                                                <span>
+                                                    <i class="fa fa-exchange me-1"/>
+                                                    Operations
+                                                </span>
+                                            </button>
+                                            <button type="object" name="redirect_to_general_dashboard" class="btn btn-primary o_border_round m-1"
+                                                    groups="base_marketplace.group_base_marketplace_manager">
+                                                <span>
+                                                    <i class="fa fa-area-chart me-1"/>
+                                                    Dashboard
+                                                </span>
+                                            </button>
+                                            <button type="object" name="redirect_to_sales_report" class="btn btn-primary o_border_round m-1" groups="base_marketplace.group_base_marketplace_manager">
+                                                <span>
+                                                    <i class="fa fa-line-chart me-1"/>
+                                                    Report
+                                                </span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-4 mt8 text-end">
+                                    <a name="%(base_marketplace.action_marketplace_log_kanban)d"
+                                       type="action">
+                                        <i class="fa fa-history fa-lg"/>
+                                        Logs
+                                    </a>
+                                </div>
+                            </div>
+                            <br/>
+                        </t>
+
+                        <t t-name="CardContent">
+                            <div name="card_content" class="row mt-auto">
+                                <a name="%(base_marketplace.action_marketplace_customer_kanban)d" type="action" class="d-flex flex-column align-items-center col-2">
+                                    <span class="fa fa-2x fa-users" title="Customers"/>
+                                    <span class="text-muted text-truncate mw-100" title="Customers">Customers</span>
+                                </a>
+                                <a name="%(base_marketplace.action_marketplace_listing_kanban)d" type="action" class="d-flex flex-column align-items-center col-2">
+                                    <span class="fa fa-2x fa-product-hunt" title="Listings"/>
+                                    <span class="text-muted text-truncate mw-100" title="Listings">Listings</span>
+                                </a>
+                                <a name="%(base_marketplace.action_marketplace_orders_kanban)d" type="action" class="d-flex flex-column align-items-center col-2">
+                                    <span class="fa fa-2x fa-usd" title="Orders"/>
+                                    <span class="text-muted text-truncate mw-100" title="Orders">Orders</span>
+                                </a>
+                                <a name="%(base_marketplace.action_marketplace_invoice_kanban)d" type="action" class="d-flex flex-column align-items-center col-2">
+                                    <span class="fa fa-2x fa-pencil-square-o" title="Invoices"/>
+                                    <span class="text-muted text-truncate mw-100" title="Invoices">Invoices</span>
+                                </a>
+                                <a name="%(base_marketplace.action_marketplace_shipment_kanban)d" type="action" class="d-flex flex-column align-items-center col-2">
+                                    <span class="fa fa-2x fa-truck" title="Shipments"/>
+                                    <span class="text-muted text-truncate mw-100" title="Shipments">Shipments</span>
+                                </a>
+                                <a name="%(base_marketplace.action_marketplace_queue_job_kanban)d" type="action" class="d-flex flex-column align-items-center col-2">
+                                    <span class="fa fa-2x fa-tasks" title="Queue"/>
+                                    <span class="text-muted text-truncate mw-100" title="Queue">Queue</span>
+                                </a>
+                            </div>
+                        </t>
+
+                        <t t-name="MarketplaceBodyGraph">
+                            <div t-if="record.is_sample_data.raw_value">
+                                <span class="badge badge-warning text-uppercase o_sample_data_label">Sample data</span>
+                            </div>
+                            <field name="kanban_dashboard_graph" graph_type="bar" widget="dashboard_graph"/>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record id="marketplace_instance_tree_view" model="ir.ui.view">
+            <field name="name">mk.instance.list.view</field>
+            <field name="model">mk.instance</field>
+            <field name="arch" type="xml">
+                <list string="Marketplace Instance" decoration-success="state == 'confirmed'">
+                    <field name="sequence" widget='handle'/>
+                    <field name="name"/>
+                    <field name="marketplace"/>
+                    <field name="company_id"/>
+                    <field name="state"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="action_marketplace_instance" model="ir.actions.act_window">
+            <field name="name">Instance</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">mk.instance</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p>
+                </p>
+            </field>
+        </record>
+
+        <record id="action_marketplace_overview" model="ir.actions.act_window">
+            <field name="name">Overview</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">mk.instance</field>
+            <field name="view_mode">kanban</field>
+            <field name="domain">[('state', '=', 'confirmed')]</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_neutral_face">
+                    No Marketplace Instance Found!
+                </p>
+                <p>
+                    <a type="action" name="%(base_marketplace.action_marketplace_instance)d" class="text-break">Click here</a>
+                    to create new Instance.
+                </p>
+            </field>
+        </record>
+
+        <!--Action for General Dashboard-->
+        <record id="backend_mk_general_dashboard" model="ir.actions.client">
+            <field name="name">Marketplace Dashboard</field>
+            <field name="tag">backend_mk_general_dashboard</field>
+            <field name="target">current</field>
+        </record>
+
+        <record id="ir_actions_server_mk_general_dashboard" model="ir.actions.server">
+            <field name="name">Marketplace: Dashboard</field>
+            <field name="model_id" ref="base_marketplace.model_mk_instance"/>
+            <field name="state">code</field>
+            <field name="code">action = model.redirect_to_general_dashboard()</field>
+        </record>
+    </data>
+</odoo>

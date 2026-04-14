@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates id="template" xml:space="preserve">
+    <t t-name="base_marketplace.MarketplaceDashboardMain">
+         <div>
+            <div id="filter_date" class="dashboard_date_filter float-end">
+                <t t-call="base_marketplace.BaseMarketplaceFilterDate"/>
+            </div>
+        </div>
+        <div class="container-fluid h-100 overflow-auto m-2 m-md-3 p-0">
+            <div class="o_ts_dashboard_content">
+                <t t-call="base_marketplace.dashboard_body"/>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="base_marketplace.top_product_table">
+        <!-- Top Performing table starts -->
+        <div class="col-lg-4 col-md-12">
+           <div class="card">
+                <div class="card-header">
+                    <h5>Top 10 Performing Products</h5>
+                </div>
+                <div class="table-border-style">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr class="table-active">
+                                    <th>#</th>
+                                    <th>Product Name</th>
+                                    <th style="text-align:right;">Qty Sold</th>
+                                    <th style="text-align:right;">Profit</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="product_list" t-value="props.dashboardData.dashboards.best_sellers"/>
+                                <t t-set="ctr" t-value="1"/>
+                                <t t-foreach="product_list" t-as="product" t-key="product.id">
+                                    <tr>
+                                        <td scope="row"><t t-esc="ctr"/></td>
+                                        <td>
+                                            <a t-attf-href="/web#id=#{product.id}&amp;model=product.template&amp;view_type=form">
+                                                <t t-esc="product.name"/>
+                                            </a>
+                                        </td>
+                                        <td style="text-align:right;"><t t-esc="product.qty"/></td>
+                                        <td style="text-align:right;"><t t-out="getFormattedPrice(product.sales)"/></td>
+                                    </tr>
+                                    <t t-set="ctr" t-value="ctr + 1"/>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Top Performing table ends -->
+    </t>
+
+    <t t-name="base_marketplace.top_customer_table">
+        <div class="col-lg-4 col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Top 10 Customers</h5>
+                </div>
+                <div class="table-border-style">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr class="table-active">
+                                    <th>#</th>
+                                    <th>Customer Name</th>
+                                    <th style="text-align:right;">Orders</th>
+                                    <th style="text-align:right;">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="customer_list" t-value="props.dashboardData.dashboards.top_customers"/>
+                                <t t-set="ctr" t-value="1"/>
+                                <t t-foreach="customer_list" t-as="customer" t-key="customer.id">
+                                    <tr>
+                                        <td scope="row"><t t-esc="ctr"/></td>
+                                        <td>
+                                            <a t-attf-href="/web#id=#{customer.id}&amp;model=res.partner&amp;view_type=form">
+                                                <t t-esc="customer.name"/>
+                                            </a>
+                                        </td>
+                                        <td style="text-align:right;"><t t-esc="customer.count"/></td>
+                                        <td style="text-align:right;"><t t-out="getFormattedPrice(customer.sales)"/></td>
+                                    </tr>
+                                    <t t-set="ctr" t-value="ctr + 1"/>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="base_marketplace.MarketplaceDashboardCharts">
+        <t t-call="base_marketplace.MarketplaceDashboardTiles"/>
+        <div class="row" id="total_selling">
+            <!-- Total Selling and Top Country start -->
+            <div class="col-lg-8 col-md-12">
+                <div class="card">
+                    <div class="card-block" style="height:415px;display: block;">
+                        <div id="total_selling_chart" t-ref="total_selling_chart" style="margin: 0px auto !important;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Top 5 Performing Countries</h5>
+                    </div>
+                    <div class="card-block" style="height:345px;">
+                        <div class="justify-content-center m-t-15">
+                            <div id="top_countries_pie_chart" t-ref="top_countries_pie_chart"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Total Selling and Top Country end -->
+
+        <!-- Instance wise selling start -->
+        <t t-if="props.dashboardData.dashboards.is_general_dashboard">
+            <t t-call="base_marketplace.instance_wise_general_selling"/>
+        </t>
+        <!-- Instance wise selling end -->
+
+        <!-- Top product and Top Category start -->
+        <div class="row" id="product_categ_chart">
+            <t t-call="base_marketplace.top_product_table"/>
+            <t t-call="base_marketplace.top_customer_table"/>
+            <t t-call="base_marketplace.top_category_chart"/>
+        </div>
+        <!-- Top product and Top Category end -->
+    </t>
+
+    <t t-name="base_marketplace.MarketplaceDashboardTiles">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card bg-c-blue order-card">
+                    <div class="card-body">
+                        <div class="row align-items-center m-b-0">
+                            <div class="col">
+                                <h6 class="m-b-20 text-white">Total Orders</h6>
+                                <t t-set="kpi_total_orders" t-value="props.dashboardData.dashboards.summary.kpi_total_orders"/>
+                                <h4 class="text-white">
+                                    <t t-esc="props.dashboardData.dashboards.summary.total_orders"/>
+                                    <span t-if="kpi_total_orders" style="padding-left: 5px;">
+                                        <span t-if="kpi_total_orders &gt; 0.0" class="positive_marketplace_kpi_margin">▲ <t t-esc="kpi_total_orders"/> %</span>
+                                        <span t-elif="kpi_total_orders &lt; 0.0" class="negative_marketplace_kpi_margin">▼ <t t-esc="kpi_total_orders"/> %</span>
+                                    </span>
+                                </h4>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fa fa-shopping-cart text-white"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-c-green order-card">
+                    <div class="card-body">
+                        <div class="row align-items-center m-b-0">
+                            <div class="col">
+                                <h6 class="m-b-20 text-white">Revenue</h6>
+                                <t t-set="kpi_total_sales" t-value="props.dashboardData.dashboards.summary.kpi_total_sales"/>
+                                <h4 class="text-white">
+                                    <t t-out="getFormattedPrice(props.dashboardData.dashboards.summary.total_sales)"/>
+                                    <span t-if="kpi_total_sales" style="padding-left: 5px;">
+                                        <span t-if="kpi_total_sales &gt; 0.0" class="positive_marketplace_kpi_margin">▲ <t t-esc="kpi_total_sales"/> %</span>
+                                        <span t-elif="kpi_total_sales &lt; 0.0" class="negative_marketplace_kpi_margin">▼ <t t-esc="kpi_total_sales"/> %</span>
+                                    </span>
+                                </h4>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fa fa-money text-white"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-c-yellow order-card">
+                    <div class="card-body">
+                        <div class="row align-items-center m-b-0">
+                            <div class="col">
+                                <h6 class="m-b-20 text-white">Pending Shipments</h6>
+                                <t t-set="kpi_pending_shipments" t-value="props.dashboardData.dashboards.summary.kpi_pending_shipments"/>
+                                <h4 class="text-white"><t t-esc="props.dashboardData.dashboards.summary.pending_shipments"/>
+                                    <span t-if="kpi_pending_shipments" style="padding-left: 5px;">
+                                        <span t-if="kpi_pending_shipments &gt; 0.0" class="positive_marketplace_kpi_margin">▲ <t t-esc="kpi_pending_shipments"/> %</span>
+                                        <span t-elif="kpi_pending_shipments &lt; 0.0" class="negative_marketplace_kpi_margin">▼ <t t-esc="kpi_pending_shipments"/> %</span>
+                                    </span>
+                                </h4>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fa fa-truck text-white"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-c-pink order-card">
+                    <div class="card-body">
+                        <div class="row align-items-center m-b-0">
+                            <div class="col">
+                                <h6 class="m-b-20 text-white">Average Order Value</h6>
+                                <t t-set="kpi_avg_order_value" t-value="props.dashboardData.dashboards.summary.kpi_avg_order_value"/>
+                                <h4 class="text-white"><t t-out="getFormattedPrice(props.dashboardData.dashboards.summary.avg_order_value)"/>
+                                    <span t-if="kpi_avg_order_value" style="padding-left: 5px;">
+                                        <span t-if="kpi_avg_order_value &gt; 0.0" class="positive_marketplace_kpi_margin">▲ <t t-esc="kpi_avg_order_value"/> %</span>
+                                        <span t-elif="kpi_avg_order_value &lt; 0.0" class="negative_marketplace_kpi_margin">▼ <t t-esc="kpi_avg_order_value"/> %</span>
+                                    </span>
+                                </h4>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fa fa-calculator text-white"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="base_marketplace.top_category_chart">
+        <div class="col-lg-4 col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Top 5 Performing Categories</h5>
+                </div>
+                <div class="card-block" style="height:345px;">
+                    <div class="row justify-content-center m-t-15">
+                        <div id="category_pie_chart" t-ref="category_pie_chart"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="base_marketplace.instance_wise_general_selling">
+        <div class="row">
+            <div class="col-lg-8 col-md-12">
+                <div class="card">
+                    <div class="card-block" style="height:415px;display: block;">
+                        <div id="bar_chart" t-ref="bar_chart" style="margin: 0px auto !important;"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Marketplace wise Revenue</h5>
+                    </div>
+                    <div class="card-block" style="height:345px;">
+                        <div class="row justify-content-center m-t-15">
+                            <div id="mk_revenue_pieChart" t-ref="mk_revenue_pieChart" style="margin: 0px auto !important;"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+     <t t-name="base_marketplace.date_filter">
+        <a type="button" class="dropdown-toggle" data-bs-toggle="dropdown">
+            <span class="fa fa-calendar" title="Dates" role="img" aria-label="Dates"/>
+            From:
+            <span class="js_format_date">
+                <t t-esc="date_from"/>
+            </span>
+            <span class="o_reports_date_to">to:
+                <span class="js_format_date">
+                    <t t-esc="date_to"/>
+                </span>
+            </span>
+        </a>
+        <div class="dropdown-menu o_filters_menu" role="menu">
+            <a role="menuitem" class="dropdown-item js_mk_dashboard_date_filter o_predefined_range" t-on-click="handleDateSelection" title="This Month" data-filter="this_month">This Month</a>
+            <a role="menuitem" class="dropdown-item js_mk_dashboard_date_filter o_predefined_range" t-on-click="handleDateSelection" title="This Quarter" data-filter="this_quarter">This Quarter</a>
+            <a role="menuitem" class="dropdown-item js_mk_dashboard_date_filter o_predefined_range" t-on-click="handleDateSelection" title="This Financial Year" data-filter="this_year">This Financial Year</a>
+            <div role="separator" class="dropdown-divider"></div>
+            <a role="menuitem" class="dropdown-item js_mk_dashboard_date_filter o_predefined_range" title="Last Month" data-filter="last_month">Last Month</a>
+            <a role="menuitem" class="dropdown-item js_mk_dashboard_date_filter o_predefined_range" title="Last Quarter" data-filter="last_quarter">Last Quarter</a>
+            <a role="menuitem" class="dropdown-item js_mk_dashboard_date_filter o_predefined_range" title="Last Financial Year" data-filter="last_year">Last Financial Year</a>
+            <div role="separator" class="dropdown-divider"></div>
+            <a role="menuitem" class="dropdown-item js_foldable_trigger o_closed_menu" data-filter='custom_filter_date'>Custom
+            </a>
+            <div class="o_foldable_menu o_closed_menu o_mk_dashboard_dashboard_search" data-filter='custom_filter_date'>
+                <label class="form-label" for="date_from">Start Date :</label>
+                <div class="mb-3">
+                    <div class='o_datepicker js_mk_dashboard_datetimepicker'
+                         t-att-data-default-value="date_from">
+                        <input type='text' class="o_datepicker_input" name="date_from"/>
+                        <span class="o_datepicker_button"/>
+                    </div>
+                </div>
+                <label class="form-label" for="date_to">End Date :</label>
+                <div class="mb-3">
+                    <div class='o_datepicker js_mk_dashboard_datetimepicker'
+                         t-att-data-default-value="date_to">
+                        <input type='text' class="o_datepicker_input" name="date_to"/>
+                        <span class="o_datepicker_button"/>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-primary js_mk_dashboard_date_filter"
+                        data-filter="custom">Apply
+                </button>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="base_marketplace.dashboard_body">
+        <MarketplaceDashboardCharts dashboardData="dashboardData"/>
+    </t>
+
+</templates>
