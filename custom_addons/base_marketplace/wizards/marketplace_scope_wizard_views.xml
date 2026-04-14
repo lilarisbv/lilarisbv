@@ -1,0 +1,37 @@
+<odoo>
+    <record id="view_marketplace_scope_wizard_form" model="ir.ui.view">
+        <field name="name">marketplace.scope.wizard.form</field>
+        <field name="model">marketplace.scope.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Confirm Permissions" class="o_marketplace_scope_modal o_form_dialog">
+                <sheet>
+                    <div>
+                        <p invisible="not permissions_html_missing">We detected missing permissions required for full functionality. Please update these in your <span><field name="mk_instance_name" readonly="True"/></span> App settings.</p>
+                        <div class="scope-container">
+                            <div class="scope-column" invisible="not permissions_html_missing">
+                                <h6>Missing Scopes</h6>
+                                <field name="permissions_html_missing" widget="html" nolabel="1" options="{'sanitize': false}"/>
+                            </div>
+                            <div class="scope-column">
+                                <h6>Granted Scopes</h6>
+                                <field name="permissions_html_granted" widget="html" nolabel="1" options="{'sanitize': false}"/>
+                            </div>
+                        </div>
+                    </div>
+                </sheet>
+                <footer>
+                    <button name="action_ignore_and_confirm" string="Ignore &amp; Confirm" type="object" invisible="not permissions_html_missing" class="oe_highlight"/>
+                    <button name="action_ignore_and_confirm" string="Confirm" type="object"  invisible="permissions_html_missing" class="oe_highlight"/>
+                    <button name="action_check_again" string="Check Again" type="object" class="oe_highlight" invisible="not permissions_html_missing"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_marketplace_scope_wizard" model="ir.actions.act_window">
+        <field name="name">Confirm Permissions</field>
+        <field name="res_model">marketplace.scope.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>
