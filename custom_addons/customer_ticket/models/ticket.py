@@ -4,7 +4,7 @@ from odoo import models, fields, api
 from odoo.exceptions import ValidationError
 
 _logger = logging.getLogger(__name__)
-alias = "lezza"
+alias = "lilaris"
 
 class CustomerTicket(models.Model):
     _name = 'customer.ticket'
