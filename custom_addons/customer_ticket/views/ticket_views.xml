@@ -51,12 +51,14 @@
                         </group>
                         <group>
                             <field name="central_task_id" groups="base.group_no_one"/>
+                            <field name="contact_person_name" string="Your Contact Person:" invisible="not contact_person_name or stage in ('draft', 'cancel','done')"/>
+                            <field name="contact_person_email" string="E-mail:" invisible="not contact_person_email or stage in ('draft', 'cancel','done')"/>
                         </group>
                     </group>
                     <notebook>
                         <page string="Description and Documents" name="description">
                             <field name="description" readonly="id != False"/>
-                            <field name="attachment_file" filename="attachment_filename" widget="binary" string="Ekran Görüntüsü / Dosya"/>
+                            <field name="attachment_file" filename="attachment_filename" widget="binary" string="Ekran Görüntüsü / Dosya" readonly="id != False"/>
                         </page>
                     </notebook>
                 </sheet>
@@ -80,6 +82,7 @@
                 <filter string="Approved" name="filter_approved" domain="[('stage', '=', 'done')]"/>
                 <filter string="Canceled" name="filter_canceled" domain="[('stage', '=', 'cancel')]"/>
                 <separator/>
+                <filter string="Queued" name="filter_queue" domain="[('stage', '=', 'queue')]"/>
                 <filter string="In Process" name="filter_process" domain="[('stage', '=', 'process')]"/>
                 <filter string="On Hold" name="filter_hold" domain="[('stage', '=', 'on_hold')]"/>
                 <separator/>
@@ -105,7 +108,7 @@
                             icon="fa-refresh"
                             display="always"/>
                 </header>
-
+                <field name="contact_person_calendar_link" column_invisible="1"/>
                 <field name="is_urgent" widget="boolean_favorite" nolabel="1"/>
                 <field name="ticket_number"/>
                 <field name="name"/>
@@ -113,9 +116,15 @@
                        decoration-muted="stage == 'draft'"
                        decoration-primary="stage == 'process'"
                        decoration-warning="stage == 'on_hold'"
-                       decoration-info="stage == 'review'"
+                       decoration-info="stage in ('queue','review')"
                        decoration-success="stage in ('delivery', 'done')"
                        decoration-danger="stage == 'cancel'"/>
+                <button name="action_book_appointment"
+                        string="Book Appointment"
+                        type="object"
+                        icon="fa-calendar"
+                        class="btn-link text-primary"
+                        invisible="not contact_person_calendar_link or stage in ('draft', 'cancel','done')"/>
                 <field name="confirmation_status" readonly="1"/>
                 <field name="write_date"/>
                 <field name="create_date" optional="hide"/>
@@ -133,6 +142,9 @@
         <field name="search_view_id" ref="view_customer_ticket_search"/>
     </record>
 
-    <menuitem id="menu_customer_ticket_root" name="Nametech Support" sequence="100"/>
+    <menuitem id="menu_customer_ticket_root"
+              name="Nametech Support"
+              sequence="100"
+              web_icon="customer_ticket,static/description/icon.png"/>
     <menuitem id="menu_customer_ticket" name="My Tickets" parent="menu_customer_ticket_root" action="action_customer_ticket" sequence="10"/>
 </odoo>
