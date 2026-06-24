@@ -4,7 +4,7 @@ from odoo import models, fields, api
 from odoo.exceptions import ValidationError
 
 _logger = logging.getLogger(__name__)
-alias = "lilaris"
+alias = "lezza"
 
 class CustomerTicket(models.Model):
     _name = 'customer.ticket'
@@ -21,6 +21,7 @@ class CustomerTicket(models.Model):
     # 'stage' alanı güncellendi: 'change' eklendi, 'cancel' iptal anlamını taşıyacak
     stage = fields.Selection([
         ('draft', 'New'),
+        ('queue','Queued'),
         ('process', 'In Progress'),
         ('on_hold', 'On Hold'),
         ('review', 'Under Review'),
@@ -33,9 +34,13 @@ class CustomerTicket(models.Model):
     central_task_id = fields.Integer(string='Central Task ID', readonly=True)
     ticket_number = fields.Char(string='Ticket No', readonly=True, copy=False, default='New')
 
-    confirmation_status = fields.Char(string='Support Note', readonly=True)
+    confirmation_status = fields.Char(string='Support Note', readonly=True, default='Your request has been received.')
     attachment_file = fields.Binary(string='Attachment / Screenshot', attachment=True)
     attachment_filename = fields.Char(string='Filename')
+
+    contact_person_name = fields.Char(string='Contact Person', readonly=True)
+    contact_person_email = fields.Char(string='Contact Email', readonly=True)
+    contact_person_calendar_link = fields.Char(string='Calendar Link', readonly=True)
 
     @api.model
     def create(self, vals_list):
@@ -65,6 +70,7 @@ class CustomerTicket(models.Model):
         central_url = self.env['ir.config_parameter'].sudo().get_param('central_odoo.url',
                                                                        'https://rubixb2.com/api/ticket/create')
         api_token = self.env['ir.config_parameter'].sudo().get_param('central_odoo.token', 'Ticket2026')
+
 
         headers = {
             'Content-Type': 'application/json',
@@ -153,7 +159,8 @@ class CustomerTicket(models.Model):
         headers = {'Content-Type': 'application/json', 'Authorization': f'Bearer {api_token}'}
 
         stage_name_mapping = {
-            'talep/to-do': 'draft',
+            'talep': 'draft',
+            'to-do': 'queue',
             'islemde': 'process',
             'beklemede': 'on_hold',
             'kontrol/mutaala': 'review',
@@ -175,6 +182,9 @@ class CustomerTicket(models.Model):
                         central_state = result.get('state')
                         is_active = result.get('active', True)
                         central_note = result.get('client_note', '')
+                        rep_name = result.get('rep_name', False)
+                        rep_email = result.get('rep_email', False)
+                        rep_calendar = result.get('rep_calendar_link', False)
 
                         target_stage = False
 
@@ -198,6 +208,15 @@ class CustomerTicket(models.Model):
                         if ticket.confirmation_status != central_note:
                             vals_to_write['confirmation_status'] = central_note
 
+                        if ticket.contact_person_name != rep_name:
+                            vals_to_write['contact_person_name'] = rep_name
+
+                        if ticket.contact_person_email != rep_email:
+                            vals_to_write['contact_person_email'] = rep_email
+
+                        if ticket.contact_person_calendar_link != rep_calendar:
+                            vals_to_write['contact_person_calendar_link'] = rep_calendar
+
                         if vals_to_write:
                             ticket.write(vals_to_write)
 
@@ -207,4 +226,16 @@ class CustomerTicket(models.Model):
         return {
             'type': 'ir.actions.client',
             'tag': 'reload'
+        }
+
+    def action_book_appointment(self):
+        self.ensure_one()
+
+        if not self.contact_person_calendar_link:
+            raise ValidationError("No appointment link could be found for your company representative!")
+
+        return {
+            'type': 'ir.actions.act_url',
+            'url': self.contact_person_calendar_link,
+            'target': 'new',
         }
