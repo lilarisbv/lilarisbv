@@ -2,7 +2,7 @@
     <record id="seq_customer_ticket" model="ir.sequence">
         <field name="name">Customer Ticket Sequence</field>
         <field name="code">customer.ticket</field>
-        <field name="prefix">TCK-</field>
+        <field name="prefix">T-</field>
         <field name="padding">5</field>
         <field name="company_id" eval="False"/>
     </record>
@@ -17,7 +17,7 @@
                         <button name="action_approve"
                                 type="object"
                                 string="Approve"
-                                class="btn-primary"
+                                class="btn-success"
                                 invisible="stage != 'delivery'"/>
 
                         <button name="action_open_change_wizard"
@@ -30,7 +30,7 @@
                                 type="object"
                                 string="Cancel"
                                 class="btn-danger"
-                                invisible="stage in ['done', 'cancel']"/>
+                                invisible="stage in ['done', 'cancel','delivery','process']"/>
                     </div>
                     <field name="stage" widget="statusbar" options="{'clickable': '1'}"/>
                 </header>
@@ -48,9 +48,16 @@
                     <group>
                         <group>
                             <field name="is_urgent" readonly="id != False"/>
+                            <field name="central_task_id" groups="base.group_no_one"/>
                         </group>
                         <group>
-                            <field name="central_task_id" groups="base.group_no_one"/>
+                            <div colspan="2" class="mb-3" invisible="not contact_person_calendar_link or stage in ('draft', 'cancel','done')">
+                                <button name="action_book_appointment"
+                                        string="Book Appointment"
+                                        type="object"
+                                        icon="fa-calendar"
+                                        class="btn btn-outline-primary w-50 text-center py-2 px-3 fw-bold"/>
+                            </div>
                             <field name="contact_person_name" string="Your Contact Person:" invisible="not contact_person_name or stage in ('draft', 'cancel','done')"/>
                             <field name="contact_person_email" string="E-mail:" invisible="not contact_person_email or stage in ('draft', 'cancel','done')"/>
                         </group>
@@ -83,8 +90,9 @@
                 <filter string="Canceled" name="filter_canceled" domain="[('stage', '=', 'cancel')]"/>
                 <separator/>
                 <filter string="Queued" name="filter_queue" domain="[('stage', '=', 'queue')]"/>
-                <filter string="In Process" name="filter_process" domain="[('stage', '=', 'process')]"/>
+                <filter string="In Progress" name="filter_process" domain="[('stage', '=', 'process')]"/>
                 <filter string="On Hold" name="filter_hold" domain="[('stage', '=', 'on_hold')]"/>
+                <filter string="Delivered" name="filter_delivery" domain="[('stage', '=', 'delivery')]"/>
                 <separator/>
                 <filter string="Archived" name="archived" domain="[('active', '=', False)]"/>
 
@@ -107,6 +115,12 @@
                             class="btn-primary"
                             icon="fa-refresh"
                             display="always"/>
+                    <button name="action_open_help_page"
+                            string="Help"
+                            type="object"
+                            icon="fa-question-circle"
+                            class="btn-secondary"
+                            display="always"/>
                 </header>
                 <field name="contact_person_calendar_link" column_invisible="1"/>
                 <field name="is_urgent" widget="boolean_favorite" nolabel="1"/>
@@ -127,6 +141,7 @@
                         invisible="not contact_person_calendar_link or stage in ('draft', 'cancel','done')"/>
                 <field name="confirmation_status" readonly="1"/>
                 <field name="write_date"/>
+                <field name="create_uid" optional="hide"/>
                 <field name="create_date" optional="hide"/>
             </list>
         </field>

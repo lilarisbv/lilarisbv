@@ -20,6 +20,8 @@
         'views/ticket_views.xml',
         'data/ir_cron.xml',
         'wizard/ticket_wizard_view.xml',
+        'views/email_templates.xml',
+        'views/help_views.xml',
     ],
     'installable': True,
     'application': True,
