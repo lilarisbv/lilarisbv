@@ -4,7 +4,7 @@ from odoo import models, fields, api
 from odoo.exceptions import ValidationError
 
 _logger = logging.getLogger(__name__)
-alias = "lezza"
+alias = "lilaris"
 
 class CustomerTicket(models.Model):
     _name = 'customer.ticket'
@@ -14,11 +14,9 @@ class CustomerTicket(models.Model):
     name = fields.Char(string='Subject', required=True, tracking=True)
     description = fields.Html(string='Description', required=True)
 
-    # 'urgency' alanı boolean olarak güncellendi
     is_urgent = fields.Boolean(string='Urgent', default=False, tracking=True)
     active = fields.Boolean(string='Active', default=True, tracking=True)
 
-    # 'stage' alanı güncellendi: 'change' eklendi, 'cancel' iptal anlamını taşıyacak
     stage = fields.Selection([
         ('draft', 'New'),
         ('queue','Queued'),
@@ -34,7 +32,7 @@ class CustomerTicket(models.Model):
     central_task_id = fields.Integer(string='Central Task ID', readonly=True)
     ticket_number = fields.Char(string='Ticket No', readonly=True, copy=False, default='New')
 
-    confirmation_status = fields.Char(string='Support Note', readonly=True, default='Your request has been received.')
+    confirmation_status = fields.Char(string='Support Note', readonly=True)
     attachment_file = fields.Binary(string='Attachment / Screenshot', attachment=True)
     attachment_filename = fields.Char(string='Filename')
 
@@ -49,8 +47,8 @@ class CustomerTicket(models.Model):
             ('create_uid', '=', self.env.user.id),
             ('create_date', '>=', today)
         ])
-        if daily_count + len(vals_list) > 100:
-            raise ValidationError("Security Limit: You cannot open more than 3 tickets per day.")
+        if daily_count + len(vals_list) > 10:
+            raise ValidationError("Security Limit: You cannot open more than 10 tickets per day.")
 
         # Eğer vals_list bir liste ise, her bir sözlük için döngüye gir
         if isinstance(vals_list, dict):
@@ -146,6 +144,21 @@ class CustomerTicket(models.Model):
             'context': {'default_ticket_id': self.id, 'default_action_type': 'cancel'}
         }
 
+    def _send_customer_stage_email_notification(self, new_stage):
+        """Aşama on_hold veya delivery olduğunda müşteriye mail fırlatan yardımcı fonksiyon"""
+        self.ensure_one()
+        template_ref = False
+
+        if new_stage == 'on_hold':
+            template_ref = 'customer_ticket.email_template_ticket_on_hold'
+        elif new_stage == 'delivery':
+            template_ref = 'customer_ticket.email_template_ticket_delivery'
+
+        if template_ref:
+            template = self.env.ref(template_ref, raise_if_not_found=False)
+            if template and self.create_uid.email:
+                template.send_mail(self.id, force_send=True)
+
     @api.model
     def cron_pull_stage_updates(self, *args, **kwargs):
         """Scheduled action logic to pull stage modifications from Central Odoo"""
@@ -202,8 +215,12 @@ class CustomerTicket(models.Model):
 
                         vals_to_write = {}
 
+                        trigger_email_stage = False
+
                         if target_stage and ticket.stage != target_stage:
                             vals_to_write['stage'] = target_stage
+                            if target_stage in ['on_hold', 'delivery']:
+                                trigger_email_stage = target_stage
 
                         if ticket.confirmation_status != central_note:
                             vals_to_write['confirmation_status'] = central_note
@@ -219,6 +236,9 @@ class CustomerTicket(models.Model):
 
                         if vals_to_write:
                             ticket.write(vals_to_write)
+
+                            if trigger_email_stage:
+                                ticket._send_customer_stage_email_notification(trigger_email_stage)
 
             except Exception as e:
                 _logger.error(f"Pull cron failed for ticket ID {ticket.id}: {str(e)}")
