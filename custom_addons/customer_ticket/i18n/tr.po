@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 19.0+e\n"
+"Project-Id-Version: Odoo Server 19.0-20260528\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-30 22:02+0000\n"
-"PO-Revision-Date: 2026-07-01 00:16+0200\n"
+"POT-Creation-Date: 2026-07-03 11:13+0000\n"
+"PO-Revision-Date: 2026-07-03 13:21+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: tr\n"
@@ -35,17 +35,15 @@ msgstr "<b>[Değişiklik Talebi]:</b> Bu talep için değişiklik talep edildi."
 #. module: customer_ticket
 #: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_help_form
 msgid ""
-"<b>[Delivered]:</b> Your request has been delivered. Please review the "
-"solution and confirm."
+"<b>[Delivered]:</b> Your request has been delivered. Please review the solution "
+"and confirm."
 msgstr ""
-"<b>[Çözüldü]:</b> Talebiniz çözüme ulaştı. Lütfen çözümü inceleyin ve "
-"onaylayın."
+"<b>[Çözüldü]:</b> Talebiniz çözüme ulaştı. Lütfen çözümü inceleyin ve onaylayın."
 
 #. module: customer_ticket
 #: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_help_form
 msgid ""
-"<b>[In Progress]:</b> Our development team has started working on your "
-"request."
+"<b>[In Progress]:</b> Our development team has started working on your request."
 msgstr ""
 "<b>[İşlemde]:</b> Geliştirme ekibimiz talebiniz üzerinde çalışmaya başladı."
 
@@ -70,8 +68,8 @@ msgstr "<b>[Sırada]:</b> Talebiniz incelendi ve planlandı."
 #. module: customer_ticket
 #: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_help_form
 msgid ""
-"<b>[Under Review]:</b> We are currently evaluating the feasibility/"
-"optimization of this request."
+"<b>[Under Review]:</b> We are currently evaluating the feasibility/optimization "
+"of this request."
 msgstr ""
 "<b>[İncelemede]:</b>Bu talebinizin uygulanabilirliğini/optimizasyonunu "
 "değerlendiriyoruz."
@@ -79,24 +77,23 @@ msgstr ""
 #. module: customer_ticket
 #: model:mail.template,body_html:customer_ticket.email_template_ticket_delivery
 msgid ""
-"<div style=\"font-family: Arial, sans-serif; font-size: 14px; color: "
-"#333333; max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; "
-"padding: 20px; border-radius: 7px;\">\n"
-"                <h2 style=\"color: #5cb85c; margin-top: 0;\">Solution "
-"Delivered!</h2>\n"
+"<div style=\"font-family: Arial, sans-serif; font-size: 14px; color: #333333; "
+"max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; padding: 20px; "
+"border-radius: 7px;\">\n"
+"                <h2 style=\"color: #5cb85c; margin-top: 0;\">Solution Delivered!"
+"</h2>\n"
 "                <p>Dear <t t-out=\"object.create_uid.name\"/>,</p>\n"
 "                <p>\n"
-"                Great news! The development/solution for your ticket "
-"<strong><t t-out=\"object.ticket_number\"/> - <t t-out=\"object.name\"/></"
-"strong> has been completed and delivered.\n"
+"                Great news! The development/solution for your ticket <strong><t "
+"t-out=\"object.ticket_number\"/> - <t t-out=\"object.name\"/></strong> has been "
+"completed and delivered.\n"
 "                </p>\n"
 "\n"
 "                <div style=\"background-color: #d9edf7; border: 1px solid "
-"#bce8f1; padding: 12px; border-radius: 4px; margin: 15px 0; color: #31708f;"
-"\">\n"
+"#bce8f1; padding: 12px; border-radius: 4px; margin: 15px 0; color: #31708f;\">\n"
 "                    <strong>Delivery Notes:</strong><br/>\n"
-"                    <t t-out=\"object.confirmation_status or 'The solution "
-"is ready for your review.'\"/>\n"
+"                    <t t-out=\"object.confirmation_status or 'The solution is "
+"ready for your review.'\"/>\n"
 "                </div>\n"
 "\n"
 "                <p>Please review the deployed solution. If everything works "
@@ -105,23 +102,23 @@ msgid ""
 "                <div style=\"margin: 25px 0; text-align: center;\">\n"
 "                    <a t-att-href=\"'%s/"
 "web#id=%s&amp;model=customer.ticket&amp;view_type=form' % "
-"(object.env['ir.config_parameter'].sudo().get_param('web.base.url'), "
-"object.id)\" style=\"background-color: #5cb85c; color: white; padding: 10px "
-"20px; text-decoration: none; border-radius: 4px; font-weight: bold; "
-"display: inline-block;\">\n"
+"(object.env['ir.config_parameter'].sudo().get_param('web.base.url'), object.id)"
+"\" style=\"background-color: #5cb85c; color: white; padding: 10px 20px; text-"
+"decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;"
+"\">\n"
 "                        Review &amp; Approve Solution\n"
 "                    </a>\n"
 "                </div>\n"
 "\n"
 "                <t t-if=\"object.contact_person_calendar_link\">\n"
 "                    <p style=\"margin-top: 20px; font-size: 13px;\">Need a "
-"meeting to review the solution? You can book an appointment with your "
-"contact person directly:</p>\n"
+"meeting to review the solution? You can book an appointment with your contact "
+"person directly:</p>\n"
 "                    <div style=\"text-align: center; margin: 15px 0;\">\n"
-"                        <a t-att-"
-"href=\"object.contact_person_calendar_link\" style=\"background-color: "
-"#337ab7; color: white; padding: 8px 15px; text-decoration: none; border-"
-"radius: 4px; font-size: 13px; display: inline-block;\">\n"
+"                        <a t-att-href=\"object.contact_person_calendar_link\" "
+"style=\"background-color: #337ab7; color: white; padding: 8px 15px; text-"
+"decoration: none; border-radius: 4px; font-size: 13px; display: inline-block;"
+"\">\n"
 "                            Book a Review Meeting\n"
 "                        </a>\n"
 "                    </div>\n"
@@ -129,24 +126,22 @@ msgid ""
 "            </div>\n"
 "        "
 msgstr ""
-"<div style=\"font-family: Arial, sans-serif; font-size: 14px; color: "
-"#333333; max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; "
-"padding: 20px; border-radius: 7px;\">\n"
-"                <h2 style=\"color: #5cb85c; margin-top: 0;\">Çözüm Hazır!</"
-"h2>\n"
+"<div style=\"font-family: Arial, sans-serif; font-size: 14px; color: #333333; "
+"max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; padding: 20px; "
+"border-radius: 7px;\">\n"
+"                <h2 style=\"color: #5cb85c; margin-top: 0;\">Çözüm Hazır!</h2>\n"
 "                <p>Sayın <t t-out=\"object.create_uid.name\"/>,</p>\n"
 "                <p>\n"
 "                <strong><t t-out=\"object.ticket_number\"/> numaralı  <t t-"
-"out=\"object.name\"/></strong> talebiniz için geliştirme/çözüm tamamlandı "
-"ve teslim edildi.\n"
+"out=\"object.name\"/></strong> talebiniz için geliştirme/çözüm tamamlandı ve "
+"teslim edildi.\n"
 "                </p>\n"
 "\n"
 "                <div style=\"background-color: #d9edf7; border: 1px solid "
-"#bce8f1; padding: 12px; border-radius: 4px; margin: 15px 0; color: #31708f;"
-"\">\n"
+"#bce8f1; padding: 12px; border-radius: 4px; margin: 15px 0; color: #31708f;\">\n"
 "                    <strong>Teslimat Notları:</strong><br/>\n"
-"                    <t t-out=\"object.confirmation_status or 'Çözüm "
-"incelemeniz için hazır.'\"/>\n"
+"                    <t t-out=\"object.confirmation_status or 'Çözüm incelemeniz "
+"için hazır.'\"/>\n"
 "                </div>\n"
 "\n"
 "                <p>Lütfen canlıya alınan çözümü inceleyin. Her şey mükemmel "
@@ -155,23 +150,23 @@ msgstr ""
 "                <div style=\"margin: 25px 0; text-align: center;\">\n"
 "                    <a t-att-href=\"'%s/"
 "web#id=%s&amp;model=customer.ticket&amp;view_type=form' % "
-"(object.env['ir.config_parameter'].sudo().get_param('web.base.url'), "
-"object.id)\" style=\"background-color: #5cb85c; color: white; padding: 10px "
-"20px; text-decoration: none; border-radius: 4px; font-weight: bold; "
-"display: inline-block;\">\n"
+"(object.env['ir.config_parameter'].sudo().get_param('web.base.url'), object.id)"
+"\" style=\"background-color: #5cb85c; color: white; padding: 10px 20px; text-"
+"decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;"
+"\">\n"
 "                        Çözümü İncele &amp; Onayla\n"
 "                    </a>\n"
 "                </div>\n"
 "\n"
 "                <t t-if=\"object.contact_person_calendar_link\">\n"
 "                    <p style=\"margin-top: 20px; font-size: 13px;\">Çözümü "
-"incelemek için bir toplantıya mı ihtiyacınız var? Doğrudan ilgili kişiyle "
-"bir randevu planlayabilirsiniz:</p>\n"
+"incelemek için bir toplantıya mı ihtiyacınız var? Doğrudan ilgili kişiyle bir "
+"randevu planlayabilirsiniz:</p>\n"
 "                    <div style=\"text-align: center; margin: 15px 0;\">\n"
-"                        <a t-att-"
-"href=\"object.contact_person_calendar_link\" style=\"background-color: "
-"#337ab7; color: white; padding: 8px 15px; text-decoration: none; border-"
-"radius: 4px; font-size: 13px; display: inline-block;\">\n"
+"                        <a t-att-href=\"object.contact_person_calendar_link\" "
+"style=\"background-color: #337ab7; color: white; padding: 8px 15px; text-"
+"decoration: none; border-radius: 4px; font-size: 13px; display: inline-block;"
+"\">\n"
 "                            Toplantı Ayarla\n"
 "                        </a>\n"
 "                    </div>\n"
@@ -182,48 +177,46 @@ msgstr ""
 #. module: customer_ticket
 #: model:mail.template,body_html:customer_ticket.email_template_ticket_on_hold
 msgid ""
-"<div style=\"font-family: Arial, sans-serif; font-size: 14px; color: "
-"#333333; max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; "
-"padding: 20px; border-radius: 7px;\">\n"
-"                <h2 style=\"color: #d9534f; margin-top: 0;\">Ticket On "
-"Hold</h2>\n"
+"<div style=\"font-family: Arial, sans-serif; font-size: 14px; color: #333333; "
+"max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; padding: 20px; "
+"border-radius: 7px;\">\n"
+"                <h2 style=\"color: #d9534f; margin-top: 0;\">Ticket On Hold</"
+"h2>\n"
 "                <p>Dear <t t-out=\"object.create_uid.name\"/>,</p>\n"
 "                <p>\n"
-"                    Your ticket <strong><t t-out=\"object.ticket_number\"/> "
-"- <t t-out=\"object.name\"/></strong> has been placed <strong>On Hold</"
-"strong> by our technical team.\n"
+"                    Your ticket <strong><t t-out=\"object.ticket_number\"/> - "
+"<t t-out=\"object.name\"/></strong> has been placed <strong>On Hold</strong> by "
+"our technical team.\n"
 "                </p>\n"
 "\n"
 "                <div style=\"background-color: #fcf8e3; border: 1px solid "
-"#faebcc; padding: 12px; border-radius: 4px; margin: 15px 0; color: #8a6d3b;"
-"\">\n"
+"#faebcc; padding: 12px; border-radius: 4px; margin: 15px 0; color: #8a6d3b;\">\n"
 "                    <strong>Reason / Message from Team:</strong><br/>\n"
-"                    <t t-out=\"object.confirmation_status or 'Awaiting "
-"further information from your side.'\"/>\n"
+"                    <t t-out=\"object.confirmation_status or 'Awaiting further "
+"information from your side.'\"/>\n"
 "                </div>\n"
 "\n"
-"                <p>Please review the request and provide the necessary "
-"details so we can resume our work.</p>\n"
+"                <p>Please review the request and provide the necessary details "
+"so we can resume our work.</p>\n"
 "\n"
 "                <div style=\"margin: 25px 0; text-align: center;\">\n"
 "                    <a t-att-href=\"'%s/"
 "web#id=%s&amp;model=customer.ticket&amp;view_type=form' % "
-"(object.env['ir.config_parameter'].sudo().get_param('web.base.url'), "
-"object.id)\" style=\"background-color: #714B67; color: white; padding: 10px "
-"20px; text-decoration: none; border-radius: 4px; font-weight: bold; "
-"display: inline-block;\">\n"
+"(object.env['ir.config_parameter'].sudo().get_param('web.base.url'), object.id)"
+"\" style=\"background-color: #714B67; color: white; padding: 10px 20px; text-"
+"decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;"
+"\">\n"
 "                        View Ticket Details\n"
 "                    </a>\n"
 "                </div>\n"
 "                <t t-if=\"object.contact_person_calendar_link\">\n"
 "                    <p style=\"margin-top: 20px; font-size: 13px;\">Need a "
-"meeting? You can book an appointment with your contact person directly:</"
-"p>\n"
+"meeting? You can book an appointment with your contact person directly:</p>\n"
 "                    <div style=\"text-align: center; margin: 15px 0;\">\n"
-"                        <a t-att-"
-"href=\"object.contact_person_calendar_link\" style=\"background-color: "
-"#337ab7; color: white; padding: 8px 15px; text-decoration: none; border-"
-"radius: 4px; font-size: 13px; display: inline-block;\">\n"
+"                        <a t-att-href=\"object.contact_person_calendar_link\" "
+"style=\"background-color: #337ab7; color: white; padding: 8px 15px; text-"
+"decoration: none; border-radius: 4px; font-size: 13px; display: inline-block;"
+"\">\n"
 "                            Book a Review Meeting\n"
 "                        </a>\n"
 "                    </div>\n"
@@ -231,11 +224,11 @@ msgid ""
 "            </div>\n"
 "        "
 msgstr ""
-"<div style=\"font-family: Arial, sans-serif; font-size: 14px; color: "
-"#333333; max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; "
-"padding: 20px; border-radius: 7px;\">\n"
-"                <h2 style=\"color: #d9534f; margin-top: 0;\">Talep "
-"Beklemede</h2>\n"
+"<div style=\"font-family: Arial, sans-serif; font-size: 14px; color: #333333; "
+"max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; padding: 20px; "
+"border-radius: 7px;\">\n"
+"                <h2 style=\"color: #d9534f; margin-top: 0;\">Talep Beklemede</"
+"h2>\n"
 "                <p>Sayın <t t-out=\"object.create_uid.name\"/>,</p>\n"
 "                <p>\n"
 "                <strong><t t-out=\"object.ticket_number\"/> numaralı <t t-"
@@ -244,11 +237,10 @@ msgstr ""
 "                </p>\n"
 "\n"
 "                <div style=\"background-color: #fcf8e3; border: 1px solid "
-"#faebcc; padding: 12px; border-radius: 4px; margin: 15px 0; color: #8a6d3b;"
-"\">\n"
+"#faebcc; padding: 12px; border-radius: 4px; margin: 15px 0; color: #8a6d3b;\">\n"
 "                    <strong>Nedeni / Ekip Mesajı:</strong><br/>\n"
-"                    <t t-out=\"object.confirmation_status or 'Sizden "
-"gelecek ek bilgiler beklenmektedir.'\"/>\n"
+"                    <t t-out=\"object.confirmation_status or 'Sizden gelecek ek "
+"bilgiler beklenmektedir.'\"/>\n"
 "                </div>\n"
 "\n"
 "                <p>Lütfen talebi inceleyin ve çalışmamıza devam edebilmemiz "
@@ -257,43 +249,28 @@ msgstr ""
 "                <div style=\"margin: 25px 0; text-align: center;\">\n"
 "                    <a t-att-href=\"'%s/"
 "web#id=%s&amp;model=customer.ticket&amp;view_type=form' % "
-"(object.env['ir.config_parameter'].sudo().get_param('web.base.url'), "
-"object.id)\" style=\"background-color: #714B67; color: white; padding: 10px "
-"20px; text-decoration: none; border-radius: 4px; font-weight: bold; "
-"display: inline-block;\">\n"
+"(object.env['ir.config_parameter'].sudo().get_param('web.base.url'), object.id)"
+"\" style=\"background-color: #714B67; color: white; padding: 10px 20px; text-"
+"decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;"
+"\">\n"
 "                        Talep Detaylarını Görüntüle\n"
 "                    </a>\n"
 "                </div>\n"
 "                <t t-if=\"object.contact_person_calendar_link\">\n"
-"                    <p style=\"margin-top: 20px; font-size: 13px;"
-"\">Toplantıya mı ihtiyacınız var? Doğrudan ilgili kişiyle bir randevu "
-"planlayabilirsiniz:</p>\n"
+"                    <p style=\"margin-top: 20px; font-size: 13px;\">Toplantıya "
+"mı ihtiyacınız var? Doğrudan ilgili kişiyle bir randevu planlayabilirsiniz:</"
+"p>\n"
 "                    <div style=\"text-align: center; margin: 15px 0;\">\n"
-"                        <a t-att-"
-"href=\"object.contact_person_calendar_link\" style=\"background-color: "
-"#337ab7; color: white; padding: 8px 15px; text-decoration: none; border-"
-"radius: 4px; font-size: 13px; display: inline-block;\">\n"
+"                        <a t-att-href=\"object.contact_person_calendar_link\" "
+"style=\"background-color: #337ab7; color: white; padding: 8px 15px; text-"
+"decoration: none; border-radius: 4px; font-size: 13px; display: inline-block;"
+"\">\n"
 "                            Toplantı Ayarla\n"
 "                        </a>\n"
 "                    </div>\n"
 "                </t>\n"
 "            </div>\n"
 "        "
-
-#. module: customer_ticket
-#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_help_form
-msgid "<i class=\"fa fa-video-camera me-2\"/> Video Tutorial"
-msgstr "<i class=\"fa fa-video-camera me-2\"/> Video Kılavuz"
-
-#. module: customer_ticket
-#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_help_form
-msgid "System Training Video"
-msgstr "Sistem Eğitim Videosu"
-
-#. module: customer_ticket
-#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_help_form
-msgid "You can watch our 5-minute training video to learn how to use the ticketing system efficiently."
-msgstr "Talep sistemini verimli bir şekilde nasıl kullanacağınızı öğrenmek için 5 dakikalık eğitim videomuzu izleyebilirsiniz."
 
 #. module: customer_ticket
 #: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_help_form
@@ -304,6 +281,11 @@ msgstr "<i class=\"fa fa-info-circle me-2\"/> Önemli Bilgiler"
 #: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_help_form
 msgid "<i class=\"fa fa-map-signs me-2\"/>Stage Guide"
 msgstr "<i class=\"fa fa-map-signs me-2\"/>Aşama Rehberi"
+
+#. module: customer_ticket
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_help_form
+msgid "<i class=\"fa fa-video-camera me-2\"/> Video Tutorial"
+msgstr "<i class=\"fa fa-video-camera me-2\"/> Video Kılavuz"
 
 #. module: customer_ticket
 #: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__message_needaction
@@ -415,12 +397,14 @@ msgstr "İlgili Kişi"
 
 #. module: customer_ticket
 #: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__create_uid
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket_help__create_uid
 #: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket_wizard__create_uid
 msgid "Created by"
 msgstr "Oluşturan"
 
 #. module: customer_ticket
 #: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__create_date
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket_help__create_date
 #: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket_wizard__create_date
 msgid "Created on"
 msgstr "Oluşturulma Tarihi"
@@ -429,6 +413,11 @@ msgstr "Oluşturulma Tarihi"
 #: model:ir.model,name:customer_ticket.model_customer_ticket
 msgid "Customer Ticket"
 msgstr "Müşteri Talebi"
+
+#. module: customer_ticket
+#: model:ir.model,name:customer_ticket.model_customer_ticket_help
+msgid "Customer Ticket Help Guide"
+msgstr "Müşteri Talebi Yardım Kılavuzu"
 
 #. module: customer_ticket
 #: model:mail.template,name:customer_ticket.email_template_ticket_delivery
@@ -446,8 +435,8 @@ msgid "Date"
 msgstr "Tarih"
 
 #. module: customer_ticket
-#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_search
 #: model:ir.model.fields.selection,name:customer_ticket.selection__customer_ticket__stage__delivery
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_search
 msgid "Delivered"
 msgstr "Çözüldü"
 
@@ -473,6 +462,7 @@ msgstr "Vazgeç"
 
 #. module: customer_ticket
 #: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__display_name
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket_help__display_name
 #: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket_wizard__display_name
 msgid "Display Name"
 msgstr "İsim"
@@ -486,6 +476,12 @@ msgstr "E-posta:"
 #: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_form
 msgid "Ekran Görüntüsü / Dosya"
 msgstr ""
+
+#. module: customer_ticket
+#. odoo-python
+#: code:addons/customer_ticket/models/ticket.py:0
+msgid "File size too large! Screenshots must be a maximum of 2MB."
+msgstr "Dosya boyutu çok büyük! Ekran görüntüleri en fazla 2 MB olmalıdır."
 
 #. module: customer_ticket
 #: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__attachment_filename
@@ -508,12 +504,31 @@ msgid "Font awesome icon e.g. fa-tasks"
 msgstr "Font Awesome simgesi örn. fa-tasks"
 
 #. module: customer_ticket
+#: model_terms:web_tour.tour,rainbow_man_message:customer_ticket.help_tour
+msgid "Great! You've reached to the help guide."
+msgstr ""
+
+#. module: customer_ticket
 #: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__has_message
 msgid "Has Message"
 msgstr "Mesaj Var"
 
 #. module: customer_ticket
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_tree
+msgid "Help"
+msgstr "Yardım"
+
+#. module: customer_ticket
+#. odoo-python
+#: code:addons/customer_ticket/models/help.py:0
+#: model:customer.ticket.help,name:customer_ticket.customer_ticket_help_static_data
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_help_form
+msgid "Help & Guide"
+msgstr "Yardım ve Kılavuz"
+
+#. module: customer_ticket
 #: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__id
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket_help__id
 #: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket_wizard__id
 msgid "ID"
 msgstr ""
@@ -539,8 +554,8 @@ msgid "If checked, some messages have a delivery error."
 msgstr ""
 
 #. module: customer_ticket
-#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_search
 #: model:ir.model.fields.selection,name:customer_ticket.selection__customer_ticket__stage__process
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_search
 msgid "In Progress"
 msgstr "İşlemde"
 
@@ -556,12 +571,14 @@ msgstr "Takipçi mi"
 
 #. module: customer_ticket
 #: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__write_uid
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket_help__write_uid
 #: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket_wizard__write_uid
 msgid "Last Updated by"
 msgstr "Son Güncelleyen"
 
 #. module: customer_ticket
 #: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__write_date
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket_help__write_date
 #: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket_wizard__write_date
 msgid "Last Updated on"
 msgstr "Son Güncelleme"
@@ -593,14 +610,18 @@ msgid "Nametech Support"
 msgstr "Nametech Destek"
 
 #. module: customer_ticket
+#. odoo-javascript
+#: code:addons/customer_ticket/static/src/js/ticket_tour.js:0
+msgid ""
+"Need help? Click here to view the system guide and watch the training video!"
+msgstr ""
+"Yardıma mı ihtiyacınız var? Sistem kılavuzunu görüntülemek ve eğitim videosunu "
+"izlemek için buraya tıklayın!"
+
+#. module: customer_ticket
 #: model:ir.model.fields.selection,name:customer_ticket.selection__customer_ticket__stage__draft
 msgid "New"
 msgstr "Yeni"
-
-#. module: customer_ticket
-#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__activity_calendar_event_id
-msgid "Next Activity Calendar Event"
-msgstr "Sonraki Aktivite Takvim Etkinliği"
 
 #. module: customer_ticket
 #: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__activity_date_deadline
@@ -616,6 +637,12 @@ msgstr "Sonraki Aktivite Özeti"
 #: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__activity_type_id
 msgid "Next Activity Type"
 msgstr "Sonraki Aktivite Türü"
+
+#. module: customer_ticket
+#. odoo-python
+#: code:addons/customer_ticket/models/ticket.py:0
+msgid "No appointment link could be found for your company representative!"
+msgstr "Şirket temsilciniz için bir randevu bağlantısı bulunamadı!"
 
 #. module: customer_ticket
 #: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__message_needaction_counter
@@ -649,6 +676,18 @@ msgid "Open Tickets"
 msgstr "Açık Talepler"
 
 #. module: customer_ticket
+#. odoo-python
+#: code:addons/customer_ticket/wizard/ticket_wizard.py:0
+msgid "Please briefly explain the reason for cancellation below:"
+msgstr "Lütfen iptal nedenini aşağıda kısaca açıklayın:"
+
+#. module: customer_ticket
+#. odoo-python
+#: code:addons/customer_ticket/wizard/ticket_wizard.py:0
+msgid "Please enter your request details below:"
+msgstr "Lütfen değişiklik talep detaylarınızı aşağıya girin:"
+
+#. module: customer_ticket
 #: model:ir.model.fields.selection,name:customer_ticket.selection__customer_ticket__stage__queue
 #: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_search
 msgid "Queued"
@@ -660,11 +699,6 @@ msgid "Refresh"
 msgstr "Yenile"
 
 #. module: customer_ticket
-#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_tree
-msgid "Help"
-msgstr "Yardım"
-
-#. module: customer_ticket
 #: model:ir.model.fields.selection,name:customer_ticket.selection__customer_ticket_wizard__action_type__change
 #: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_form
 msgid "Request Change"
@@ -674,6 +708,12 @@ msgstr "Değişiklik Talep Et"
 #: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__activity_user_id
 msgid "Responsible User"
 msgstr "Sorumlu Kullanıcı"
+
+#. module: customer_ticket
+#. odoo-python
+#: code:addons/customer_ticket/models/ticket.py:0
+msgid "Security Limit: You cannot open more than 10 tickets per day."
+msgstr "Güvenlik Sınırı: Günde en fazla 10 talep açabilirsiniz."
 
 #. module: customer_ticket
 #: model:mail.template,subject:customer_ticket.email_template_ticket_delivery
@@ -717,6 +757,11 @@ msgid "Support Tickets"
 msgstr "Destek Talepleri"
 
 #. module: customer_ticket
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_help_form
+msgid "System Training Video"
+msgstr "Sistem Eğitim Videosu"
+
+#. module: customer_ticket
 #: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket_wizard__ticket_id
 #: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_form
 msgid "Ticket"
@@ -754,6 +799,11 @@ msgid "Ticket {{ object.ticket_number }} is On Hold - Action Required"
 msgstr "{{ object.ticket_number }} Numaralı Talep Beklemede - Eylem Gerekiyor"
 
 #. module: customer_ticket
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket_help__name
+msgid "Title"
+msgstr "Konu"
+
+#. module: customer_ticket
 #: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_wizard_form
 msgid "Type here..."
 msgstr "Buraya yazın…"
@@ -774,6 +824,15 @@ msgid "Urgent"
 msgstr "Acil"
 
 #. module: customer_ticket
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_help_form
+msgid ""
+"You can watch our 5-minute training video to learn how to use the ticketing "
+"system efficiently."
+msgstr ""
+"Talep sistemini verimli bir şekilde nasıl kullanacağınızı öğrenmek için 5 "
+"dakikalık eğitim videomuzu izleyebilirsiniz."
+
+#. module: customer_ticket
 #: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_form
 msgid "Your Contact Person:"
 msgstr "İlgili Kişiniz:"
@@ -790,8 +849,6 @@ msgstr "• Talep aşamaları 3 saatte bir otomatik olarak güncellenmektedir."
 
 #. module: customer_ticket
 #: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_help_form
-msgid ""
-"• You can use the \"Refresh\" button to check the latest "
-"status instantly."
+msgid "• You can use the \"Refresh\" button to check the latest status instantly."
 msgstr ""
 "• Güncel durumu anlık sorgulamak için \"Yenile\" butonunu kullanabilirsiniz."
