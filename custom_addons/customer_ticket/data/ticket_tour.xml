@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="help_tour" model="web_tour.tour">
+        <field name="name">help_tour</field>
+        <field name="sequence">1</field>
+        <field name="rainbow_man_message">Great! You've reached to the help guide.</field>
+    </record>
+</odoo>

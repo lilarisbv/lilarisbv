@@ -1,4 +1,4 @@
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 
 
 class CustomerTicketWizard(models.TransientModel):
@@ -18,9 +18,9 @@ class CustomerTicketWizard(models.TransientModel):
     def _compute_instruction(self):
         for rec in self:
             if rec.action_type == 'change':
-                rec.instruction = 'Please enter your request details below:'
+                rec.instruction = _('Please enter your request details below:')
             else:
-                rec.instruction = 'Please briefly explain the reason for cancellation below:'
+                rec.instruction = _('Please briefly explain the reason for cancellation below:')
 
     def action_submit(self):
         self.ensure_one()

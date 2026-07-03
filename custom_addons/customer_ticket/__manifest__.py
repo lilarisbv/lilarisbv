@@ -14,6 +14,8 @@
     'depends': [
         'base',
         'mail',
+        'web',
+        'web_tour'
     ],
     'data': [
         'security/ir.model.access.csv',
@@ -22,7 +24,13 @@
         'wizard/ticket_wizard_view.xml',
         'views/email_templates.xml',
         'views/help_views.xml',
+        'data/ticket_tour.xml',
     ],
+    'assets': {
+            'web.assets_backend': [
+                'customer_ticket/static/src/js/ticket_tour.js',
+            ],
+        },
     'installable': True,
     'application': True,
     'auto_install': False,

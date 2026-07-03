@@ -59,7 +59,7 @@
                                         class="btn btn-outline-primary w-50 text-center py-2 px-3 fw-bold"/>
                             </div>
                             <field name="contact_person_name" string="Your Contact Person:" invisible="not contact_person_name or stage in ('draft', 'cancel','done')"/>
-                            <field name="contact_person_email" string="E-mail:" invisible="not contact_person_email or stage in ('draft', 'cancel','done')"/>
+                            <field name="contact_person_email" string="E-mail:" widget="email" invisible="not contact_person_email or stage in ('draft', 'cancel','done')"/>
                         </group>
                     </group>
                     <notebook>

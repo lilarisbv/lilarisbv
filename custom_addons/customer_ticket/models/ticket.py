@@ -1,6 +1,6 @@
 import requests
 import logging
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
 _logger = logging.getLogger(__name__)
@@ -48,7 +48,7 @@ class CustomerTicket(models.Model):
             ('create_date', '>=', today)
         ])
         if daily_count + len(vals_list) > 10:
-            raise ValidationError("Security Limit: You cannot open more than 10 tickets per day.")
+            raise ValidationError(_("Security Limit: You cannot open more than 10 tickets per day."))
 
         # Eğer vals_list bir liste ise, her bir sözlük için döngüye gir
         if isinstance(vals_list, dict):
@@ -59,7 +59,7 @@ class CustomerTicket(models.Model):
                 file_size = (len(vals['attachment_file']) * 3) / 4
                 max_size = 2 * 1024 * 1024  # 2 Megabayt
                 if file_size > max_size:
-                    raise ValidationError("File size too large! Screenshots must be a maximum of 2MB.")
+                    raise ValidationError(_("File size too large! Screenshots must be a maximum of 2MB."))
 
             if vals.get('ticket_number', 'New') == 'New':
                 vals['ticket_number'] = self.env['ir.sequence'].next_by_code('customer.ticket') or 'TCK-000'
@@ -252,7 +252,7 @@ class CustomerTicket(models.Model):
         self.ensure_one()
 
         if not self.contact_person_calendar_link:
-            raise ValidationError("No appointment link could be found for your company representative!")
+            raise ValidationError(_("No appointment link could be found for your company representative!"))
 
         return {
             'type': 'ir.actions.act_url',
