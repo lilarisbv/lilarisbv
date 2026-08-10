@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+        <record id="woocommerce_product_attribute_form_view" model="ir.ui.view">
+            <field name="name">woocommerce_product_attribute_form_view</field>
+            <field name="model">woo.product.attribute</field>
+            <field name="arch" type="xml">
+                <form class="oe_form_configuration" string="WooCommerce Product Attribute">
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name" string="Attribute name" class="oe_edit_only"/>
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="slug"/>
+                                <field name="attribute_id"/>
+                                <field name="mk_instance_id" options="{'no_create': 1, 'no_edit': 1}" required="1"/>
+                            </group>
+                            <group>
+                                <field name="mk_id" readonly="1"/>
+                                <field name="exported_in_woocommerce" readonly="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="woocommerce_product_attribute_search_view" model="ir.ui.view">
+            <field name="name">woocommerce_product_attribute_search_view</field>
+            <field name="model">woo.product.attribute</field>
+            <field name="arch" type="xml">
+                <search string="WooCommerce Product Attribute">
+                    <field name="name"/>
+                    <field name="mk_id"/>
+                    <separator/>
+
+                    <group>
+                        <filter string="Instance" name="group_by_instance" context="{'group_by': 'mk_instance_id'}"/>
+                        <filter string="Exported?" name="group_by_exported" context="{'group_by': 'exported_in_woocommerce'}"/>
+                    </group>
+
+                    <searchpanel>
+                        <field name="mk_instance_id" icon="fa-shopping-bag"/>
+                    </searchpanel>
+                </search>
+            </field>
+        </record>
+
+        <record id="woocommerce_product_attribute_tree_view" model="ir.ui.view">
+            <field name="name">woocommerce_product_attribute_tree_view</field>
+            <field name="model">woo.product.attribute</field>
+            <field name="arch" type="xml">
+                <list string="WooCommerce Product Attribute">
+                    <field name="name"/>
+                    <field name="mk_id"/>
+                    <field name="exported_in_woocommerce"/>
+                    <field name="mk_instance_id"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="action_woocommerce_product_attribute" model="ir.actions.act_window">
+            <field name="name">Product Attribute</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">woo.product.attribute</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        <record id="action_woocommerce_product_attribute_instance" model="ir.actions.act_window">
+            <field name="name">Product Attribute</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">woo.product.attribute</field>
+            <field name="view_mode">list,form</field>
+            <field name="view_id" ref="woocommerce_product_attribute_tree_view"/>
+            <field name="domain">[('mk_instance_id', '=', active_id)]</field>
+        </record>
+    </data>
+</odoo>

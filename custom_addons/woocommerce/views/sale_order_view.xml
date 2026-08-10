@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+        <record id="woo_markeplace_sale_order_form_view" model="ir.ui.view">
+            <field name="name">woo.marketplace.sale.order.form.view</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@name='button_box']" position="after">
+                    <div name="woocommerce_pill" class="badge rounded-pill float-end fs-6 text-white border-0" style="background-color: #7f54b3; font-size: 1.08333333rem !important;"
+                         invisible="marketplace != 'woocommerce'"><field name="marketplace" style="margin-bottom: auto;"/>
+                    </div>
+                </xpath>
+                <field name="mk_order_number" position="after">
+                    <field name="woo_status_ts" readonly="1" invisible="marketplace != 'woocommerce'"/>
+                    <field name="woo_coupon_code" readonly="1" invisible="marketplace != 'woocommerce'"/>
+                    <field name="woo_status_ts" invisible="1"/>
+                    <field name="force_refunded" invisible="1"/>
+                </field>
+                <button name="action_cancel" position="after">
+                    <button name="refund_in_woocommerce" string="Refund In WooCommerce" type="object" icon="fa-mail-reply" class="oe_highlight"
+                            invisible="woo_status_ts not in ('cancelled', 'processing', 'completed') or not mk_instance_id or marketplace != 'woocommerce' or force_refunded">
+
+                    </button>
+                    <button name="cancel_in_woocommerce" string="Cancel In WooCommerce" type="object" icon="fa-mail-reply" class="oe_highlight"
+                            invisible="woo_status_ts == 'cancelled' or state !='cancel' or not mk_instance_id or marketplace != 'woocommerce'">
+                    </button>
+                </button>
+            </field>
+        </record>
+
+    </data>
+</odoo>

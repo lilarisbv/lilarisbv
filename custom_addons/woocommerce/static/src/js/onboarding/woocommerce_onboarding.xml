@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <!-- Inject left-side instruction block (replaces the step illustration).
+         Keys are namespaced (woo_*) so other connectors' MarketplaceOnboardingMain extensions don't also render this. -->
+    <t t-name="woocommerce.MarketplaceOnboardingMain" t-inherit="base_marketplace.MarketplaceOnboardingMain" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('o_mk_edge_step_image')]" position="after">
+            <div t-if="state.marketplace === 'woocommerce' and (this.currentStepInfo?.woo_card_heading or this.currentStepInfo?.woo_screen_help or this.currentStepInfo?.woo_doc_url)"
+                 class="o_mk_woo_instructions">
+                <div t-if="this.currentStepInfo?.woo_card_heading" class="o_mk_woo_card_head">
+                    <div class="o_mk_woo_kicker_icon">
+                        <i t-att-class="'fa ' + (this.currentStepInfo.icon || 'fa-circle')" aria-hidden="true"/>
+                    </div>
+                    <h3 class="o_mk_woo_card_heading" t-esc="this.currentStepInfo.woo_card_heading"/>
+                </div>
+                <p t-if="this.currentStepInfo?.woo_card_intro" class="o_mk_woo_card_intro" t-out="this.markupHtml(this.currentStepInfo.woo_card_intro)"/>
+                <div t-if="this.currentStepInfo?.woo_tip" class="o_mk_woo_tip mb-3">
+                    <i class="fa fa-lightbulb-o me-2 o_mk_woo_tip_icon"/>
+                    <span t-out="this.markupHtml(this.currentStepInfo.woo_tip)"/>
+                </div>
+                <div t-if="this.currentStepInfo?.woo_screen_help" class="o_mk_woo_instr_block mb-3">
+                    <div class="o_mk_woo_instr_title mb-2">
+                        <i class="fa fa-circle o_mk_woo_dot me-2"/>
+                        <t t-esc="this.currentStepInfo.woo_screen_help_title"/>
+                    </div>
+                    <ul class="o_mk_woo_help_list">
+                        <t t-foreach="this.currentStepInfo.woo_screen_help" t-as="line" t-key="line_index">
+                            <li t-if="typeof line === 'string'"><t t-out="this.markupHtml(line)"/></li>
+                            <li t-elif="!line.tax_only or state.formData.tax_system !== 'default'"><t t-out="this.markupHtml(line.text)"/></li>
+                        </t>
+                    </ul>
+                </div>
+                <a t-if="this.currentStepInfo?.woo_doc_url" class="o_mk_woo_doc_link" t-att-href="this.currentStepInfo.woo_doc_url" target="_blank" rel="noopener">
+                    <i class="fa fa-book me-2"/>
+                    <t t-esc="this.currentStepInfo.woo_doc_label"/>
+                    <i class="fa fa-external-link ms-2"/>
+                </a>
+            </div>
+        </xpath>
+    </t>
+
+    <t t-name="woocommerce.MarketplaceOnboarding_woocommerce_step_1">
+        <div class="o_mk_woocommerce_step1">
+            <h2 class="fw-semibold mb-4" style="color: #7F54B3;">Connection</h2>
+            <div class="mb-3">
+                <label class="form-label fw-medium text-dark">Instance name</label>
+                <input type="text" class="form-control text-dark" required="required" autocomplete="off"
+                       placeholder="e.g. My WooCommerce store"
+                       t-att-value="state.formData.name"
+                       t-on-input="onInput('name')"/>
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-medium text-dark">Import order after</label>
+                <p class="text-muted small mb-2">Only orders created after this date are imported. Leave empty to import all.</p>
+                <input type="datetime-local" class="form-control text-dark"
+                       t-att-value="state.formData.last_order_sync_date"
+                       t-on-input="onInput('last_order_sync_date')"/>
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-medium text-dark">Shop URL</label>
+                <input type="text" class="form-control text-dark" required="required" placeholder="https://your-store.com"
+                       t-att-value="state.formData.woo_shop_url"
+                       t-on-input="onInput('woo_shop_url')"/>
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-medium text-dark">Consumer Key</label>
+                <input type="text" class="form-control text-dark" required="required" autocomplete="off"
+                       placeholder="WooCommerce Client Key"
+                       t-att-value="state.formData.woo_consumer_key"
+                       t-on-input="onInput('woo_consumer_key')"/>
+            </div>
+            <div class="mb-2">
+                <label class="form-label fw-medium text-dark">Consumer Secret</label>
+                <div class="input-group">
+                    <input class="form-control text-dark" required="required" autocomplete="off"
+                           placeholder="WooCommerce Client Secret"
+                           t-att-type="state.formData.woo_show_secret ? 'text' : 'password'"
+                           t-att-value="state.formData.woo_consumer_secret"
+                           t-on-input="onInput('woo_consumer_secret')"/>
+                    <button class="btn btn-outline-secondary" type="button" tabindex="-1"
+                            t-on-click="() =&gt; state.formData.woo_show_secret = !state.formData.woo_show_secret">
+                        <i t-att-class="state.formData.woo_show_secret ? 'fa fa-eye-slash' : 'fa fa-eye'"/>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="woocommerce.MarketplaceOnboarding_woocommerce_step_2">
+        <div class="o_mk_woocommerce_step2">
+            <h2 class="fw-semibold mb-2" style="color: #7F54B3;">Product Sync</h2>
+            <p class="text-muted small mb-3">How Odoo products are matched and created when syncing with WooCommerce.</p>
+            <div class="mb-3">
+                <label class="form-label fw-medium text-dark">Sync products by</label>
+                <input type="text" class="form-control text-dark" readonly="readonly"
+                       t-att-value="state.formData.sync_product_with_label || 'SKU'"/>
+            </div>
+            <div class="form-check form-switch mb-4">
+                <input class="form-check-input" type="checkbox" id="mk_onb_woo_create_products"
+                       t-att-checked="state.formData.is_create_products"
+                       t-on-change="onInput('is_create_products')"/>
+                <label class="form-check-label text-dark fw-medium" for="mk_onb_woo_create_products">Create Odoo products if missing during sync</label>
+            </div>
+            <h2 class="fw-semibold mb-2" style="color: #7F54B3;">Export stock based on</h2>
+            <p class="text-muted small mb-3">Field used to compute the quantity exported to WooCommerce.</p>
+            <div class="mb-0">
+                <select class="form-select"
+                        t-att-value="state.formData.stock_field_id ? '' + state.formData.stock_field_id : ''"
+                        t-on-change="makeTaxAccountSelectHandler('stock_field_id')">
+                    <option value="" disabled="disabled">Select a stock field</option>
+                    <t t-foreach="state.formData.stock_field_options" t-as="opt" t-key="opt.id">
+                        <option t-att-value="'' + opt.id" t-esc="opt.name"
+                                t-att-selected="state.formData.stock_field_id === opt.id"/>
+                    </t>
+                </select>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="woocommerce.MarketplaceOnboarding_woocommerce_step_3">
+        <div class="o_mk_woocommerce_step3">
+            <h2 class="fw-semibold mb-2" style="color: #7F54B3;">Tax behaviour</h2>
+            <p class="text-muted small mb-3">How taxes should be applied on imported orders.</p>
+            <select class="form-select mb-3 text-dark" t-att-value="state.formData.tax_system" t-on-change="onTaxChange">
+                <t t-foreach="state.formData.tax_system_options" t-as="opt" t-key="opt.value">
+                    <option t-att-value="opt.value" t-esc="opt.label"
+                            t-att-selected="state.formData.tax_system === opt.value"/>
+                </t>
+            </select>
+            <t t-if="state.formData.tax_system !== 'default'">
+                <div class="mb-3">
+                    <label class="form-label fw-medium text-dark">Tax Account</label>
+                    <p class="text-muted small mb-2">Account used when creating taxes from marketplace data (same as instance settings).</p>
+                    <select class="form-select text-dark"
+                            required="required"
+                            t-att-value="state.formData.tax_account_id ? '' + state.formData.tax_account_id : ''"
+                            t-on-change="makeTaxAccountSelectHandler('tax_account_id')">
+                        <option value="" disabled="disabled">Select an account</option>
+                        <t t-foreach="state.formData.tax_account_options" t-as="acc" t-key="acc.id">
+                            <option t-att-value="'' + acc.id" t-esc="acc.name"
+                                    t-att-selected="state.formData.tax_account_id === acc.id"/>
+                        </t>
+                    </select>
+                </div>
+                <div class="mb-0">
+                    <label class="form-label fw-medium text-dark">Tax Account on Credit Notes</label>
+                    <p class="text-muted small mb-2">Account used for refund tax lines (same as instance settings).</p>
+                    <select class="form-select text-dark"
+                            required="required"
+                            t-att-value="state.formData.tax_refund_account_id ? '' + state.formData.tax_refund_account_id : ''"
+                            t-on-change="makeTaxAccountSelectHandler('tax_refund_account_id')">
+                        <option value="" disabled="disabled">Select an account</option>
+                        <t t-foreach="state.formData.tax_account_options" t-as="acc" t-key="acc.id">
+                            <option t-att-value="'' + acc.id" t-esc="acc.name"
+                                    t-att-selected="state.formData.tax_refund_account_id === acc.id"/>
+                        </t>
+                    </select>
+                </div>
+            </t>
+            <h2 class="fw-semibold mb-2 mt-4" style="color: #7F54B3;">Order statuses</h2>
+            <p class="text-muted small mb-3">Import orders matching the selected WooCommerce statuses.</p>
+            <div class="d-flex flex-wrap gap-2">
+                <t t-foreach="state.formData.fulfillment_status_options" t-as="st" t-key="st.id">
+                    <button type="button"
+                            t-att-class="isFulfillmentSelected(st.id) ? 'o_mk_tag is-on' : 'o_mk_tag'"
+                            t-on-click="makeFulfillmentToggleHandler(st.id)">
+                        <t t-esc="st.name"/>
+                    </button>
+                </t>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="woocommerce.MarketplaceOnboarding_woocommerce_step_4">
+        <div class="o_mk_woocommerce_step4">
+            <h2 class="fw-semibold mb-4" style="color: #7F54B3;">Summary</h2>
+            <div class="o_mk_review_section">
+                <h6 class="fw-semibold" style="color: #7F54B3;">Instance</h6>
+                <div class="small"><strong>Name:</strong> <t t-esc="state.formData.name"/></div>
+                <div class="small mt-1"><strong>Import Order After: </strong>
+                    <t t-if="state.formData.last_order_sync_date" t-esc="state.formData.last_order_sync_date"/>
+                    <t t-else="">Not set</t>
+                </div>
+            </div>
+            <div class="o_mk_review_section">
+                <h6 class="fw-semibold" style="color: #7F54B3;">Connection</h6>
+                <div class="small text-break"><strong>Shop URL:</strong> <t t-esc="state.formData.woo_shop_url"/></div>
+                <div class="small mt-1"><strong>Consumer Key:</strong>
+                    <t t-if="state.formData.woo_consumer_key">Set</t>
+                    <t t-else="">Not set</t>
+                </div>
+                <div class="small mt-1"><strong>Consumer Secret:</strong>
+                    <t t-if="state.formData.woo_consumer_secret">Set</t>
+                    <t t-else="">Not set</t>
+                </div>
+            </div>
+            <div class="o_mk_review_section">
+                <h6 class="fw-semibold" style="color: #7F54B3;">Products</h6>
+                <div class="small"><strong>Sync products by: </strong> <t t-esc="state.formData.sync_product_with_label || 'SKU'"/></div>
+                <div class="small mt-1"><strong>Create Products: </strong>
+                    <t t-if="state.formData.is_create_products">Yes</t>
+                    <t t-else="">No</t>
+                </div>
+                <div class="small mt-1"><strong>Export stock based on: </strong>
+                    <t t-foreach="state.formData.stock_field_options" t-as="o" t-key="o.id">
+                        <t t-if="o.id === state.formData.stock_field_id" t-esc="o.name"/>
+                    </t>
+                </div>
+            </div>
+            <div class="o_mk_review_section mb-0">
+                <h6 class="fw-semibold" style="color: #7F54B3;">Orders</h6>
+                <div class="small"><strong>Tax:</strong> <t t-esc="taxOptionLabel(state.formData.tax_system)"/></div>
+                <t t-if="state.formData.tax_system !== 'default'">
+                    <div class="small mt-1"><strong>Tax account:</strong> <t t-esc="taxAccountLabel('invoice')"/></div>
+                    <div class="small mt-1"><strong>Tax account (credit notes):</strong> <t t-esc="taxAccountLabel('refund')"/></div>
+                </t>
+                <div class="small mt-2"><strong>Order Statuses:</strong> <t t-esc="fulfillmentSummaryText()"/></div>
+            </div>
+        </div>
+    </t>
+</templates>

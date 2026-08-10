@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="woocommerce_discount" model="product.product">
+            <field name="name">woocommerce Discount</field>
+            <field name="type">service</field>
+            <field name="default_code">woocommerce_discount</field>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="list_price">0.0</field>
+            <field name="invoice_policy">order</field>
+        </record>
+
+        <record id="woocommerce_delivery" model="product.product">
+            <field name="name">woocommerce Delivery</field>
+            <field name="type">service</field>
+            <field name="default_code">woocommerce_delivery</field>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="list_price">0.0</field>
+            <field name="invoice_policy">order</field>
+        </record>
+
+        <record id="woocommerce_fees" model="product.product">
+            <field name="name">woocommerce Fees</field>
+            <field name="type">service</field>
+            <field name="default_code">woocommerce_fees</field>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="list_price">0.0</field>
+            <field name="invoice_policy">order</field>
+        </record>
+
+        <record id="res_partner_category_woocommerce" model="res.partner.category">
+            <field name="name">WooCommerce</field>
+            <field name="color" eval="11"/>
+        </record>
+    </data>
+</odoo>

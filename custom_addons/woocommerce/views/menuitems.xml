@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Top menu item -->
+        <menuitem name="WooCommerce" id="menu_woocommerce" parent="base_marketplace.menu_marketplace" sequence="42" groups="base_marketplace.group_base_marketplace_manager"/>
+
+        <!-- Configuration -->
+        <menuitem id="menu_woocommerce_configuration" name="Configuration" parent="menu_woocommerce" sequence="100" groups="base_marketplace.group_base_marketplace_manager"/>
+        <menuitem id="menu_woocommerce_payment_gateway" name="Payment Gateways" parent="menu_woocommerce_configuration" sequence="15" action="action_woocommerce_payment_gateway"
+                  groups="base_marketplace.group_base_marketplace_manager"/>
+        <menuitem id="menu_woocommerce_product_category" name="Product Categories" parent="menu_woocommerce" sequence="40" action="action_woocommerce_product_category"
+                  groups="base_marketplace.group_base_marketplace_manager"/>
+        <menuitem id="menu_woocommerce_product_tags" name="Product Tags" parent="menu_woocommerce" sequence="45" action="action_woocommerce_product_tags"
+                  groups="base_marketplace.group_base_marketplace_manager"/>
+        <menuitem id="menu_woocommerce_product_attribute" name="Product Attributes" parent="menu_woocommerce" sequence="50" action="action_woocommerce_product_attribute"
+                  groups="base_marketplace.group_base_marketplace_manager"/>
+
+    </data>
+</odoo>
+

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+        <record id="refund_in_woocommerce_form_view" model="ir.ui.view">
+            <field name="name">mk.cancel.order.form.view</field>
+            <field name="model">mk.cancel.order</field>
+            <field name="arch" type="xml">
+                <form string="Refund In WooCommerce">
+                    <div class="alert alert-info info_icon" role="alert" invisible="woocommerce_refund_payment_lines">
+                        <span class="fa fa-lightbulb-o">
+                        </span>
+                        It seems order is fully/partially refunded in WooCommerce. You can perform remaining amount refund from the WooCommerce.
+                    </div>
+                    <group string="Refund payments" invisible="not woocommerce_refund_payment_lines">
+                        <field name="woocommerce_refund_payment_lines" nolabel="1">
+                            <list string="Refund Payments" editable="top" create="false" delete="false">
+                                <field name="product_id" readonly="1" force_save="1"/>
+                                <field name="available_qty" readonly="1" force_save="1"/>
+                                <field name="to_refund_qty"/>
+                                <field name="to_refund_total" widget="monetary" readonly="1" options="{'currency_field': 'currency_id'}" string="Subtotal"/>
+                                <field name="currency_id" column_invisible="1" force_save="1"/>
+                            </list>
+                        </field>
+                        <field name="woocommerce_remaining_shipping_amount" invisible="1"/>
+                        <field name="currency_id" invisible="1"/>
+                        <group class="oe_subtotal_footer oe_right" colspan="2" name="refund_payment_total">
+                            <field name="woocommerce_amount_subtotal" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                            <field name="woocommerce_shipping_amount" widget='monetary' options="{'currency_field': 'currency_id'}" string="Shipping"/>
+                            <field name="woocommerce_tax_amount" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                            <field name="woocommerce_amount_total" widget='monetary' options="{'currency_field': 'currency_id'}" readonly="True" force_save="1"/>
+                            <div class="oe_subtotal_footer_separator oe_inline o_td_label">
+                                <label for="woocommerce_manual_refund_amount"/>
+                            </div>
+                            <field name="woocommerce_manual_refund_amount" nolabel="1" class="oe_subtotal_footer_separator" widget='monetary'
+                                   options="{'currency_field': 'currency_id'}" readonly="1" force_save="1"/>
+                        </group>
+                        <group colspan="4">
+                        </group>
+                        <div class="oe_clear"/>
+                    </group>
+                    <group invisible="not woocommerce_refund_payment_lines">
+                        <group>
+                            <field name="refund_description" required="is_create_refund"/>
+                            <field name="woocommerce_is_api_refund"/>
+                            <field name="woocommerce_restock"/>
+                            <field name="create_refund_option_visible" invisible="1"/>
+                            <field name="is_create_refund" string="Create Credit Note in Odoo"
+                            invisible="not woocommerce_refund_payment_lines or not create_refund_option_visible or woocommerce_amount_subtotal == 0"/>
+                        </group>
+                    </group>
+                    <group string="Credit Note Info" invisible="not is_create_refund">
+                        <group>
+                            <field name="date_invoice" required="is_create_refund"/>
+                        </group>
+                        <group>
+                            <field name="payment_journal_id" required="is_create_refund"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button string="Mark Order as Refunded" class="oe_highlight" type="object" name="woocommerce_mark_order_refunded"
+                                invisible="woocommerce_refund_payment_lines"/>
+                        <button string="Refund Order" class="oe_highlight" type="object" name="do_refund_in_woocommerce"
+                                invisible="not woocommerce_refund_payment_lines"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="cancel_in_woocommerce_form_view" model="ir.ui.view">
+            <field name="name">mk.cancel.order.form.view</field>
+            <field name="model">mk.cancel.order</field>
+            <field name="arch" type="xml">
+                <form string="Cancel In WooCommerce">
+                    <div class="alert alert-info info_icon" role="alert">
+                        <span class="fa fa-lightbulb-o">
+                        </span>
+                        Order will be cancelled in WooCommerce. If you want to create refund in WooCommerce and credit note in Odoo, you can do it via "Refund in WooCommerce" button from sale order.
+                    </div>
+                    <footer>
+                        <button string="Cancel Order" class="oe_highlight" type="object" name="do_cancel_in_woocommerce"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>
