@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+        <record id="woocommerce_mk_listing_form_view" model="ir.ui.view">
+            <field name="name">woocommerce.marketplace.listing.form.view</field>
+            <field name="model">mk.listing</field>
+            <field name="inherit_id" ref="base_marketplace.mk_listing_form_view"/>
+            <field name="arch" type="xml">
+                <button name="open_listing_in_marketplace" position="before">
+                    <button class="oe_stat_button o_stat_text o_value text-danger" name="woocommerce_published"
+                            type="object" icon="fa-globe"
+                            invisible="not is_listed or is_published or marketplace != 'woocommerce'"
+                            string="Unpublished" confirm="Are you sure you want to publish listing? This action directly reflect on WooCommerce.">
+                    </button>
+                    <button class="oe_stat_button o_stat_text o_value text-success" name="woocommerce_published"
+                            type="object" icon="fa-globe"
+                            invisible="not is_listed or not is_published or marketplace != 'woocommerce'"
+                            string="Published" confirm="Are you sure you want to unpublish listing? This action directly reflect on WooCommerce">
+                    </button>
+                </button>
+                <field name="is_listed" position="after">
+                    <field name="woo_categ_ids" context="{'default_mk_instance_id': mk_instance_id}" widget="many2many_tags"
+                           invisible="marketplace != 'woocommerce'"/>
+                    <field name="woo_tag_ids" context="{'default_mk_instance_id': mk_instance_id}" widget="many2many_tags"
+                           invisible="marketplace != 'woocommerce'"/>
+                </field>
+                <field name="description" position="after">
+                    <separator string="Product Short Description" name="short_desc_label" invisible="marketplace != 'woocommerce'"/>
+                    <field name="short_description" nolabel="1" invisible="marketplace != 'woocommerce'"/>
+                </field>
+            </field>
+        </record>
+    </data>
+</odoo>

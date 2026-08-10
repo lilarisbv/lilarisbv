@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+        <record id="mk_queue_job_form_view_inherit" model="ir.ui.view">
+            <field name="name">mk.queue.job.form.view.inherit</field>
+            <field name="model">mk.queue.job</field>
+            <field name="inherit_id" ref="base_marketplace.mk_queue_job_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet/group/group/field[@name='update_existing_product']" position="after">
+                    <field name="woo_update_image" invisible="not update_existing_product or type != 'product' or mk_instance_id.marketplace != 'woocommerce'" widget="boolean_toggle"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
