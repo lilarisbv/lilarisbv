@@ -1,0 +1,4052 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* base_marketplace
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-26 08:49+0000\n"
+"PO-Revision-Date: 2026-05-26 08:49+0000\n"
+"Last-Translator: TeqStars <support@teqstars.com>\n"
+"Language-Team: Chinese (Simplified) <https://teqstars.com>\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__tax_system
+msgid ""
+"1. Odoo Default Tax Behaviour – Taxes are applied using Odoo’s configured tax rates and fiscal position mappings.\n"
+"\n"
+"                                  2. Follow Marketplace Tax – The system creates a new tax in Odoo matching the marketplace rate if none exists, without applying fiscal position mappings.\n"
+"\n"
+"                                  3. Follow Marketplace Tax & Apply Fiscal Position – The system creates a new tax in Odoo matching the marketplace rate if none exists and then applies fiscal position mappings."
+msgstr ""
+"1. Odoo默认税务行为 – 使用Odoo中配置的税率和财务位置映射来应用税费。\n"
+"\n"
+"                                  2. 跟随市场税率 – 如果Odoo中不存在与市场税率匹配的税，则创建一个新税，不应用财务位置映射。\n"
+"\n"
+"                                  3. 跟随市场税率并应用财务位置 – 如果Odoo中不存在与市场税率匹配的税，则创建一个新税，然后应用财务位置映射。"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "<b>Forecasted Quantity:</b> Quantity on Hand - Outgoing + Incoming"
+msgstr "<b>预测数量：</b>手头数量 - 出库 + 入库"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "<b>Free To Use Quantity:</b> Quantity on Hand - Reserved Quantity"
+msgstr "<b>可用数量：</b>手头数量 - 预留数量"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid ""
+"<i class=\"fa fa-area-chart mk-saas-btn-icon\"/>\n"
+"                                            Dashboard"
+msgstr ""
+"<i class=\"fa fa-area-chart mk-saas-btn-icon\"/>\n"
+"                                            仪表盘"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid "<i class=\"fa fa-check\" title=\"Success\"/>"
+msgstr "<i class=\"fa fa-check\" title=\"成功\"/>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid ""
+"<i class=\"fa fa-check-circle mk-saas-badge-icon\" title=\"Connected\"/>\n"
+"                                                <span>Connected</span>"
+msgstr ""
+"<i class=\"fa fa-check-circle mk-saas-badge-icon\" title=\"已连接\"/>\n"
+"                                                <span>已连接</span>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid ""
+"<i class=\"fa fa-clock-o mk-saas-view-logs-icon\"/>\n"
+"                                            View Logs"
+msgstr ""
+"<i class=\"fa fa-clock-o mk-saas-view-logs-icon\"/>\n"
+"                                            查看日志"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid ""
+"<i class=\"fa fa-exchange mk-saas-btn-icon\"/>\n"
+"                                            Operations"
+msgstr ""
+"<i class=\"fa fa-exchange mk-saas-btn-icon\"/>\n"
+"                                            操作"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid "<i class=\"fa fa-exclamation\" title=\"Warning\"/>"
+msgstr "<i class=\"fa fa-exclamation\" title=\"警告\"/>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid ""
+"<i class=\"fa fa-exclamation-triangle mk-saas-alert-icon\" title=\"Attention"
+" Needed\"/>"
+msgstr "<i class=\"fa fa-exclamation-triangle mk-saas-alert-icon\" title=\"需要注意\"/>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid "<i class=\"fa fa-file-text-o mk-saas-stat-icon\" title=\"Invoices\"/>"
+msgstr "<i class=\"fa fa-file-text-o mk-saas-stat-icon\" title=\"发票\"/>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid ""
+"<i class=\"fa fa-flask mk-saas-badge-icon\" title=\"Test Mode\"/>\n"
+"                                                <span>Test Mode</span>"
+msgstr ""
+"<i class=\"fa fa-flask mk-saas-badge-icon\" title=\"测试模式\"/>\n"
+"                                                <span>测试模式</span>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid ""
+"<i class=\"fa fa-line-chart mk-saas-btn-icon\"/>\n"
+"                                            Reports"
+msgstr ""
+"<i class=\"fa fa-line-chart mk-saas-btn-icon\"/>\n"
+"                                            报告"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid "<i class=\"fa fa-product-hunt mk-saas-stat-icon\" title=\"Listings\"/>"
+msgstr "<i class=\"fa fa-product-hunt mk-saas-stat-icon\" title=\"商品列表\"/>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid "<i class=\"fa fa-shopping-cart mk-saas-stat-icon\" title=\"Orders\"/>"
+msgstr "<i class=\"fa fa-shopping-cart mk-saas-stat-icon\" title=\"订单\"/>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid "<i class=\"fa fa-tasks mk-saas-stat-icon\" title=\"Queues\"/>"
+msgstr "<i class=\"fa fa-tasks mk-saas-stat-icon\" title=\"队列\"/>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid "<i class=\"fa fa-times\" title=\"Failed\"/>"
+msgstr "<i class=\"fa fa-times\" title=\"失败\"/>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid "<i class=\"fa fa-truck mk-saas-stat-icon\" title=\"Shipments\"/>"
+msgstr "<i class=\"fa fa-truck mk-saas-stat-icon\" title=\"发货\"/>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid "<i class=\"fa fa-users mk-saas-stat-icon\" title=\"Customers\"/>"
+msgstr "<i class=\"fa fa-users mk-saas-stat-icon\" title=\"客户\"/>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid ""
+"<span class=\"badge badge-warning text-uppercase "
+"o_sample_data_label\">Sample data</span>"
+msgstr "<span class=\"badge badge-warning text-uppercase o_sample_data_label\">示例数据</span>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid "<span class=\"mk-saas-alert-title\">Attention Needed</span>"
+msgstr "<span class=\"mk-saas-alert-title\">需要注意</span>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid ""
+"<span class=\"mk-saas-sync-dot\"/>\n"
+"                                        <span class=\"mk-saas-sync-label\">Last Sync:</span>"
+msgstr ""
+"<span class=\"mk-saas-sync-dot\"/>\n"
+"                                        <span class=\"mk-saas-sync-label\">最后同步：</span>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_form_view
+msgid "<span class=\"o_stat_text\">Cancelled</span>"
+msgstr "<span class=\"o_stat_text\">已取消</span>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_form_view
+msgid "<span class=\"o_stat_text\">Failed</span>"
+msgstr "<span class=\"o_stat_text\">失败</span>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_form_view
+msgid "<span class=\"o_stat_text\">Listings</span>"
+msgstr "<span class=\"o_stat_text\">商品列表</span>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_form_view
+msgid "<span class=\"o_stat_text\">Orders</span>"
+msgstr "<span class=\"o_stat_text\">订单</span>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_form_view
+msgid "<span class=\"o_stat_text\">Processed</span>"
+msgstr "<span class=\"o_stat_text\">已处理</span>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_form_view
+msgid "<span class=\"o_stat_text\">Retry Count</span>"
+msgstr "<span class=\"o_stat_text\">重试次数</span>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_form_view
+msgid "<span class=\"o_stat_text\">To Process</span>"
+msgstr "<span class=\"o_stat_text\">待处理</span>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_form_view
+msgid "<span class=\"o_stat_text\">Total</span>"
+msgstr "<span class=\"o_stat_text\">总计</span>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_listing_image_kanban
+msgid "<span class=\"text-bg-primary\">Template</span>"
+msgstr "<span class=\"text-bg-primary\">模板</span>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_listing_image_kanban
+msgid "<span class=\"text-bg-secondary\">Variant</span>"
+msgstr "<span class=\"text-bg-secondary\">变体</span>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_picking_form_inherit_base_marketplace
+msgid ""
+"<strong>\n"
+"                            Order has been successfully updated/fulfilled in marketplace.\n"
+"                        </strong>"
+msgstr ""
+"<strong>\n"
+"                            订单已在电商平台成功更新/完成。\n"
+"                        </strong>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_picking_form_inherit_base_marketplace
+msgid ""
+"<strong>\n"
+"                            The order has already been canceled on the marketplace.\n"
+"                        </strong>"
+msgstr ""
+"<strong>\n"
+"                            该订单已在电商平台取消。\n"
+"                        </strong>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "API Fetch record limit?"
+msgstr "API获取记录限制？"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__api_limit
+msgid "API Record Count"
+msgstr "API记录数量"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_listing_image_kanban
+msgid "Acceptable file size"
+msgstr "可接受的文件大小"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__access_warning
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__access_warning
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__access_warning
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__access_warning
+msgid "Access warning"
+msgstr "访问警告"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__tax_account_id
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__tax_refund_account_id
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Account that will be set while creating tax."
+msgstr "创建税务时将设置的账户。"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__message_needaction
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__message_needaction
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__message_needaction
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__message_needaction
+msgid "Action Needed"
+msgstr "需要操作"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__activity_ids
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__activity_ids
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__activity_ids
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__activity_ids
+msgid "Activities"
+msgstr "活动"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__mk_activity_type_id
+msgid "Activity"
+msgstr "活动"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Activity Configuration"
+msgstr "活动配置"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__activity_exception_decoration
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__activity_exception_decoration
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__activity_exception_decoration
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "活动异常装饰"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__activity_state
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__activity_state
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__activity_state
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__activity_state
+msgid "Activity State"
+msgstr "活动状态"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__activity_type_icon
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__activity_type_icon
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__activity_type_icon
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "活动类型图标"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_form_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_item_form_view
+msgid "Add Image"
+msgstr "添加图片"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_product_add_to_listing
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_operation_add_to_listing
+msgid "Add to Listing"
+msgstr "添加到商品列表"
+
+#. module: base_marketplace
+#: model:product.template,name:base_marketplace.marketplace_adjustment_product_product_template
+msgid "Adjustment Product"
+msgstr "调整产品"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_instance__log_level__all
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_notification__type__all
+msgid "All"
+msgstr "全部"
+
+#. module: base_marketplace
+#: model:ir.ui.menu,name:base_marketplace.menu_marketplace_listing_all
+msgid "All Listing"
+msgstr "所有商品列表"
+
+#. module: base_marketplace
+#: model:ir.ui.menu,name:base_marketplace.menu_marketplace_listing_all_items
+msgid "All Listing Items"
+msgstr "所有商品列表项目"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_queue_job_all
+msgid "All Queue"
+msgstr "所有队列"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_cancel_order__create_refund_option_visible
+msgid "Allow Credit Note Creation"
+msgstr "允许创建贷记单"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "Amount"
+msgstr "金额"
+
+#. module: base_marketplace
+#: model:ir.model.constraint,message:base_marketplace.constraint_mk_notification_user_id_type_unique
+msgid ""
+"An user cannot have twice the same notification type for this marketplace."
+msgstr "同一用户不能对此电商平台拥有两次相同的通知类型。"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Analytic Account"
+msgstr "分析账户"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__analytic_distribution
+msgid "Analytic Distribution"
+msgstr "分析分配"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__analytic_precision
+msgid "Analytic Precision"
+msgstr "分析精度"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_marketplace_scope_wizard_form
+msgid "App settings."
+msgstr "应用设置。"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "Apply"
+msgstr "应用"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_instance.py:0
+msgid "As of %s"
+msgstr "截至 %s"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__stock_field_id
+msgid "At the time of Export/Update inventory this field is used."
+msgstr "导出/更新库存时使用此字段。"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__message_attachment_count
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__message_attachment_count
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__message_attachment_count
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__message_attachment_count
+msgid "Attachment Count"
+msgstr "附件数量"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__is_create_product
+msgid "Auto Create Product?"
+msgstr "自动创建产品？"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid ""
+"Auto validate inventory adjustment right after inventory import process."
+msgstr "库存导入后自动验证库存调整。"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__cron_ids
+msgid "Automated Actions"
+msgstr "自动化操作"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Automatic Jobs"
+msgstr "自动任务"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__automatic_jobs_note
+msgid "Automatic Jobs Note"
+msgstr "自动任务备注"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Automatically set category to newly created Odoo products."
+msgstr "自动为新创建的Odoo产品设置类别。"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_order_workflow_config_ts__available_payment_method_line_ids
+msgid "Available Payment Method Line"
+msgstr "可用付款方式明细"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "Average Order Value"
+msgstr "平均订单价值"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/xml/marketplace_onboarding.xml:0
+msgid "Back"
+msgstr "返回"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__barcode
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_instance__sync_product_with__barcode
+msgid "Barcode"
+msgstr "条码"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_instance__sync_product_with__barcode_or_sku
+msgid "Barcode or SKU"
+msgstr "条码或SKU"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Batch size of process queues"
+msgstr "处理队列的批量大小"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_operation_add_to_listing
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_operation_export_form_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_operation_export_listing_to_mk_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_operation_import_form_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_operation_update_listing_item_to_mk_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_operation_update_listing_to_mk_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_stock_return_picking_form
+msgid "Cancel"
+msgstr "取消"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_mk_cancel_order
+msgid "Cancel Order In Marketplace"
+msgstr "在电商平台取消订单"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_sale_order__canceled_in_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_stock_picking__cancel_in_marketplace
+msgid "Cancel in Marketplace"
+msgstr "在电商平台取消"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_queue_job_line__state__cancelled
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_line_search_view
+msgid "Cancelled"
+msgstr "已取消"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__cancelled_count
+msgid "Cancelled Count"
+msgstr "取消数量"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_item_form_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_item_tree_view
+msgid "Change Sale Price"
+msgstr "更改销售价格"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_marketplace_scope_wizard_form
+msgid "Check Again"
+msgstr "重新检查"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/onboarding/marketplace_onboarding.js:0
+msgid "Choose a marketplace"
+msgstr "选择电商平台"
+
+#. module: base_marketplace
+#: model_terms:ir.actions.act_window,help:base_marketplace.action_marketplace_overview
+msgid "Click here"
+msgstr "点击这里"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/errors/error_dialogs.xml:0
+#: code:addons/base_marketplace/static/src/js/onboarding/marketplace_onboarding.js:0
+msgid "Close"
+msgstr "关闭"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__color
+msgid "Color Index"
+msgstr "颜色索引"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__company_id
+#: model:ir.model.fields,field_description:base_marketplace.field_order_workflow_config_ts__company_id
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Company"
+msgstr "公司"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__company_currency_id
+msgid "Company Currency"
+msgstr "公司货币"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Company related to this Instance."
+msgstr "与此实例相关联的公司。"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/onboarding/marketplace_onboarding.js:0
+msgid "Complete this step before continuing."
+msgstr "请在继续之前完成此步骤。"
+
+#. module: base_marketplace
+#: model:ir.ui.menu,name:base_marketplace.menu_marketplace_configuration
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Configuration"
+msgstr "配置"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/onboarding/marketplace_onboarding.js:0
+msgid "Configuration saved."
+msgstr "配置已保存。"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_marketplace_scope_wizard_form
+msgid "Confirm"
+msgstr "确认"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_order_workflow_config_ts__is_confirm_order
+msgid "Confirm Order"
+msgstr "确认订单"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_marketplace_scope_wizard
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_marketplace_scope_wizard_form
+msgid "Confirm Permissions"
+msgstr "确认权限"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_instance__state__confirmed
+msgid "Confirmed"
+msgstr "已确认"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_res_partner
+msgid "Contact"
+msgstr "联系人"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/errors/error_dialogs.xml:0
+msgid "Copy error to clipboard"
+msgstr "复制错误到剪贴板"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/wizards/operation.py:0
+msgid "Could not find any listing for export."
+msgstr "未找到可导出的商品列表。"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/wizards/operation.py:0
+msgid "Could not find any listing for update."
+msgstr "未找到可更新的商品列表。"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/simple_panel_handler.js:0
+msgid ""
+"Could not open the Setup Wizard. Please use the Setup Wizard control in the "
+"screen header or contact your administrator."
+msgstr "无法打开设置向导。请使用屏幕标题中的设置向导控件或联系管理员。"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/onboarding/marketplace_onboarding.js:0
+msgid "Could not start onboarding for this marketplace."
+msgstr "无法启动此电商平台的引导程序。"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__country_id
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Country"
+msgstr "国家"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Country related to Instance."
+msgstr "与实例相关联的国家。"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_order_workflow_config_ts__is_create_invoice
+msgid "Create Invoice"
+msgstr "创建发票"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_sale_order_tree_view
+msgid "Create Invoices"
+msgstr "创建发票"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__is_create_products
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Create Odoo Products?"
+msgstr "创建Odoo产品？"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Create Odoo product if not found while doing sync operation."
+msgstr "同步操作时如果未找到Odoo产品则创建。"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_cancel_order__is_create_refund
+msgid "Create Refund?"
+msgstr "创建退款？"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__is_create_single_invoice
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Create Single Invoice?"
+msgstr "创建单张发票？"
+
+#. module: base_marketplace
+#: model_terms:ir.actions.act_window,help:base_marketplace.marketplace_ent_sale_report_action_dashboard
+msgid "Create a new sales order"
+msgstr "创建新销售订单"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__is_create_single_invoice
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Create invoice only when all products are ready to be invoiced."
+msgstr "仅当所有产品准备好开票时才创建发票。"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_marketplace_scope_wizard__create_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_cancel_order__create_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__create_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__create_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_image__create_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__create_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_log__create_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_log_line__create_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_notification__create_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__create_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__create_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job_line__create_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_order_workflow_config_ts__create_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_res_partner_mk__create_uid
+msgid "Created by"
+msgstr "创建人"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_marketplace_scope_wizard__create_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_cancel_order__create_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__create_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__create_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_image__create_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__create_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_log__create_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_log_line__create_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_notification__create_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__create_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__create_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job_line__create_date
+#: model:ir.model.fields,field_description:base_marketplace.field_order_workflow_config_ts__create_date
+#: model:ir.model.fields,field_description:base_marketplace.field_res_partner_mk__create_date
+msgid "Created on"
+msgstr "创建日期"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__listing_create_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__item_create_date
+msgid "Creation Date"
+msgstr "创建日期"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Credentials"
+msgstr "凭证"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_cancel_order__date_invoice
+msgid "Credit Note Date"
+msgstr "贷记单日期"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_marketplace_credit_notes
+#: model:ir.ui.menu,name:base_marketplace.menu_credit_notes
+msgid "Credit Notes"
+msgstr "贷记单"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__cron_message
+msgid "Cron/Schedule Action Message"
+msgstr "定时/计划操作消息"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_cancel_order__currency_id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__currency_id
+msgid "Currency"
+msgstr "货币"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "Custom"
+msgstr "自定义"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/filters/filter_date.xml:0
+msgid "Custom Dates"
+msgstr "自定义日期"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_queue_job_customer
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Customer"
+msgstr "客户"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__mk_customer_count
+msgid "Customer Count"
+msgstr "客户数量"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_queue_job__type__customer
+msgid "Customer Import"
+msgstr "客户导入"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "Customer Name"
+msgstr "客户名称"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__access_url
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing__access_url
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing_item__access_url
+#: model:ir.model.fields,help:base_marketplace.field_mk_queue_job__access_url
+msgid "Customer Portal URL"
+msgstr "客户门户URL"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_marketplace_customer
+#: model:ir.actions.act_window,name:base_marketplace.action_marketplace_customer_kanban
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__mk_customer_ids
+#: model:ir.ui.menu,name:base_marketplace.menu_customer
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid "Customers"
+msgstr "客户"
+
+#. module: base_marketplace
+#: model:ir.ui.menu,name:base_marketplace.menu_mk_dashboard
+msgid "Dashboard"
+msgstr "仪表板"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job_line__data_to_process
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_line_form_view
+msgid "Data"
+msgstr "数据"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.js:0
+msgid "Date cannot be empty"
+msgstr "日期不能为空"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Date were listing are imported."
+msgstr "商品列表导入的日期。"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Date were listing's price are updated in marketplace."
+msgstr "商品列表价格在电商平台更新的日期。"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__last_stock_import_date
+msgid "Date were stock imported from marketplace."
+msgstr "从电商平台导入库存的日期。"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__last_stock_update_date
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Date were stock updated to marketplace."
+msgstr "库存更新到电商平台的日期。"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Date where Stock are imported from Marketplace."
+msgstr "从电商平台导入库存的日期。"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Date where customers are imported."
+msgstr "客户导入的日期。"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Date where order are imported."
+msgstr "订单导入的日期。"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "Dates"
+msgstr "日期"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_instance__activity_date_deadline_range_type__days
+msgid "Days"
+msgstr "天"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid ""
+"Default Pricelist (If not set, Automatically set at the time of instance "
+"confirmation)"
+msgstr "默认价格表（如果未设置，将在实例确认时自动设置）"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Default Tax System"
+msgstr "默认税务系统"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__order_workflow_config_ts__picking_policy__one
+msgid "Deliver all products at once"
+msgstr "一次性交付所有产品"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__order_workflow_config_ts__picking_policy__direct
+msgid "Deliver each product when available"
+msgstr "每个产品可用时分别交付"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_sale_report__delivery_amount
+msgid "Delivery Amount"
+msgstr "配送金额"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__delivery_product_id
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Delivery Product"
+msgstr "配送产品"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__delivery_product_id
+msgid "Delivery product used in sale order line."
+msgstr "销售订单行中使用的配送产品。"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__description
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_form_view
+msgid "Description"
+msgstr "描述"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing_item__sequence
+msgid "Determine the display order"
+msgstr "确定显示顺序"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__is_export_product_sale_price
+msgid ""
+"Directly exporting the product's sale price instead of the price from the "
+"pricelist"
+msgstr "直接导出产品的销售价格而不是价格表中的价格"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__discount_product_id
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Discount Product"
+msgstr "折扣产品"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__discount_product_id
+msgid "Discount product used in sale order line."
+msgstr "销售订单行中使用的折扣产品。"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_account_move__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_account_tax__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_ir_actions_server__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_ir_cron__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_marketplace_scope_wizard__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_cancel_order__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_image__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_log__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_log_line__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_notification__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job_line__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_order_workflow_config_ts__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_product_product__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_product_template__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_product_template_attribute_line__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_res_partner__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_res_partner_mk__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_res_users__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_sale_order__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_sale_order_line__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_sale_report__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_stock_move__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_stock_picking__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_stock_quant__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_stock_return_picking__display_name
+msgid "Display Name"
+msgstr "显示名称"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__distribution_analytic_account_ids
+msgid "Distribution Analytic Account"
+msgstr "分配分析账户"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_instance__state__draft
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_queue_job__state__draft
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_queue_job_line__state__draft
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_search_view
+msgid "Draft"
+msgstr "草稿"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__draft_count
+msgid "Draft Count"
+msgstr "草稿数量"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_line_search_view
+msgid "Draft/To Process"
+msgstr "草稿/待处理"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__activity_date_deadline_range
+msgid "Due Date In"
+msgstr "截止日期"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__activity_date_deadline_range_type
+msgid "Due type"
+msgstr "截止类型"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "End Date :"
+msgstr "结束日期："
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.js:0
+msgid "End of Month"
+msgstr "月末"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.js:0
+msgid "End of Quarter"
+msgstr "季末"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.js:0
+msgid "End of Year"
+msgstr "年末"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__environment
+msgid "Environment"
+msgstr "环境"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_instance__log_level__error
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_instance__state__error
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_log_line__state__error
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_notification__type__error
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid "Error"
+msgstr "错误"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_log__operation_type__export
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_operation_export_form_view
+msgid "Export"
+msgstr "导出"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_operation_export_listing_to_mk_view
+msgid "Export Listing"
+msgstr "导出商品列表"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_product_export_to_marketplace
+msgid "Export New Products in Marketplace"
+msgstr "在电商平台导出新产品"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__is_export_product_sale_price
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Export Odoo Product's Sale Price?"
+msgstr "导出Odoo产品销售价格？"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_marketplace_export_operation
+msgid "Export Operation"
+msgstr "导出操作"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__is_export_products
+msgid "Export Products?"
+msgstr "导出产品？"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__export_qty_type
+msgid "Export Qty Type"
+msgstr "导出数量类型"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__export_qty_value
+msgid "Export Qty Value"
+msgstr "导出数量值"
+
+#. module: base_marketplace
+#: model:ir.actions.server,name:base_marketplace.action_listing_operation_to_marketplace
+msgid "Export/Update Listing in Marketplace"
+msgstr "在电商平台导出/更新商品列表"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_tree_view
+msgid "Export/Update to Marketplace"
+msgstr "导出/更新到电商平台"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid ""
+"Exporting the sale price of the Odoo product directly, rather than using the price from the pricelist. However, it still updates the price of\n"
+"                                                the pricelist item."
+msgstr "直接导出Odoo产品的销售价格，而不是使用价格表中的价格。但仍会更新价格表项目的价格。"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__failed_count
+msgid "Fail Count"
+msgstr "失败数量"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_queue_job__state__failed
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_queue_job_line__state__failed
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_line_search_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_search_view
+msgid "Failed"
+msgstr "失败"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__failed_orders_count
+msgid "Failed Orders Count"
+msgstr "失败订单数量"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__failed_products_count
+msgid "Failed Products Count"
+msgstr "失败产品数量"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_instance.py:0
+msgid "Failed Queue Lines"
+msgstr "失败队列行"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_instance.py:0
+#: model:ir.actions.act_window,name:base_marketplace.action_marketplace_failed_queue_job
+msgid "Failed Queues"
+msgstr "失败队列"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__sync_failed_count
+msgid "Failed Sync Count"
+msgstr "同步失败数量"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_listing_item__export_qty_type__fix
+msgid "Fix"
+msgstr "固定"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_instance__tax_system__according_to_marketplace
+msgid "Follow Marketplace Tax (no fiscal position mappings)"
+msgstr "遵循电商平台税务（不应用财务位置映射）"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_instance__tax_system__marketplace_with_fiscal_position
+msgid "Follow Marketplace Tax and applies fiscal position mappings"
+msgstr "遵循电商平台税务并应用财务位置映射"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__message_follower_ids
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__message_follower_ids
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__message_follower_ids
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__message_follower_ids
+msgid "Followers"
+msgstr "关注者"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__message_partner_ids
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__message_partner_ids
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__message_partner_ids
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "关注者（合作伙伴）"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__activity_type_icon
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing__activity_type_icon
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing_item__activity_type_icon
+#: model:ir.model.fields,help:base_marketplace.field_mk_queue_job__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Font Awesome 图标，如 fa-tasks"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_order_workflow_config_ts__force_invoice_date
+msgid "Force Invoice Date"
+msgstr "强制发票日期"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_order_workflow_config_ts__is_force_payment_reference
+msgid "Force Payment Reference"
+msgstr "强制付款参考"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_instance.py:0
+msgid ""
+"From %(date_from)s\n"
+"to  %(date_to)s"
+msgstr ""
+"从 %(date_from)s\n"
+"至  %(date_to)s"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__from_date
+msgid "From Date"
+msgstr "起始日期"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "From:"
+msgstr "从："
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_marketplace_scope_wizard__permissions_html_granted
+msgid "Granted HTML"
+msgstr "已授权HTML"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_marketplace_scope_wizard_form
+msgid "Granted Scopes"
+msgstr "已授权范围"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__has_message
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__has_message
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__has_message
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__has_message
+msgid "Has Message"
+msgstr "有消息"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid "Healthy"
+msgstr "正常"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Help"
+msgstr "帮助"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_listing_image_kanban
+msgid "Huge file size. The image should be optimized/reduced."
+msgstr "文件过大。图片应进行优化/压缩。"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_account_move__id
+#: model:ir.model.fields,field_description:base_marketplace.field_account_tax__id
+#: model:ir.model.fields,field_description:base_marketplace.field_ir_actions_server__id
+#: model:ir.model.fields,field_description:base_marketplace.field_ir_cron__id
+#: model:ir.model.fields,field_description:base_marketplace.field_marketplace_scope_wizard__id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_cancel_order__id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_image__id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_log__id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_log_line__id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_notification__id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job_line__id
+#: model:ir.model.fields,field_description:base_marketplace.field_order_workflow_config_ts__id
+#: model:ir.model.fields,field_description:base_marketplace.field_product_product__id
+#: model:ir.model.fields,field_description:base_marketplace.field_product_template__id
+#: model:ir.model.fields,field_description:base_marketplace.field_product_template_attribute_line__id
+#: model:ir.model.fields,field_description:base_marketplace.field_res_partner__id
+#: model:ir.model.fields,field_description:base_marketplace.field_res_partner_mk__id
+#: model:ir.model.fields,field_description:base_marketplace.field_res_users__id
+#: model:ir.model.fields,field_description:base_marketplace.field_sale_order__id
+#: model:ir.model.fields,field_description:base_marketplace.field_sale_order_line__id
+#: model:ir.model.fields,field_description:base_marketplace.field_sale_report__id
+#: model:ir.model.fields,field_description:base_marketplace.field_stock_move__id
+#: model:ir.model.fields,field_description:base_marketplace.field_stock_picking__id
+#: model:ir.model.fields,field_description:base_marketplace.field_stock_quant__id
+#: model:ir.model.fields,field_description:base_marketplace.field_stock_return_picking__id
+msgid "ID"
+msgstr "ID"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__activity_exception_icon
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__activity_exception_icon
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__activity_exception_icon
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__activity_exception_icon
+msgid "Icon"
+msgstr "图标"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__activity_exception_icon
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing__activity_exception_icon
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing_item__activity_exception_icon
+#: model:ir.model.fields,help:base_marketplace.field_mk_queue_job__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "用于指示异常活动的图标。"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__is_create_products
+msgid "If Odoo products not found while Sync create Odoo products."
+msgstr "同步时如果找不到Odoo产品则创建Odoo产品。"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_operation__update_existing_product
+msgid "If True than it will update listing and listing item."
+msgstr "如果为真，则将更新商品列表和商品列表项目。"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_operation__update_product_price
+#: model:ir.model.fields,help:base_marketplace.field_mk_queue_job__update_product_price
+msgid "If True than it will update price in instance's pricelist."
+msgstr "如果为真，则将更新实例价格表中的价格。"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_queue_job__update_existing_product
+msgid "If True than product detail will be updated."
+msgstr "如果为真，则将更新产品详情。"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__message_needaction
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing__message_needaction
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing_item__message_needaction
+#: model:ir.model.fields,help:base_marketplace.field_mk_queue_job__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "如果勾选，新消息需要您的关注。"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__message_has_error
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__message_has_sms_error
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing__message_has_error
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing__message_has_sms_error
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing_item__message_has_error
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing_item__message_has_sms_error
+#: model:ir.model.fields,help:base_marketplace.field_mk_queue_job__message_has_error
+#: model:ir.model.fields,help:base_marketplace.field_mk_queue_job__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "如果勾选，部分消息存在发送错误。"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_res_users__show_marketplace_quick_onboarding
+msgid ""
+"If enabled, the Quick Onboarding panel will be displayed on the marketplace "
+"overview screen."
+msgstr "如果启用，快速引导面板将显示在电商平台概览屏幕上。"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_order_workflow_config_ts__is_force_payment_reference
+msgid ""
+"If enabled, the marketplace order number will be used as the payment "
+"reference on the invoice. This helps with reconciliation of payments."
+msgstr "如果启用，电商平台订单号将用作发票上的付款参考。这有助于付款对账。"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid ""
+"If it's true, the order will be imported with the currency that is available in the marketplace. Otherwise, it will use the company's\n"
+"                                                currency."
+msgstr "如果为真，订单将以电商平台中可用的货币导入。否则，将使用公司货币。"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__use_marketplace_currency
+msgid ""
+"If it's true, the order will be imported with the currency that is available"
+" in the marketplace. Otherwise, it will use the company's currency."
+msgstr "如果为真，订单将以电商平台中可用的货币导入。否则，将使用公司货币。"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__is_sync_images
+msgid "If true then Images will be sync at the time of Import Listing."
+msgstr "如果为真，则导入商品列表时将同步图片。"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__is_validate_adjustment
+msgid ""
+"If true then validate Inventory adjustment at the time of Import Stock "
+"Operation."
+msgstr "如果为真，则在导入库存操作时验证库存调整。"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_order_workflow_config_ts__picking_policy
+msgid ""
+"If you deliver all products at once, the delivery order will be scheduled "
+"based on the greatest product lead time. Otherwise, it will be based on the "
+"shortest."
+msgstr "如果一次性交付所有产品，配送单将根据最长产品提前期安排。否则，将根据最短提前期安排。"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_marketplace_scope_wizard_form
+msgid "Ignore & Confirm"
+msgstr "忽略并确认"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_image__image
+msgid "Image"
+msgstr "图片"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_image__image_hex
+msgid "Image Hex"
+msgstr "图片十六进制"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_listing_image_form
+msgid "Image Name"
+msgstr "图片名称"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_image__url
+msgid "Image URL"
+msgstr "图片URL"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__image_ids
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__image_ids
+msgid "Images"
+msgstr "图片"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Images will be sync at the time of Import Listing."
+msgstr "导入商品列表时将同步图片。"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_log__operation_type__import
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_operation_import_form_view
+msgid "Import"
+msgstr "导入"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__import_customers
+msgid "Import Customers"
+msgstr "导入客户"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__import_products
+msgid "Import Listing"
+msgstr "导入商品列表"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_marketplace_import_operation
+msgid "Import Operation"
+msgstr "导入操作"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__import_order_after_date
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Import Order After"
+msgstr "在此之后导入订单"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__import_orders
+msgid "Import Sale Orders"
+msgstr "导入销售订单"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__import_stock
+msgid "Import Stock"
+msgstr "导入库存"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid ""
+"Import orders that are created after the specified date. Any orders created "
+"prior to the given date will be skipped."
+msgstr "导入指定日期之后创建的订单。在给定日期之前创建的任何订单将被跳过。"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_item_form_view
+msgid "Information"
+msgstr "信息"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_marketplace_instance
+#: model:ir.model.fields,field_description:base_marketplace.field_account_bank_statement_line__mk_instance_id
+#: model:ir.model.fields,field_description:base_marketplace.field_account_move__mk_instance_id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__mk_instance_id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__mk_instance_id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_log__mk_instance_id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_log_line__mk_instance_id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_notification__mk_instance_id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__mk_instance_id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job_line__mk_instance_id
+#: model:ir.model.fields,field_description:base_marketplace.field_res_partner_mk__mk_instance_id
+#: model:ir.model.fields,field_description:base_marketplace.field_sale_order__mk_instance_id
+#: model:ir.model.fields,field_description:base_marketplace.field_sale_report__mk_instance_id
+#: model:ir.ui.menu,name:base_marketplace.menu_marketplace_instance
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_listing_search_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_log_view_search
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_search_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_line_search_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_search_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_marketplace_report_search_inherit
+msgid "Instance"
+msgstr "实例"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Instance Name"
+msgstr "实例名称"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__lang
+msgid "Instance language."
+msgstr "实例语言。"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid "Integration Health"
+msgstr "集成健康状态"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__default_code
+msgid "Internal Reference"
+msgstr "内部参考"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing_item__barcode
+msgid "International Article Number used for product identification."
+msgstr "用于产品识别的国际商品编号。"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_instance.py:0
+msgid "Invalid marketplace."
+msgstr "无效的电商平台。"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_item_form_view
+msgid "Inventory"
+msgstr "库存"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.order_workflow_form_view
+msgid "Invoice"
+msgstr "发票"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__mk_invoice_count
+msgid "Invoice Count"
+msgstr "发票数量"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_marketplace_invoice
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__mk_invoice_ids
+#: model:ir.ui.menu,name:base_marketplace.menu_invoices
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid "Invoices"
+msgstr "发票"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__message_is_follower
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__message_is_follower
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__message_is_follower
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__message_is_follower
+msgid "Is Follower"
+msgstr "是关注者"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_stock_picking__is_fbm_order
+msgid "Is Fulfillment By Marketplace Order?"
+msgstr "是否为电商平台履行订单？"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_sale_order_line__is_discount
+msgid "Is Marketplace Discount"
+msgstr "是否为电商平台折扣"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__is_sample_data
+msgid "Is Sample Data"
+msgstr "是否为示例数据"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_item_form_view
+msgid "Item Name"
+msgstr "项目名称"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__item_count
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_form_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.product_template_only_form_view
+msgid "Items"
+msgstr "项目"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.order_workflow_form_view
+msgid "Journal"
+msgstr "日记账"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_account_move
+msgid "Journal Entry"
+msgstr "日记账分录"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__kanban_badge_color
+msgid "Kanban Badge Color"
+msgstr "看板徽章颜色"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__kanban_dashboard_graph
+msgid "Kanban Dashboard Graph"
+msgstr "看板仪表板图表"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__lang
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Language"
+msgstr "语言"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Language related to Instance."
+msgstr "与实例相关联的语言。"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Last Customer Imported On"
+msgstr "最后客户导入日期"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__last_customer_import_date
+msgid "Last Customers Imported On"
+msgstr "最后客户导入日期"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "Last Financial Year"
+msgstr "上一财年"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__last_listing_import_date
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Last Listing Imported On"
+msgstr "最后商品列表导入日期"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__last_listing_price_update_date
+msgid "Last Listing Price Updated On"
+msgstr "最后商品列表价格更新日期"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Last Listing's Price Updated On"
+msgstr "最后商品列表价格更新日期"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "Last Month"
+msgstr "上个月"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__last_order_sync_date
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Last Order Imported On"
+msgstr "最后订单导入日期"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Last Processed On"
+msgstr "最后处理日期"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "Last Quarter"
+msgstr "上个季度"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__last_stock_update_date
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Last Stock Exported On"
+msgstr "最后库存导出日期"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__last_stock_import_date
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Last Stock Imported On"
+msgstr "最后库存导入日期"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__last_sync_display
+msgid "Last Sync Display"
+msgstr "最后同步显示"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_marketplace_scope_wizard__write_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_cancel_order__write_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__write_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__write_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_image__write_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__write_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_log__write_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_log_line__write_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_notification__write_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__write_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__write_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job_line__write_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_order_workflow_config_ts__write_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_res_partner_mk__write_uid
+msgid "Last Updated by"
+msgstr "最后更新人"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_marketplace_scope_wizard__write_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_cancel_order__write_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__write_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__write_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_image__write_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__write_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_log__write_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_log_line__write_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_notification__write_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__write_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__write_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job_line__write_date
+#: model:ir.model.fields,field_description:base_marketplace.field_order_workflow_config_ts__write_date
+#: model:ir.model.fields,field_description:base_marketplace.field_res_partner_mk__write_date
+msgid "Last Updated on"
+msgstr "最后更新日期"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_search_view
+msgid "Listed"
+msgstr "已上架"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__is_listed
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__is_listed
+msgid "Listed?"
+msgstr "已上架？"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/product.py:0
+#: model:ir.actions.act_window,name:base_marketplace.action_marketplace_listing_all
+#: model:ir.actions.act_window,name:base_marketplace.action_marketplace_listing_kanban
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__mk_listing_ids
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__mk_listing_id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job_line__mk_listing_id
+#: model:ir.model.fields,field_description:base_marketplace.field_product_product__mk_listing_ids
+#: model:ir.model.fields,field_description:base_marketplace.field_product_template__mk_listing_ids
+#: model:ir.ui.menu,name:base_marketplace.menu_marketplace_listing_main
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_listing_search_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_form_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_item_form_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_tree_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.product_template_only_form_view
+msgid "Listing"
+msgstr "商品列表"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__mk_listing_count
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__listing_count
+msgid "Listing Count"
+msgstr "商品列表数量"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_mk_listing_image
+msgid "Listing Image"
+msgstr "商品列表图片"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_listing_image_form
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_listing_image_kanban
+msgid "Listing Images"
+msgstr "商品列表图片"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_item_form_view
+msgid "Listing Item Name"
+msgstr "商品列表项目名称"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_listing_items_from_listing
+#: model:ir.actions.act_window,name:base_marketplace.action_marketplace_listing_items_all
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__listing_item_ids
+#: model:ir.model.fields,field_description:base_marketplace.field_product_product__mk_listing_item_ids
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_listing_search_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_item_tree_view
+msgid "Listing Items"
+msgstr "商品列表项目"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_form_view
+msgid "Listing Name"
+msgstr "商品列表名称"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_product_pricelistitem_mk
+msgid "Listing Pricing"
+msgstr "商品列表定价"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_search_view
+msgid "Listing Search"
+msgstr "商品列表搜索"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid "Listings"
+msgstr "商品列表"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_order_workflow_config_ts__is_lock_order
+msgid "Lock Confirmed Order"
+msgstr "锁定已确认订单"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_log_line__log_id
+msgid "Log ID"
+msgstr "日志ID"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__log_level
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Log Level"
+msgstr "日志级别"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_log_view_form
+msgid "Log Line"
+msgstr "日志行"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_log__log_line_ids
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job_line__log_line_ids
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_line_form_view
+msgid "Log Lines"
+msgstr "日志行"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_log__log_message
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_log_line__log_message
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_log_view_search
+msgid "Log Message"
+msgstr "日志消息"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_log__name
+msgid "Log Reference"
+msgstr "日志参考"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__mk_log_ids
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__mk_log_id
+#: model:ir.ui.menu,name:base_marketplace.menu_marketplace_logs_main
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Logs"
+msgstr "日志"
+
+#. module: base_marketplace
+#: model:res.groups,name:base_marketplace.group_base_marketplace_manager
+msgid "Manager"
+msgstr "管理员"
+
+#. module: base_marketplace
+#: model:ir.actions.server,name:base_marketplace.action_marked_as_processed
+msgid "Mark As Processed"
+msgstr "标记为已处理"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_form_view
+msgid "Mark as Processed"
+msgstr "标记为已处理"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_picking_form_inherit_base_marketplace
+msgid "Marked as Updated in Odoo"
+msgstr "已在Odoo中标记为已更新"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_image__mk_instance_id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__mk_instance_id
+#: model:ir.model.fields,field_description:base_marketplace.field_sale_order__marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_sale_report__marketplace_type
+#: model:ir.model.fields,field_description:base_marketplace.field_stock_picking__marketplace
+#: model:ir.module.category,name:base_marketplace.module_base_marketplace
+#: model:res.groups.privilege,name:base_marketplace.res_groups_privilege_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_marketplace_report_search_inherit
+msgid "Marketplace"
+msgstr "电商平台"
+
+#. module: base_marketplace
+#: model:ir.actions.server,name:base_marketplace.mk_process_queue_job_ir_actions_server
+msgid "Marketplace : Process Queue Job"
+msgstr "电商平台：处理队列任务"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_marketplace_scope_wizard
+msgid "Marketplace API Permissions Confirmation Wizard"
+msgstr "电商平台API权限确认向导"
+
+#. module: base_marketplace
+#: model:ir.ui.menu,name:base_marketplace.menu_menu_marketplace_automation
+msgid "Marketplace Automation"
+msgstr "电商平台自动化"
+
+#. module: base_marketplace
+#: model:ir.actions.act_url,name:base_marketplace.action_marketplace_dashboard
+#: model:ir.actions.act_url,name:base_marketplace.action_mk_general_dashboard
+#: model:ir.actions.client,name:base_marketplace.backend_mk_general_dashboard
+msgid "Marketplace Dashboard"
+msgstr "电商平台仪表板"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_sale_order_form_view
+msgid "Marketplace Detail"
+msgstr "电商平台详情"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_sale_order_line__marketplace_discount_amount
+msgid "Marketplace Discount Amount"
+msgstr "电商平台折扣金额"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_stock_picking__exception_message
+msgid "Marketplace Exception Message"
+msgstr "电商平台异常消息"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_stock_picking__is_marketplace_exception
+msgid "Marketplace Exception?"
+msgstr "电商平台异常？"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job_line__mk_id
+msgid "Marketplace ID"
+msgstr "电商平台ID"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__mk_id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_image__mk_id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__mk_id
+#: model:ir.model.fields,field_description:base_marketplace.field_res_partner_mk__mk_id
+#: model:ir.model.fields,field_description:base_marketplace.field_sale_order__mk_id
+#: model:ir.model.fields,field_description:base_marketplace.field_sale_order_line__mk_id
+msgid "Marketplace Identification"
+msgstr "电商平台标识"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__image
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__mk_instance_image
+msgid "Marketplace Image"
+msgstr "电商平台图片"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_instance.py:0
+#: model:ir.model,name:base_marketplace.model_mk_instance
+#: model:ir.model.fields,field_description:base_marketplace.field_ir_cron__mk_instance_id
+#: model:ir.model.fields,field_description:base_marketplace.field_stock_picking__mk_instance_id
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_tree_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_marketplace_report_search_inherit
+msgid "Marketplace Instance"
+msgstr "电商平台实例"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_marketplace_scope_wizard__mk_instance_name
+msgid "Marketplace Instance name"
+msgstr "电商平台实例名称"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_marketplace_invoice_kanban
+msgid "Marketplace Invoices"
+msgstr "电商平台发票"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_mk_listing
+msgid "Marketplace Listing"
+msgstr "电商平台商品列表"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__mk_listing_id
+msgid "Marketplace Listing ID"
+msgstr "电商平台商品列表ID"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_mk_listing_item
+msgid "Marketplace Listing Items"
+msgstr "电商平台商品列表项目"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_mk_log
+msgid "Marketplace Log"
+msgstr "电商平台日志"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_mk_log_line
+msgid "Marketplace Log Line"
+msgstr "电商平台日志行"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_marketplace_log
+#: model:ir.actions.act_window,name:base_marketplace.action_marketplace_log_kanban
+msgid "Marketplace Logs"
+msgstr "电商平台日志"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_image__marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__marketplace
+msgid "Marketplace Name"
+msgstr "电商平台名称"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_mk_notification
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__notification_ids
+msgid "Marketplace Notification"
+msgstr "电商平台通知"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_mk_operation
+msgid "Marketplace Operation"
+msgstr "电商平台操作"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_log_view_form
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_log_view_search
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_log_view_tree
+msgid "Marketplace Operation Log"
+msgstr "电商平台操作日志"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_log_line_view_form
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_log_line_view_tree
+msgid "Marketplace Operation Log Line"
+msgstr "电商平台操作日志行"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__mk_order_id
+msgid "Marketplace Order ID"
+msgstr "电商平台订单ID"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.order_workflow_form_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.order_workflow_tree_view
+msgid "Marketplace Order Workflow"
+msgstr "电商平台订单工作流"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_mk_queue_job
+msgid "Marketplace Queue Job"
+msgstr "电商平台队列任务"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_marketplace_orders_kanban
+msgid "Marketplace Sale Orders"
+msgstr "电商平台销售订单"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.marketplace_comm_sale_report_action_dashboard
+#: model:ir.actions.act_window,name:base_marketplace.marketplace_ent_sale_report_action_dashboard
+msgid "Marketplace Sales Analysis"
+msgstr "电商平台销售分析"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_instance.py:0
+msgid "Marketplace Setup"
+msgstr "电商平台设置"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_marketplace_shipment_kanban
+msgid "Marketplace Shipments"
+msgstr "电商平台发货"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_marketplace_report_search_inherit
+msgid "Marketplace Type"
+msgstr "电商平台类型"
+
+#. module: base_marketplace
+#: model:ir.module.category,description:base_marketplace.module_base_marketplace
+msgid "Marketplace User Access Right"
+msgstr "电商平台用户访问权限"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_sale_order__order_workflow_id
+msgid "Marketplace Workflow"
+msgstr "电商平台工作流"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "Marketplace wise Revenue"
+msgstr "各电商平台收入"
+
+#. module: base_marketplace
+#: model:ir.actions.server,name:base_marketplace.ir_actions_server_mk_general_dashboard
+msgid "Marketplace: Dashboard"
+msgstr "电商平台：仪表板"
+
+#. module: base_marketplace
+#: model:ir.actions.server,name:base_marketplace.action_redirect_sales_report
+msgid "Marketplace: Sales Analysis"
+msgstr "电商平台：销售分析"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__mk_instance_ids
+#: model:ir.model.fields,field_description:base_marketplace.field_res_partner__mk_instance_ids
+#: model:ir.model.fields,field_description:base_marketplace.field_res_users__mk_instance_ids
+#: model:ir.ui.menu,name:base_marketplace.menu_marketplace
+msgid "Marketplaces"
+msgstr "电商平台"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__image_medium
+msgid "Medium-sized photo"
+msgstr "中等尺寸照片"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__image_medium
+msgid ""
+"Medium-sized photo of the marketplace. It is automatically resized as a "
+"128x128px image, with aspect ratio preserved. "
+msgstr "电商平台的中等尺寸照片。自动调整为128x128像素图片，保持宽高比。"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__message_has_error
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__message_has_error
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__message_has_error
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__message_has_error
+msgid "Message Delivery error"
+msgstr "消息发送错误"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__message_ids
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__message_ids
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__message_ids
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__message_ids
+msgid "Messages"
+msgstr "消息"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_marketplace_scope_wizard__permissions_html_missing
+msgid "Missing HTML"
+msgstr "缺失HTML"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_marketplace_scope_wizard_form
+msgid "Missing Scopes"
+msgstr "缺失范围"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.js:0
+msgid "Month"
+msgstr "月"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_instance__activity_date_deadline_range_type__months
+msgid "Months"
+msgstr "月"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__my_activity_date_deadline
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__my_activity_date_deadline
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__my_activity_date_deadline
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "我的活动截止日期"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__name
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__name
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_image__name
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__name
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__name
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job_line__name
+#: model:ir.model.fields,field_description:base_marketplace.field_order_workflow_config_ts__name
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_log_view_search
+msgid "Name"
+msgstr "名称"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__name
+msgid "Name of your marketplace instance."
+msgstr "您的电商平台实例名称。"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/logs.py:0
+#: code:addons/base_marketplace/models/marketplace_queue_job.py:0
+msgid "New"
+msgstr "新建"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_instance.py:0
+msgid "New %s"
+msgstr "新建 %s"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/xml/marketplace_onboarding.xml:0
+msgid "Next"
+msgstr "下一步"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__activity_date_deadline
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__activity_date_deadline
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__activity_date_deadline
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "下一活动截止日期"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__activity_summary
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__activity_summary
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__activity_summary
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__activity_summary
+msgid "Next Activity Summary"
+msgstr "下一活动摘要"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__activity_type_id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__activity_type_id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__activity_type_id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__activity_type_id
+msgid "Next Activity Type"
+msgstr "下一活动类型"
+
+#. module: base_marketplace
+#: model_terms:ir.actions.act_window,help:base_marketplace.action_marketplace_overview
+msgid "No Marketplace Instance Found!"
+msgstr "未找到电商平台实例！"
+
+#. module: base_marketplace
+#: model_terms:ir.actions.act_window,help:base_marketplace.marketplace_ent_sale_report_action_dashboard
+msgid "No data yet!"
+msgstr "暂无数据！"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_order_workflow_config_ts__is_lock_order
+msgid "No longer edit orders once confirmed"
+msgstr "订单确认后不可再编辑"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_instance.py:0
+msgid ""
+"No marketplace connector modules are installed which support quick "
+"onboarding."
+msgstr "未安装支持快速引导的电商平台连接器模块。"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_queue_job__no_of_retry_count
+#: model:ir.model.fields,help:base_marketplace.field_stock_picking__no_of_retry_count
+msgid "No of count that queue went in process."
+msgstr "队列处理的次数。"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/xml/marketplace_onboarding.xml:0
+msgid "No step template is registered for this marketplace."
+msgstr "此电商平台未注册步骤模板。"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/onboarding/marketplace_onboarding.js:0
+msgid "None selected"
+msgstr "未选择"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_search_view
+msgid "Not Listed"
+msgstr "未上架"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Note:"
+msgstr "备注："
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Notification & Alerts"
+msgstr "通知与警报"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_notification__user_id
+msgid "Notify to"
+msgstr "通知给"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_sale_order_tree_view
+msgid "Number"
+msgstr "编号"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__message_needaction_counter
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__message_needaction_counter
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__message_needaction_counter
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__message_needaction_counter
+msgid "Number of Actions"
+msgstr "操作数量"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__number_of_variants_in_mk
+msgid "Number of Variants in Marketplace."
+msgstr "电商平台中的变体数量。"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__message_has_error_counter
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__message_has_error_counter
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__message_has_error_counter
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__message_has_error_counter
+msgid "Number of errors"
+msgstr "错误数量"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__message_needaction_counter
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing__message_needaction_counter
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing_item__message_needaction_counter
+#: model:ir.model.fields,help:base_marketplace.field_mk_queue_job__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "需要操作的消息数量"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__message_has_error_counter
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing__message_has_error_counter
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing_item__message_has_error_counter
+#: model:ir.model.fields,help:base_marketplace.field_mk_queue_job__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "发送错误的消息数量"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.js:0
+msgid "Odoo Warning"
+msgstr "Odoo警告"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__queue_batch_limit
+msgid "Odoo will create a batch with defined limit."
+msgstr "Odoo将按定义的限制创建批次。"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_instance__tax_system__default
+msgid "Odoo's Default Tax Behaviour (Taxes will be taken from Odoo Product)"
+msgstr "Odoo默认税务行为（税务将从Odoo产品中获取）"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.product_template_only_form_view
+msgid "Open Listing"
+msgstr "打开商品列表"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_form_view
+msgid "Open Record"
+msgstr "打开记录"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_log_line__state
+msgid "Operation Status"
+msgstr "操作状态"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_log__operation_type
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_log_view_search
+msgid "Operation Type"
+msgstr "操作类型"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/wizards/operation.py:0
+msgid ""
+"Operation not allowed! Make sure selected listing belongs to only one "
+"instance"
+msgstr "操作不允许！请确保所选商品列表只属于一个实例"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/wizards/operation.py:0
+msgid ""
+"Operation not allowed! Make sure selected listing belongs to only one "
+"instance."
+msgstr "操作不允许！请确保所选商品列表只属于一个实例。"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_listing_image_kanban
+msgid ""
+"Optimization required! Reduce the image size or increase your compression "
+"settings."
+msgstr "需要优化！请减小图片大小或增加压缩设置。"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_queue_job_order
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job_line__order_id
+#: model_terms:ir.ui.view,arch_db:base_marketplace.order_workflow_form_view
+msgid "Order"
+msgstr "订单"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__mk_order_count
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__order_count
+msgid "Order Count"
+msgstr "订单数量"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_notification__is_order_create
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_queue_job__type__order
+msgid "Order Import"
+msgstr "订单导入"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_order_workflow_config_ts__sale_journal_id
+msgid "Order Journal"
+msgstr "订单日记账"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_sale_order__mk_order_number
+msgid "Order Number"
+msgstr "订单编号"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__order_prefix
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Order Prefix"
+msgstr "订单前缀"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Order Prefix (FBM)"
+msgstr "订单前缀（FBM）"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__fbm_order_prefix
+msgid "Order Prefix (Fulfilment by Marketplace)"
+msgstr "订单前缀（电商平台履行）"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_order_workflow_config_ts
+msgid "Order Workflow Configuration"
+msgstr "订单工作流配置"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__order_prefix
+msgid "Order name will be set with given Prefix while importing Order."
+msgstr "导入订单时，订单名称将以给定前缀设置。"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Order name will be set with given Prefix while importing Orders."
+msgstr "导入订单时，订单名称将以给定前缀设置。"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__fbm_order_prefix
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid ""
+"Order name will be set with given Prefix while importing fulfillment by "
+"marketplace orders."
+msgstr "导入电商平台履行订单时，订单名称将以给定前缀设置。"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid ""
+"Order will name according to the marketplace order number instead of Odoo "
+"sequence."
+msgstr "订单将按电商平台订单号而不是Odoo序列命名。"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__mk_order_ids
+#: model:ir.ui.menu,name:base_marketplace.menu_mk_order_root
+#: model:ir.ui.menu,name:base_marketplace.menu_sale_order
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Orders"
+msgstr "订单"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_marketplace_overview
+#: model:ir.ui.menu,name:base_marketplace.menu_mk_overview
+msgid "Overview"
+msgstr "概览"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_queue_job__state__partial_processed
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_search_view
+msgid "Partial Processed"
+msgstr "部分处理"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_res_partner_mk__partner_id
+msgid "Partner"
+msgstr "合作伙伴"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_res_partner_mk
+msgid "Partner Marketplaces"
+msgstr "合作伙伴电商平台"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_cancel_order__payment_journal_id
+#: model:ir.model.fields,field_description:base_marketplace.field_order_workflow_config_ts__journal_id
+msgid "Payment Journal"
+msgstr "付款日记账"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_order_workflow_config_ts__payment_method_line_id
+msgid "Payment Method"
+msgstr "付款方式"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "Pending Shipments"
+msgstr "待发货"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_listing_item__export_qty_type__percentage
+msgid "Percentage"
+msgstr "百分比"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_marketplace_operation
+msgid "Perform Operation"
+msgstr "执行操作"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/onboarding/marketplace_onboarding.js:0
+msgid ""
+"Pick where you sell. We will prepare a draft instance for that connector if "
+"needed."
+msgstr "选择您的销售平台。如有需要，我们将为该连接器准备一个草稿实例。"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/wizards/operation.py:0
+msgid "Please select marketplace instance to process."
+msgstr "请选择要处理的电商平台实例。"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__access_url
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__access_url
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__access_url
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__access_url
+msgid "Portal Access URL"
+msgstr "门户访问URL"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_product_pricelist_item_advanced_tree_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_product_pricelist_item_tree_view
+msgid "Price"
+msgstr "价格"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__pricelist_id
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Pricelist"
+msgstr "价格表"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_product_pricelist_item_advanced_tree_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_product_pricelist_item_tree_view
+msgid "Pricelist Items"
+msgstr "价格表项目"
+
+#. module: base_marketplace
+#: model:ir.actions.server,name:base_marketplace.action_process_manually
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_form_view
+msgid "Process Manually"
+msgstr "手动处理"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_queue_job__state__processed
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_queue_job_line__state__processed
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_line_search_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_search_view
+msgid "Processed"
+msgstr "已处理"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job_line__processed_date
+msgid "Processed At"
+msgstr "处理时间"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__processed_count
+msgid "Processed Count"
+msgstr "处理数量"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_queue_job_product
+#: model:ir.model,name:base_marketplace.model_product_template
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__product_id
+msgid "Product"
+msgstr "产品"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__product_category_id
+msgid "Product Category"
+msgstr "产品类别"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_form_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_item_form_view
+msgid "Product Images"
+msgstr "产品图片"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_notification__is_product_import
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_queue_job__type__product
+msgid "Product Import"
+msgstr "产品导入"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "Product Name"
+msgstr "产品名称"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Product Quantity will be export according to selected field."
+msgstr "产品数量将根据所选字段导出。"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__product_tmpl_id
+msgid "Product Template"
+msgstr "产品模板"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_product_template_attribute_line
+msgid "Product Template Attribute Line"
+msgstr "产品模板属性明细行"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_sale_report__product_type
+msgid "Product Type"
+msgstr "产品类型"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_product_product
+msgid "Product Variant"
+msgstr "产品变体"
+
+#. module: base_marketplace
+#: model:ir.ui.menu,name:base_marketplace.menu_products
+msgid "Product Variants"
+msgstr "产品变体"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_instance__environment__production
+msgid "Production"
+msgstr "生产"
+
+#. module: base_marketplace
+#: model:ir.ui.menu,name:base_marketplace.menu_product_catalog
+#: model:ir.ui.menu,name:base_marketplace.menu_product_root
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_product_pricelist_item_advanced_tree_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_product_pricelist_item_tree_view
+msgid "Products"
+msgstr "产品"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "Profit"
+msgstr "利润"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__is_publish_in_store
+msgid "Publish in Store?"
+msgstr "在商店发布？"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__is_published
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_search_view
+msgid "Published"
+msgstr "已发布"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__listing_publish_date
+msgid "Published On"
+msgstr "发布日期"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "Qty Sold"
+msgstr "已售数量"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_stock_quant
+msgid "Quants"
+msgstr "量化"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.js:0
+msgid "Quarter"
+msgstr "季度"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job_line__queue_id
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_form_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_tree_view
+msgid "Queue"
+msgstr "队列"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__queue_batch_limit
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Queue Batch Limit"
+msgstr "队列批量限制"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__mk_queue_count
+msgid "Queue Count"
+msgstr "队列数量"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_marketplace_queue_job_kanban
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__mk_queue_ids
+msgid "Queue Job"
+msgstr "队列任务"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_mk_queue_job_line
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_log_line__queue_job_line_id
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_form_view
+msgid "Queue Line"
+msgstr "队列行"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__queue_line_id
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_search_view
+msgid "Queue Line ID"
+msgstr "队列行ID"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__queue_line_name
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_search_view
+msgid "Queue Line Name"
+msgstr "队列行名称"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_queue_job_line_all
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__mk_queue_line_ids
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_line_search_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_line_tree_view
+msgid "Queue Lines"
+msgstr "队列行"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_form_view
+msgid "Queue Name"
+msgstr "队列名称"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_queue_job.py:0
+msgid "Queue lines were manually set to cancelled : %s"
+msgstr "队列行已手动设置为已取消：%s"
+
+#. module: base_marketplace
+#: model:ir.ui.menu,name:base_marketplace.menu_marketplace_queue
+#: model:ir.ui.menu,name:base_marketplace.menu_marketplace_queues_main
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_search_view
+msgid "Queues"
+msgstr "队列"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/onboarding/marketplace_onboarding.js:0
+msgid ""
+"Quick onboarding is not available for this marketplace. You can configure it"
+" manually."
+msgstr "此电商平台不支持快速引导。您可以手动配置。"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_marketplace_quotation
+#: model:ir.ui.menu,name:base_marketplace.menu_sale_quotations
+msgid "Quotations"
+msgstr "报价单"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__account_receivable_id
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Receivable Account"
+msgstr "应收账款账户"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Record fetch limit while perform api calling."
+msgstr "执行API调用时的记录获取限制。"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__api_limit
+msgid "Record limit while perform api calling."
+msgstr "执行API调用时的记录限制。"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Refresh"
+msgstr "刷新"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_cancel_order__refund_description
+msgid "Refund Reason"
+msgstr "退款原因"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_account_bank_statement_line__is_refunded_in_mk
+#: model:ir.model.fields,field_description:base_marketplace.field_account_move__is_refunded_in_mk
+msgid "Refunded in Marketplace"
+msgstr "已在电商平台退款"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_order_workflow_config_ts__is_register_payment
+msgid "Register Payment"
+msgstr "登记付款"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_sale_order_line__related_disc_sale_line_id
+msgid "Related Disc Sale Line"
+msgstr "关联折扣销售行"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_image__mk_listing_id
+msgid "Related Listing"
+msgstr "关联商品列表"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_image__mk_listing_item_ids
+msgid "Related Listing Item"
+msgstr "关联商品列表项目"
+
+#. module: base_marketplace
+#: model:ir.ui.menu,name:base_marketplace.menu_mk_sale_report
+msgid "Reporting"
+msgstr "报表"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Reset"
+msgstr "重置"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__activity_user_ids
+msgid "Responsible"
+msgstr "负责人"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__activity_user_id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__activity_user_id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__activity_user_id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__activity_user_id
+msgid "Responsible User"
+msgstr "负责用户"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__restricted_operation
+msgid "Restricted Operation?"
+msgstr "受限操作？"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/wizards/operation.py:0
+msgid ""
+"Restricted! The execution of this cron task is in progress. Proceeding with "
+"this action may result in duplicate records."
+msgstr "受限！此定时任务正在执行中。继续此操作可能导致重复记录。"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_queue_job.py:0
+msgid ""
+"Restricted! The processing of Queue Job is already running. Proceeding with "
+"this action may result in duplicate records."
+msgstr "受限！队列任务处理已在运行中。继续此操作可能导致重复记录。"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_form_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_line_form_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_line_tree_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_picking_form_inherit_base_marketplace
+msgid "Retry"
+msgstr "重试"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__no_of_retry_count
+#: model:ir.model.fields,field_description:base_marketplace.field_stock_picking__no_of_retry_count
+msgid "Retry Count"
+msgstr "重试次数"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_form_view
+msgid "Retry Failed Lines"
+msgstr "重试失败行"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_queue_job__type__return
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_sale_order_form_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_stock_return_picking_form
+msgid "Return"
+msgstr "退货"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_stock_return_picking
+msgid "Return Picking"
+msgstr "退回拣货"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "Revenue"
+msgstr "收入"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.act_stock_return_picking_ts
+msgid "Reverse Stock"
+msgstr "反向库存"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Run Manually"
+msgstr "手动运行"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_instance__sync_product_with__sku
+msgid "SKU"
+msgstr "SKU"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__message_has_sms_error
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__message_has_sms_error
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__message_has_sms_error
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "短信发送错误"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_order_workflow
+msgid "Sale Order Workflow"
+msgstr "销售订单工作流"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.order_workflow_form_view
+msgid "Sale Order Workflow Name"
+msgstr "销售订单工作流名称"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__sale_price
+msgid "Sale Price"
+msgstr "销售价格"
+
+#. module: base_marketplace
+#: model:ir.ui.menu,name:base_marketplace.menu_report_product_all
+msgid "Sales"
+msgstr "销售"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_sale_report
+msgid "Sales Analysis Report"
+msgstr "销售分析报表"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_sale_order
+#: model:ir.model.fields,field_description:base_marketplace.field_stock_return_picking__sale_order_id
+msgid "Sales Order"
+msgstr "销售订单"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_sale_order_line
+msgid "Sales Order Line"
+msgstr "销售订单明细"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_marketplace_orders
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_sale_order_tree_view
+msgid "Sales Orders"
+msgstr "销售订单"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__team_id
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Sales Team"
+msgstr "销售团队"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__team_id
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Sales Team used for imported order."
+msgstr "用于导入订单的销售团队。"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__salesperson_user_id
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Salesperson"
+msgstr "销售员"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_instance.py:0
+msgid "Sample data"
+msgstr "示例数据"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_instance__environment__sandbox
+msgid "Sandbox"
+msgstr "沙箱"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/xml/marketplace_onboarding.xml:0
+msgid "Save & Confirm"
+msgstr "保存并确认"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_ir_cron
+msgid "Scheduled Actions"
+msgstr "计划的操作"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__access_token
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__access_token
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__access_token
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__access_token
+msgid "Security Token"
+msgstr "安全令牌"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__environment
+msgid ""
+"Select the environment for the eBay API connection: use Sandbox for testing "
+"and Production for live operations."
+msgstr "选择eBay API连接的环境：使用沙箱进行测试，使用生产环境进行实际操作。"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__salesperson_user_id
+msgid "Selected sales person will be used to process order."
+msgstr "所选销售员将用于处理订单。"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid ""
+"Selected sales person will be used to process order. Make sure to set user "
+"with enough access rights."
+msgstr "所选销售员将用于处理订单。请确保设置具有足够访问权限的用户。"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__sequence
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_image__sequence
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__sequence
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing_image__sequence
+msgid "Sequence"
+msgstr "序列"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_ir_actions_server
+msgid "Server Action"
+msgstr "服务器动作"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__is_set_images
+msgid "Set Images?"
+msgstr "设置图片？"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_order_workflow_config_ts__force_invoice_date
+msgid "Set Invoice date and Payment date same as Order date."
+msgstr "将发票日期和付款日期设置为与订单日期相同。"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__is_set_price
+msgid "Set Price?"
+msgstr "设置价格？"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__is_set_quantity
+msgid "Set Quantity?"
+msgstr "设置数量？"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/xml/marketplace_onboarding.xml:0
+msgid "Setup"
+msgstr "设置"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_instance.py:0
+msgid "Setup Wizard is only available while the instance is in draft state."
+msgstr "设置向导仅在实例处于草稿状态时可用。"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_queue_job__type__shipment
+msgid "Shipment"
+msgstr "发货"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__mk_shipment_count
+msgid "Shipment Count"
+msgstr "发货数量"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__mk_shipment_ids
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid "Shipments"
+msgstr "发货"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_order_workflow_config_ts__picking_policy
+msgid "Shipping Policy"
+msgstr "配送政策"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_res_users__show_marketplace_quick_onboarding
+msgid "Show Marketplace Quick Onboarding Panel"
+msgstr "显示电商平台快速引导面板"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_sale_order_form_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_form_view
+msgid "Show in Marketplace"
+msgstr "在电商平台显示"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__show_in_systray
+msgid "Show in Systray Menu?"
+msgstr "在系统托盘菜单中显示？"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__image_small
+msgid "Small-sized photo"
+msgstr "小尺寸照片"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__image_small
+msgid ""
+"Small-sized photo of the marketplace. It is automatically resized as a "
+"64x64px image, with aspect ratio preserved. "
+msgstr "电商平台的小尺寸照片。自动调整为64x64像素图片，保持宽高比。"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Smart Notification Configuration"
+msgstr "智能通知配置"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/wizards/operation.py:0
+msgid ""
+"Something went wrong! Odoo isn't able to identify selected products or "
+"please select product again."
+msgstr "出现错误！Odoo无法识别所选产品，请重新选择产品。"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_instance.py:0
+msgid "Something went wrong! Please contact your integration provider."
+msgstr "出现错误！请联系您的集成服务提供商。"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "Start Date :"
+msgstr "开始日期："
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__state
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__state
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job_line__state
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_line_search_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_search_view
+msgid "State"
+msgstr "状态"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__activity_state
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing__activity_state
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing_item__activity_state
+#: model:ir.model.fields,help:base_marketplace.field_mk_queue_job__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"基于活动的状态\n"
+"逾期：截止日期已过\n"
+"今天：活动日期为今天\n"
+"计划中：未来活动。"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/xml/marketplace_onboarding.xml:0
+msgid "Step illustration"
+msgstr "步骤说明"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/xml/marketplace_onboarding.xml:0
+msgid "Steps"
+msgstr "步骤"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_notification__is_sticky
+msgid "Sticky"
+msgstr "置顶"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.order_workflow_form_view
+msgid "Stock"
+msgstr "库存"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__stock_field_id
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Stock Based On"
+msgstr "库存基准"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_stock_move
+msgid "Stock Move"
+msgstr "库存移动"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_sale_order__stock_moves_count
+msgid "Stock Move Count for Sale Order without Stock Picking."
+msgstr "没有库存拣货的销售订单的库存移动数量。"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_sale_order__stock_moves_count
+msgid "Stock Moves"
+msgstr "库存移动"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_instance__log_level__success
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_log_line__state__success
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_notification__type__success
+msgid "Success"
+msgstr "成功"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__is_sync_images
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Sync Listing Images?"
+msgstr "同步商品列表图片？"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Sync Listings Based On"
+msgstr "商品列表同步基准"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__sync_product_with
+msgid "Sync Product With"
+msgstr "同步产品依据"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_account_tax
+msgid "Tax"
+msgstr "税项"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__tax_account_id
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Tax Account"
+msgstr "税务账户"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__tax_refund_account_id
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Tax Account on Credit Notes"
+msgstr "贷记单上的税务账户"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__tax_rounding
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Tax Rounding"
+msgstr "税务舍入"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__tax_system
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Tax System"
+msgstr "税务系统"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_sale_order_tree_view
+msgid "Tax Total"
+msgstr "税务总计"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_stock_picking__is_marketplace_exception
+msgid ""
+"Technical field to filter out problematic records from update order status "
+"process."
+msgstr "用于从更新订单状态流程中过滤出有问题记录的技术字段。"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing__mk_instance_image
+msgid "Technical field to get the instance image for display purpose."
+msgstr "用于获取实例图片以供显示的技术字段。"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_operation__restricted_operation
+msgid "Technical field to hide process button in some use case."
+msgstr "用于在某些使用场景中隐藏处理按钮的技术字段。"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing_image__image_hex
+msgid "Technical field to identify the duplicate image"
+msgstr "用于识别重复图片的技术字段"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_cancel_order__create_refund_option_visible
+msgid "Technical field to identify user can create credit note or not."
+msgstr "用于识别用户是否可以创建贷记单的技术字段。"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Test Connection"
+msgstr "测试连接"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_instance.py:0
+msgid "Test Connection Failed: Invalid Credentials."
+msgstr "测试连接失败：凭证无效。"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_instance.py:0
+msgid "Test Connection is not supported for this Marketplace."
+msgstr "此电商平台不支持测试连接。"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Test Mode"
+msgstr "测试模式"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/simple_panel_handler.js:0
+msgid "The application is still loading. Please wait a moment and try again."
+msgstr "应用程序仍在加载。请稍候再试。"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid ""
+"The configured analytic account for this instance will be assigned to all sale order lines created by the connector. This means that the Analytic Default\n"
+"                                                Rule set up in Odoo will not be applied to Marketplace orders."
+msgstr "为此实例配置的分析账户将分配给连接器创建的所有销售订单行。这意味着Odoo中设置的分析默认规则不会应用于电商平台订单。"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid ""
+"The product used to model the delivery charge or while creating new delivery"
+" method."
+msgstr "用于建模配送费用或创建新配送方式时使用的产品。"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "The product used to model the discount."
+msgstr "用于建模折扣的产品。"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__sequence
+msgid "The sequence field is used to define Instance Sequence."
+msgstr "序列字段用于定义实例序列。"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "This Financial Year"
+msgstr "本财年"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "This Month"
+msgstr "本月"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "This Quarter"
+msgstr "本季度"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_instance.py:0
+msgid "This Week"
+msgstr "本周"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__image
+msgid ""
+"This field holds the image used as photo for the marketplace, limited to "
+"1024x1024px."
+msgstr "此字段保存用作电商平台照片的图片，限制为1024x1024像素。"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_instance.py:0
+msgid "This marketplace connector is not installed."
+msgstr "此电商平台连接器未安装。"
+
+#. module: base_marketplace
+#: model_terms:ir.actions.act_window,help:base_marketplace.marketplace_comm_sale_report_action_dashboard
+msgid ""
+"This report performs analysis on your Marketplace quotations and sales orders. Analysis check your sales revenues and sort it by different group\n"
+"                criteria (salesman, partner, product, marketplace, etc.) Use this report to perform analysis on sales not having invoiced yet."
+msgstr "此报表对您的电商平台报价单和销售订单进行分析。分析检查您的销售收入并按不同分组标准（销售员、合作伙伴、产品、电商平台等）进行排序。使用此报表对尚未开票的销售进行分析。"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_picking_form_inherit_base_marketplace
+msgid "This will update order in Marketplace. Do you want to proceed?"
+msgstr "这将在电商平台更新订单。您要继续吗？"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__to_date
+msgid "To Date"
+msgstr "截止日期"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "Top 10 Customers"
+msgstr "前10名客户"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "Top 10 Performing Products"
+msgstr "前10名畅销产品"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "Top 5 Performing Categories"
+msgstr "前5名畅销类别"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "Top 5 Performing Countries"
+msgstr "前5名畅销国家"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__total_count
+msgid "Total Count"
+msgstr "总数量"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "Total Orders"
+msgstr "总订单"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_sale_order_tree_view
+msgid "Total Tax Excluded"
+msgstr "不含税总计"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_sale_order_tree_view
+msgid "Total Tax Included"
+msgstr "含税总计"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_stock_picking
+msgid "Transfer"
+msgstr "调拨"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_notification__type
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__type
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_search_view
+msgid "Type"
+msgstr "类型"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__activity_exception_decoration
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing__activity_exception_decoration
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing_item__activity_exception_decoration
+#: model:ir.model.fields,help:base_marketplace.field_mk_queue_job__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "记录上异常活动的类型。"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_search_view
+msgid "UnPublished"
+msgstr "未发布"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid "Unhealthy"
+msgstr "异常"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_instance.py:0
+msgid "Untaxed Total"
+msgstr "未税总计"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__is_update_odoo_product_category
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Update Category in Odoo Products?"
+msgstr "更新Odoo产品类别？"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__is_update_product
+msgid "Update Detail?"
+msgstr "更新详情？"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_form_view
+msgid "Update Existing Listing"
+msgstr "更新现有商品列表"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__update_existing_product
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__update_existing_product
+msgid "Update Existing Listing?"
+msgstr "更新现有商品列表？"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_operation_update_listing_to_mk_view
+msgid "Update Listing"
+msgstr "更新商品列表"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_operation_update_listing_item_to_mk_view
+msgid "Update Listing Item"
+msgstr "更新商品列表项目"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_update_listing_item_to_marketplace
+#: model:ir.actions.server,name:base_marketplace.action_listing_item_operation_to_marketplace
+msgid "Update Listing Item in Marketplace"
+msgstr "在电商平台更新商品列表项目"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_listing_update_to_marketplace
+msgid "Update Listing in Marketplace"
+msgstr "在电商平台更新商品列表"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__is_update_odoo_product_category
+msgid "Update Odoo Products Category."
+msgstr "更新Odoo产品类别。"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__is_update_order_status
+msgid "Update Order Status"
+msgstr "更新订单状态"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__update_product_price
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__update_product_price
+msgid "Update Price?"
+msgstr "更新价格？"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__is_update_products
+msgid "Update Products?"
+msgstr "更新产品？"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_picking_form_inherit_base_marketplace
+msgid "Update in Marketplace"
+msgstr "在电商平台更新"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_item_tree_view
+msgid "Update to Marketplace"
+msgstr "更新到电商平台"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__listing_update_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__item_update_date
+msgid "Updated On"
+msgstr "更新日期"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_sale_order__updated_in_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_stock_picking__updated_in_marketplace
+msgid "Updated in Marketplace?"
+msgstr "已在电商平台更新？"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__use_marketplace_currency
+msgid "Use Marketplace Order Currency?"
+msgstr "使用电商平台订单货币？"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__use_marketplace_sequence
+msgid "Use Marketplace Order Sequence?"
+msgstr "使用电商平台订单序列？"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Use Marketplace's Order Currency?"
+msgstr "使用电商平台的订单货币？"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Use Marketplace's Order Sequence?"
+msgstr "使用电商平台的订单序列？"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_operation__mk_order_id
+msgid "Used to import specific Order from Marketplace using Marketplace ID."
+msgstr "用于使用电商平台ID从电商平台导入特定订单。"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_operation__mk_listing_id
+msgid "Used to import specific Product from Marketplace using Marketplace ID."
+msgstr "用于使用电商平台ID从电商平台导入特定产品。"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_res_users
+#: model:res.groups,name:base_marketplace.group_base_marketplace
+msgid "User"
+msgstr "用户"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__is_validate_adjustment
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Validate Inventory Adjustment?"
+msgstr "验证库存调整？"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_order_workflow_config_ts__is_validate_invoice
+msgid "Validate Invoice"
+msgstr "验证发票"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/onboarding/marketplace_onboarding.js:0
+msgid "Validation failed."
+msgstr "验证失败。"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_form_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_product_pricelist_item_advanced_tree_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_product_pricelist_item_tree_view
+msgid "Variants"
+msgstr "变体"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid ""
+"View All\n"
+"                                            <i class=\"fa fa-chevron-right mk-saas-alert-arrow\"/>"
+msgstr ""
+"查看全部\n"
+"                                            <i class=\"fa fa-chevron-right mk-saas-alert-arrow\"/>"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__warehouse_id
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Warehouse"
+msgstr "仓库"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Warehouse related to Instance."
+msgstr "与实例相关联的仓库。"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid "Warning"
+msgstr "警告"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_marketplace_scope_wizard_form
+msgid ""
+"We detected missing permissions required for full functionality. Please "
+"update these in your"
+msgstr "我们检测到全功能所需的权限缺失。请在您的"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_cancel_order__is_create_refund
+msgid "Weather to Create Refund/Credit Note in Odoo?"
+msgstr "是否在Odoo中创建退款/贷记单？"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_log__operation_type__webhook
+msgid "Webhook"
+msgstr "Webhook"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__website_message_ids
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__website_message_ids
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__website_message_ids
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__website_message_ids
+msgid "Website Messages"
+msgstr "网站消息"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__website_message_ids
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing__website_message_ids
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing_item__website_message_ids
+#: model:ir.model.fields,help:base_marketplace.field_mk_queue_job__website_message_ids
+msgid "Website communication history"
+msgstr "网站通信历史"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid "Weekly Activity Trend"
+msgstr "每周活动趋势"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_instance__activity_date_deadline_range_type__weeks
+msgid "Weeks"
+msgstr "周"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid ""
+"When a queue job line process will fail, it will create activity based on "
+"the below configuration."
+msgstr "当队列任务行处理失败时，将根据以下配置创建活动。"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Which type of logs you want to create for import/export operation."
+msgstr "您希望为导入/导出操作创建哪种类型的日志。"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__account_receivable_id
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid ""
+"While creating Customer set this field in Account Receivable instead of "
+"default."
+msgstr "创建客户时，在应收账款中设置此字段而不是默认值。"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid ""
+"While searching/creating tax rounding will be applied according to "
+"configuration. If set zero means no rounding."
+msgstr "搜索/创建税务时，将根据配置应用舍入。如果设置为零则表示不舍入。"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Workflow"
+msgstr "工作流"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.js:0
+msgid "Year"
+msgstr "年"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/wizards/operation.py:0
+msgid ""
+"You can export a listing only with a confirmed instance. Please ensure the "
+"instance is confirmed before exporting the listing."
+msgstr "只有使用已确认的实例才能导出商品列表。请在导出商品列表之前确保实例已确认。"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/wizards/operation.py:0
+msgid ""
+"You can update a listing only with a confirmed instance. Please ensure the "
+"instance is confirmed before updating the listing."
+msgstr "只有使用已确认的实例才能更新商品列表。请在更新商品列表之前确保实例已确认。"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/product.py:0
+msgid ""
+"You cannot archive a product that is already linked to a listing. Please "
+"delete the below listing(s) first in order to archive the product.\n"
+msgstr ""
+"您不能归档已链接到商品列表的产品。请先删除以下商品列表以归档该产品。\n"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid ""
+"You have the flexibility to choose the synchronization behavior of your "
+"listings by selecting either Barcode, SKU, or Barcode/SKU."
+msgstr "您可以灵活地通过选择条码、SKU或条码/SKU来选择商品列表的同步行为。"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_operation__is_create_product
+msgid "create a new Odoo product if not found."
+msgstr "如果未找到则创建新的Odoo产品。"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/product.py:0
+msgid "id"
+msgstr "id"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_instance.py:0
+msgid "mk_instance_id"
+msgstr "mk_instance_id"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid "orders failed to import"
+msgstr "订单导入失败"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid "products failed to sync"
+msgstr "产品同步失败"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_instance.py:0
+msgid "queue_id"
+msgstr "queue_id"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid "queues have failed items"
+msgstr "队列有失败项目"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/filters/filter_date.xml:0
+msgid "to"
+msgstr "至"
+
+#. module: base_marketplace
+#: model_terms:ir.actions.act_window,help:base_marketplace.action_marketplace_overview
+msgid "to create new Instance."
+msgstr "以创建新实例。"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "to:"
+msgstr "至："
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_listing.py:0
+#: code:addons/base_marketplace/models/sale.py:0
+msgid "Navigation not available for %s marketplace."
+msgstr "导航不适用于 %s 市场。"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_listing.py:0
+#: code:addons/base_marketplace/models/marketplace_listing_item.py:0
+msgid "Operation not allowed!"
+msgstr "操作不被允许！"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_listing_item.py:0
+msgid "Please ensure the selected items are already listed. Only listed items can be updated."
+msgstr "请确保所选商品已经上架。只有已上架的商品才能被更新。"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_listing.py:0
+msgid "Please ensure that the selected listings are intended for either updating or exporting only. Do not mix exported listings and not exported listings."
+msgstr "请确保所选商品列表仅用于更新或导出。不要混合已导出和未导出的商品列表。"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_instance.py:0
+msgid "Please set pricelist manually with currency: %s"
+msgstr "请手动设置价格列表，货币为：%s"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_instance.py:0
+msgid "Pricelist's currency and currency get from Marketplace is not same. Marketplace Currency: %s"
+msgstr "价格列表货币与从市场获取的货币不同。市场货币：%s"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_instance.py:0
+msgid "Set Pricelist currency %s is not match with %s Store Currency %s"
+msgstr "设置的价格列表货币 %s 与 %s 商店货币 %s 不匹配"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_listing_item.py:0
+msgid "This operation is not supported for the %s."
+msgstr "此操作不支持 %s。"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/ir_cron.py:0
+msgid "You can not modify some fields of Marketplace Cron because it is associated with Marketplace Account: %s."
+msgstr "您无法修改市场 Cron 的某些字段，因为它与市场账户 %s 相关联。"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/product.py:0
+msgid "Open Listing(s)"
+msgstr "打开商品列表"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/wizards/operation.py:0
+msgid "Product : %s Internal Reference (SKU) or Barcode is missing in some product(s)! \n\nPlease set the unique internal reference or Barcode in all variants as per your Instance Configuration."
+msgstr "产品：%s 某些产品的内部参考编号（SKU）或条码缺失！\n\n请根据您的实例配置为所有变体设置唯一的内部参考编号或条码。"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/wizards/stock_return.py:0
+msgid "You may only return one sale order at a time."
+msgstr "每次只能退回一个销售订单。"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/wizards/stock_return.py:0
+msgid "You have manually created product lines, please delete them to proceed."
+msgstr "您已手动创建产品行，请删除它们以继续。"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/wizards/stock_return.py:0
+msgid "Please specify at least one non-zero quantity."
+msgstr "请至少指定一个非零数量。"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/wizards/operation.py:0
+msgid "Could not find any listing items for update."
+msgstr "未找到要更新的商品列表项。"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/wizards/operation.py:0
+msgid "Operation not allowed! Make sure selected listing items belongs to only one instance."
+msgstr "操作不被允许！请确保所选商品列表项仅属于一个实例。"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/wizards/operation.py:0
+msgid "You can update a listing items only with a confirmed instance. Please ensure the instance is confirmed before updating the listing items."
+msgstr "您只能使用已确认的实例更新商品列表项。请在更新商品列表项前确保实例已确认。"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_listing.py:0
+msgid "IMPORT LISTING: %s in Marketplace Product: %s and Marketplace Listing ID: %s"
+msgstr "导入商品列表: %s 在市场商品: %s 和市场商品列表ID: %s"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_listing.py:0
+msgid "SKU and Barcode not set"
+msgstr "SKU和条形码未设置"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_listing.py:0
+msgid "SKU not set"
+msgstr "SKU未设置"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_listing.py:0
+msgid "Barcode not set"
+msgstr "条形码未设置"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_listing.py:0
+msgid "Duplicate Barcode found"
+msgstr "发现重复条形码"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_listing.py:0
+msgid "Duplicate SKU found"
+msgstr "发现重复SKU"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/sale.py:0
+msgid "IMPORT ORDER: Tax not found, so created new Tax '%s' for Company '%s' with rate %s%%."
+msgstr "导入订单: 未找到税率，因此创建了新税率 '%s'，适用于公司 '%s'，税率为 %s%%。"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/sale.py:0
+msgid "PROCESS ORDER: You cannot create invoice prior to and inclusive of the lock date %s for Marketplace Order %s."
+msgstr "处理订单: 无法在锁定日期 %s 或之前为市场商城订单 %s 创建发票。"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_listing.py:0
+msgid "IMPORT LISTING: %s listing item deleted."
+msgstr "导入商品列表: 已删除 %s 个商品列表项。"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_listing.py:0
+msgid "IMPORT LISTING : ⚠️ DUPLICATE BARCODE DETECTED | Barcode: %s | Marketplace Product: %s | Marketplace ID: %s"
+msgstr "导入商品列表: ⚠️ 检测到重复条形码 | 条形码: %s | 市场商城产品: %s | 市场商城ID: %s"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/res_partner.py:0
+msgid "EXISTING CUSTOMER FOUND: Found customer with same address, CUSTOMER NAME: %s (%s)"
+msgstr "发现已有客户: 找到相同地址的客户，客户姓名: %s (%s)"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/res_partner.py:0
+msgid "IMPORT CUSTOMER: Successfully created new customer with name: %s (%s)"
+msgstr "导入客户: 已成功创建新客户，姓名: %s (%s)"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_queue_job.py:0
+msgid "System tried 3 times to process queue but something went wrong! Therefor, Manual attention needed to process failed queue lines."
+msgstr "系统尝试了3次处理队列但出现问题！因此，需要手动处理失败的队列行。"
+
+#. module: base_marketplace
+#: model:ir.module.module,shortdesc:base.module_base_marketplace
+msgid "Base Marketplace"
+msgstr "基础市场"

@@ -6,7 +6,7 @@
         <field name="inherit_id" ref="product.product_template_only_form_view"/>
         <field name="arch" type="xml">
             <xpath expr="//page[@name='general_information']" position="after">
-                <page name="mk_listing" string="Listing">
+                <page name="mk_listing" string="Listing" groups="base_marketplace.group_base_marketplace,base_marketplace.group_base_marketplace_manager">
                     <field name="mk_listing_ids" context="{'show_attribute': False}" readonly="1">
                         <list string="Listing">
                             <field name="mk_instance_image" widget="image" string=" " options='{"size": [20, 20]}'/>

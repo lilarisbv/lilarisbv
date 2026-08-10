@@ -1,13 +1,17 @@
-from odoo import http
 from odoo.http import request
+
+from odoo import http
 
 
 class MKDashboard(http.Controller):
 
     @http.route('/base_marketplace/get_dashboard_data', type="jsonrpc", auth='user')
-    def fetch_dashboard_data(self, mk_instance_id=False, date_from=False, date_to=False, date_filter=False):
+    def fetch_dashboard_data(self, mk_instance_id=False, date_from=False, date_to=False, date_filter=False, company_id=False):
+        """
+        Task-T6494: Dashboard shows data only for selected (checked) companies.
+        """
         if not mk_instance_id:
-            mk_instance_id = request.env['mk.instance'].sudo().search([('state', '=', 'confirmed')])
+            mk_instance_id = request.env['mk.instance'].sudo().search([('state', '=', 'confirmed'), ('company_id', 'in', company_id)])
             is_general_dashboard = True
         else:
             is_general_dashboard = False

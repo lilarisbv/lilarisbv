@@ -1,7 +1,9 @@
-from odoo.exceptions import UserError
-from odoo import models, fields, api, _
 from datetime import datetime
+
 from dateutil.relativedelta import relativedelta
+
+from odoo import models, fields, api, _
+from odoo.addons.base_marketplace.models.exceptions import MarketplaceException
 
 
 class IrCron(models.Model):
@@ -10,14 +12,17 @@ class IrCron(models.Model):
     mk_instance_id = fields.Many2one("mk.instance", string="Marketplace Instance", ondelete='cascade')
 
     def write(self, vals):
+        """
+        Task: T7493 - Added MarketplaceException error.
+        """
         for record in self:
             if record.mk_instance_id and ('code' in vals or 'model_id' in vals or 'state' in vals):
-                raise UserError(_('You can not modify some fields of Marketplace Cron because it is associated with Marketplace Account: {}.'.format(self.mk_instance_id.name)))
+                raise MarketplaceException(_('You can not modify some fields of Marketplace Cron because it is associated with Marketplace Account: %s.') % self.mk_instance_id.name)
         res = super(IrCron, self).write(vals)
         return res
 
     def create_marketplace_cron(self, mk_instance_id, name, method_name='', model_name='', interval_type='minutes', interval_number=20):
-        code = "model.{}({})".format(method_name, mk_instance_id.id)
+        code = f"model.{method_name}({mk_instance_id.id})"
         cron_id = self.with_context(active_test=False).search([('code', '=', code)])
         if cron_id:
             if cron_id.name != name:

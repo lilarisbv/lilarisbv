@@ -11,9 +11,9 @@
                 <field name="fixed_price" string="Price"/>
                 <field name="date_start"/>
                 <field name="date_end"/>
-                <field name="currency_id" column_invisible="True"/>
-                <field name="pricelist_id" column_invisible="True"/>
-                <field name="company_id" column_invisible="True"/>
+                <field name="currency_id" column_invisible="True"/><!-- always invisible: technical field required by view logic -->
+                <field name="pricelist_id" column_invisible="True"/><!-- always invisible: technical field required by view logic -->
+                <field name="company_id" column_invisible="True"/><!-- always invisible: technical field required by view logic -->
             </list>
         </field>
     </record>
@@ -29,9 +29,9 @@
                 <field name="price" string="Price"/>
                 <field name="date_start"/>
                 <field name="date_end"/>
-                <field name="currency_id" column_invisible="True"/>
-                <field name="pricelist_id" column_invisible="True"/>
-                <field name="company_id" column_invisible="True"/>
+                <field name="currency_id" column_invisible="True"/><!-- always invisible: technical field required by view logic -->
+                <field name="pricelist_id" column_invisible="True"/><!-- always invisible: technical field required by view logic -->
+                <field name="company_id" column_invisible="True"/><!-- always invisible: technical field required by view logic -->
             </list>
         </field>
     </record>

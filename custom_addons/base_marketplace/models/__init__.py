@@ -5,7 +5,9 @@ from . import marketplace_listing_image
 from . import product
 from . import sale
 from . import res_partner
+from . import res_users
 from . import ir_cron
+from . import ir_http
 from . import marketplace_notification
 from . import stock
 from . import account_move
@@ -15,3 +17,4 @@ from . import order_workflow
 from . import exceptions
 from . import ir_actions
 from . import misc
+from . import account_tax

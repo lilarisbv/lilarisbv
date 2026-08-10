@@ -15,7 +15,7 @@ export class MarketplaceErrorDialog extends WarningDialog {
     setup() {
         const { data, subType } = this.props;
         const [message, title, additionalContext] = data.arguments;
-        this.title = _t(title) || _t(this.getRandomErrorTitle());
+        this.title = title ? _t(title) : _t(this.getRandomErrorTitle());
         this.message = _t(message);
         this.additionalContext = additionalContext;
         this.traceback = this.props.traceback;

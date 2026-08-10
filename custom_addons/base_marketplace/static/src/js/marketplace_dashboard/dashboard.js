@@ -12,10 +12,19 @@ import {WarningDialog} from "@web/core/errors/error_dialogs";
 import {_t} from "@web/core/l10n/translation";
 import {rpc} from "@web/core/network/rpc";
 import {formatDate} from "@web/core/l10n/dates";
+import { user } from "@web/core/user";
 
 const {DateTime} = luxon;
 
 class MarketplaceDashboard extends Component {
+    static props = {
+        action: { type: Object, optional: true },
+        actionId: { type: [String, Number], optional: true },
+        updateActionState: { type: Function, optional: true },
+        className: { type: String, optional: true },
+        // Accept any other props passed by the action system
+        "*": true,
+    };
 
     static defaultComponentsMap = [];
 
@@ -48,6 +57,9 @@ class MarketplaceDashboard extends Component {
         });
     }
 
+    get activeCompanyIds() {
+        return user.activeCompanies.map(c => c.id);
+    }
     getComponent(name) {
         return MarketplaceDashboard.defaultComponentsMap[name];
     }
@@ -255,6 +267,7 @@ class MarketplaceDashboard extends Component {
                 date_from: dateFilter.date.date_from,
                 date_to: dateFilter.date.date_to,
                 date_filter: dateFilter.date.filter,
+                company_id: this.activeCompanyIds || [],
             })
         );
         Object.assign(this.state, dashboardData);

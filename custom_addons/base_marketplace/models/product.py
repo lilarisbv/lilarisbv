@@ -63,6 +63,8 @@ class ProductTemplate(models.Model):
         combinations = [combination for combination in possible_combinations]
         for combination in combinations:
             product_variant_id = self._get_variant_for_combination(combination)
+            if not product_variant_id:
+                continue
             product_variant_id.create_or_update_listing_item(instance, sequence, listing_id)
             sequence += 1
 
@@ -82,7 +84,7 @@ class ProductTemplate(models.Model):
     def write(self, vals):
         res = super(ProductTemplate, self).write(vals)
         if 'list_price' in vals:
-            for listing_item_id in self.mapped('mk_listing_ids').mapped('listing_item_ids'):
+            for listing_item_id in self.sudo().mapped('mk_listing_ids').mapped('listing_item_ids'):
                 mk_instance_id = listing_item_id.mk_instance_id
                 variant_price = vals.get('list_price')
                 if mk_instance_id.is_export_product_sale_price and variant_price > 0:
@@ -227,7 +229,7 @@ class ProductProduct(models.Model):
             self._validate_variant_archive()
         res = super(ProductProduct, self).write(vals)
         if 'list_price' in vals:
-            for listing_item_id in self.mapped('mk_listing_item_ids'):
+            for listing_item_id in self.sudo().mapped('mk_listing_item_ids'):
                 mk_instance_id = listing_item_id.mk_instance_id
                 variant_price = vals.get('list_price')
                 if mk_instance_id.is_export_product_sale_price and variant_price > 0:
@@ -236,7 +238,7 @@ class ProductProduct(models.Model):
 
     def _validate_variant_archive(self):
         for variant_id in self:
-            listing_item_ids = self.env['mk.listing.item'].search([('product_id', '=', variant_id.id)])
+            listing_item_ids = self.env['mk.listing.item'].sudo().search([('product_id', '=', variant_id.id)])
             if listing_item_ids:
                 listings = listing_item_ids.mapped('mk_listing_id')
                 listing_form_view = self.env.ref('base_marketplace.mk_listing_form_view')
@@ -255,9 +257,9 @@ class ProductProduct(models.Model):
                     action_data['views'] = [(listing_form_view.id, 'form')]
                     action_data['res_id'] = listings.id
 
-                error_msg = _(f'You cannot archive a product that is already linked to a listing. Please delete the below listing(s) first in order to archive the product.\n')
+                error_msg = _('You cannot archive a product that is already linked to a listing. Please delete the below listing(s) first in order to archive the product.\n')
                 error_msg += ''.join(f'    - [{listing.mk_instance_id.name}] {listing.name}\n' for listing in listings)
-                raise RedirectWarning(error_msg, action_data, "Open Listing(s)")
+                raise RedirectWarning(error_msg, action_data, _("Open Listing(s)"))
 
 
 class ProductTemplateAttributeLine(models.Model):

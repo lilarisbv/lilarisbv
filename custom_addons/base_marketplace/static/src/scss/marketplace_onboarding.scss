@@ -1,0 +1,1103 @@
+// Marketplace onboarding: Fluent dark layout inspired by Microsoft Edge update slides
+// Reference: https://www.microsoft.com/en-gb/edge/update/ (Fluent dark, slide-grid proportions)
+
+$o-mk-edge-bg: #000000;
+$o-mk-edge-blue: #0066ff;
+$o-mk-edge-blue-hover: #0052cc;
+$o-mk-edge-secondary: #4da3ff;
+$o-mk-edge-panel: rgb(34, 47, 56);
+$o-mk-edge-text: #ffffff;
+$o-mk-edge-muted: rgba(255, 255, 255, 0.72);
+$o-mk-edge-muted2: rgba(255, 255, 255, 0.5);
+$o-mk-edge_slidenav_active: #6ec9ff;
+$o-mk-edge-nav-active: #6ec9ff;
+$o-mk-edge-nav-inactive: #b8bcc4;
+$o-mk-edge-nav-inactive-line: rgba(255, 255, 255, 0.38);
+$o-mk-edge-ease-smooth: cubic-bezier(0.33, 1, 0.68, 1);
+$o-mk-edge-ease-bar: cubic-bezier(0.25, 0.8, 0.25, 1);
+$o-mk-edge-inner-card: #f3f5f7;
+$o-mk-edge-radius: 12px;
+$o-mk-edge-btn-height: 62px;
+// Edge update slide nav: filled blue, squircle (Back square + Next wide)
+$o-mk-edge-slide-h: 64px;
+$o-mk-edge-slide-r: 16px;
+$o-mk-edge-slide-btn: #186ade;
+$o-mk-edge-slide-btn-hover: #1576d6;
+$o-mk-edge-pad-x: clamp(1.5rem, 5vw, 6rem);
+$o-mk-edge-grid-vpad: clamp(1.25rem, 3vh, 2rem);
+$o-mk-edge-grid-left-fr: 37;
+$o-mk-edge-grid-right-fr: 40;
+$o-mk-edge-step-slide-dur: 0.52s;
+$o-mk-edge-close-top: 1.125rem;
+$o-mk-edge-close-inset-end: clamp(0.5rem, 1.5vw, 1.125rem);
+
+// Marketplace picker: palette aligned to illustration (teal-slate gradient in .o_mk_picker_card_icon_wrap)
+$o-mk-picker-ill-teal: #385c6c;
+$o-mk-picker-ill-deep: #23343e;
+$o-mk-picker-card-bg: #2c343c;
+$o-mk-picker-card-bg-hover: #3a4f5c;
+$o-mk-picker-label-bg: #273038;
+$o-mk-picker-card-radius: 28px;
+$o-mk-picker-label-radius: 14px;
+$o-mk-picker-illustration-inner-radius: 20px;
+// Square tiles: outer box is 1:1; width never exceeds this
+$o-mk-picker-card-max-w: 20rem;
+
+.o_marketplace_onboarding.o_mk_edge {
+    background-color: $o-mk-edge-bg;
+    font-family: "Segoe UI Variable", "Segoe UI", system-ui, -apple-system, sans-serif;
+    color: $o-mk-edge-text;
+}
+
+// Step change: Next = enter from right; Back = enter from left (left copy, right card, pagination strip).
+.o_marketplace_onboarding.o_mk_edge .o_mk_edge_slide_zone {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+.o_marketplace_onboarding.o_mk_edge .o_mk_edge_slide_enter_fwd {
+    animation: o_mk_edge_step_in_fwd $o-mk-edge-step-slide-dur $o-mk-edge-ease-smooth both;
+}
+
+.o_marketplace_onboarding.o_mk_edge .o_mk_edge_slide_enter_back {
+    animation: o_mk_edge_step_in_back $o-mk-edge-step-slide-dur $o-mk-edge-ease-smooth both;
+}
+
+@keyframes o_mk_edge_step_in_fwd {
+    from {
+        opacity: 0;
+        transform: translate3d(1.5rem, 0, 0);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+@keyframes o_mk_edge_step_in_back {
+    from {
+        opacity: 0;
+        transform: translate3d(-1.5rem, 0, 0);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .o_marketplace_onboarding.o_mk_edge .o_mk_edge_slide_enter_fwd,
+    .o_marketplace_onboarding.o_mk_edge .o_mk_edge_slide_enter_back {
+        animation: none !important;
+    }
+}
+
+.o_mk_edge_spinner {
+    color: $o-mk-edge_slidenav_active;
+}
+
+.o_mk_edge_text_muted {
+    color: $o-mk-edge-muted;
+}
+
+.o_mk_edge_shell {
+    min-height: 0;
+}
+
+// Bottom bar: step tabs + Back/Next/Save on one row (tabs flex, actions right)
+$o-mk-edge-bottom-h: 6.25rem;
+
+.o_mk_edge_body_has_bottom_nav {
+    padding-bottom: calc(#{$o-mk-edge-bottom-h} + 1.25rem);
+}
+
+.o_mk_edge_bottom_nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1001;
+    min-height: $o-mk-edge-bottom-h;
+    padding: 0.65rem $o-mk-edge-pad-x 0.85rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    background: #000000;
+}
+
+.o_mk_edge_bottom_nav_inner {
+    max-width: 100%;
+    align-items: center;
+}
+
+.o_mk_edge_bottom_nav_title {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+.o_mk_edge_bottom_nav_actions {
+    flex-shrink: 0;
+}
+
+.o_mk_edge_bottom_nav_tabs {
+    overflow-x: auto;
+    overflow-y: hidden;
+    width: 100%;
+    min-height: 2.85rem;
+    padding-bottom: 0.25rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+// Active step underline uses .o_mk_edge_bottom_tab_line inside the tab (same as inactive ticks), so it always paints on first load without JS layout.
+
+.o_mk_edge_bottom_tabs_buttons {
+    position: relative;
+    z-index: 2;
+    align-items: flex-start;
+    justify-content: flex-start !important;
+    flex-wrap: nowrap;
+    gap: #{unquote("clamp(0.35rem, 1.5vw, 1rem)")};
+}
+
+// Inactive: fixed flex-basis (narrow). Active: grows for title only. (Avoid justify-content:stretch on parents.)
+// Inactive column width matches Edge slide-nav item width (~61px) so the tick line can span the same width.
+$o-mk-edge-tab-inactive-w: 61px;
+$o-mk-edge-tab-active-min: 15rem;
+$o-mk-edge-tab-active-max: 44rem;
+
+// Inactive: fixed narrow column (number + tick only). Active: only step that grows for the title.
+.o_mk_edge_bottom_tab {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    box-sizing: border-box;
+    padding: 0.2rem 0.2rem 0.35rem;
+    margin: 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    position: relative;
+    z-index: 2;
+    color: $o-mk-edge-nav-inactive;
+    text-align: left;
+    flex-grow: 0;
+    transition:
+        min-width 0.45s $o-mk-edge-ease-smooth,
+        max-width 0.45s $o-mk-edge-ease-smooth,
+        width 0.45s $o-mk-edge-ease-smooth,
+        flex-basis 0.45s $o-mk-edge-ease-smooth,
+        padding 0.38s $o-mk-edge-ease-smooth,
+        color 0.32s $o-mk-edge-ease-smooth,
+        opacity 0.28s ease;
+
+    &:hover:not(:disabled):not(.is-selected) {
+        color: rgba(255, 255, 255, 0.92);
+    }
+
+    &:focus-visible {
+        outline: 2px solid rgba(110, 201, 255, 0.85);
+        outline-offset: 2px;
+        border-radius: 4px;
+    }
+
+    &:not(.is-selected) {
+        flex: 0 0 $o-mk-edge-tab-inactive-w;
+        width: $o-mk-edge-tab-inactive-w;
+        min-width: $o-mk-edge-tab-inactive-w;
+        max-width: $o-mk-edge-tab-inactive-w;
+        align-items: flex-start;
+        overflow: hidden;
+        align-self: flex-start;
+
+        .o_mk_edge_bottom_tab_counter {
+            color: $o-mk-edge-nav-inactive;
+            font-weight: 500;
+            white-space: nowrap;
+            text-align: left;
+        }
+
+        .o_mk_edge_bottom_tab_line {
+            width: 100%;
+            max-width: 100%;
+            margin-top: 0.25rem;
+            height: 2px;
+            border-radius: 1px;
+            background: $o-mk-edge-nav-inactive-line;
+            align-self: stretch;
+            flex-shrink: 0;
+            transition: opacity 0.25s ease;
+        }
+    }
+
+    &.is-selected {
+        flex: 0 0 auto;
+        align-items: flex-start;
+        text-align: left;
+        width: auto;
+        min-width: $o-mk-edge-tab-active-min;
+        max-width: $o-mk-edge-tab-active-max;
+        padding-left: 0.5rem;
+        padding-right: 1rem;
+        color: $o-mk-edge-nav-active;
+        align-self: flex-start;
+        overflow: hidden;
+
+        .o_mk_edge_bottom_tab_counter {
+            color: $o-mk-edge-nav-active;
+            font-weight: 600;
+            align-self: flex-start;
+            white-space: nowrap;
+        }
+
+        .o_mk_edge_bottom_tab_line {
+            position: relative;
+            z-index: 2;
+            align-self: stretch;
+            width: 100%;
+            max-width: 100%;
+            margin-top: 0.2rem;
+            margin-left: 0;
+            height: 2px;
+            border-radius: 1px;
+            background: $o-mk-edge-nav-active;
+            visibility: visible;
+            flex-shrink: 0;
+        }
+    }
+
+    &.is-future:not(.is-selected) {
+        opacity: 0.72;
+    }
+}
+
+// Stronger than backend button/flex resets: inactive must stay fixed width.
+.o_marketplace_onboarding.o_mk_edge .o_mk_edge_bottom_tabs_buttons > .o_mk_edge_bottom_tab:not(.is-selected) {
+    flex: 0 0 $o-mk-edge-tab-inactive-w !important;
+    flex-grow: 0 !important;
+    width: $o-mk-edge-tab-inactive-w !important;
+    min-width: $o-mk-edge-tab-inactive-w !important;
+    max-width: $o-mk-edge-tab-inactive-w !important;
+}
+
+.o_marketplace_onboarding.o_mk_edge .o_mk_edge_bottom_tabs_buttons > .o_mk_edge_bottom_tab.is-selected {
+    flex: 0 0 auto !important;
+    flex-grow: 0 !important;
+    width: auto !important;
+    min-width: $o-mk-edge-tab-active-min !important;
+    max-width: $o-mk-edge-tab-active-max !important;
+}
+
+.o_mk_edge_bottom_tab_counter {
+    font-size: 1.0625rem;
+    font-weight: 500;
+    line-height: 1.2;
+    text-align: left;
+}
+
+.o_mk_edge_bottom_tab_line {
+    display: block;
+    flex-shrink: 0;
+}
+
+.o_mk_edge_bottom_tab_active_row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.35rem;
+    width: 100%;
+    min-width: 0;
+}
+
+.o_mk_edge_bottom_tab.is-selected .o_mk_edge_bottom_tab_active_row {
+    animation: o_mk_edge_tab_title_in 0.48s $o-mk-edge-ease-smooth both;
+}
+
+@keyframes o_mk_edge_tab_title_in {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.o_mk_edge_bottom_tab_title {
+    font-size: 1.0625rem;
+    font-weight: 600;
+    line-height: 1.25;
+    color: $o-mk-edge-nav-active;
+}
+
+// Main grid: ~27fr / 53fr (right column slightly narrower than the old 25/55 split)
+.o_mk_edge_body {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.o_mk_edge_grid {
+    display: grid;
+    grid-template-columns: minmax(0, #{$o-mk-edge-grid-left-fr}fr) minmax(0, #{$o-mk-edge-grid-right-fr}fr);
+    grid-template-rows: minmax(0, 1fr);
+    gap: clamp(1rem, 3vw, 2.5rem);
+    align-items: stretch;
+    align-content: stretch;
+    flex: 1 1 auto;
+    min-height: #{unquote("min(72vh, 900px)")};
+    min-width: 0;
+    padding: $o-mk-edge-grid-vpad $o-mk-edge-pad-x;
+    box-sizing: border-box;
+}
+
+.o_mk_edge_left {
+    position: relative;
+    min-height: #{unquote("min(60vh, 720px)")};
+    min-width: 0;
+    height: 100%;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.o_mk_edge_left_content {
+    padding-bottom: 1rem;
+}
+
+.o_mk_edge_kicker {
+    letter-spacing: 0.15em;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    backdrop-filter: blur(10px);
+}
+
+.o_mk_edge_heading {
+    font-size: clamp(1.75rem, 2.5vw, 2.25rem);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: $o-mk-edge-text;
+    margin: 0;
+}
+
+// Left slide: heading block lower + larger title (values tripled from the first adjustment pass)
+.o_marketplace_onboarding.o_mk_edge .o_mk_edge_left_slide {
+    padding-top: 3.75rem;
+}
+
+.o_marketplace_onboarding.o_mk_edge .o_mk_edge_left_slide .o_mk_edge_heading {
+    margin-top: 3rem;
+    font-size: clamp(2.2rem, 3.25vw, 2.85rem);
+}
+
+.o_mk_edge_lead {
+    font-size: 1rem;
+    line-height: 1.55;
+    font-weight: 400;
+    color: $o-mk-edge-muted;
+    margin: 0;
+    max-width: 32rem;
+}
+
+.o_mk_edge_step_image {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    text-align: center;
+    img {
+        max-width: 100%;
+        height: auto;
+        max-height: 450px;
+        display: inline-block;
+        margin-left: auto;
+        margin-right: auto;
+        border-radius: $o-mk-edge-radius;
+    }
+}
+
+@media (max-width: 991.98px) {
+    .o_mk_edge_step_image {
+        img {
+            max-height: 280px;
+        }
+    }
+}
+
+.o_mk_edge_alert {
+    padding: 0.75rem 1rem;
+    border-radius: $o-mk-edge-radius;
+    background: rgba(220, 53, 69, 0.6);
+    color: #fff;
+    font-size: 0.9375rem;
+}
+
+// Go Live toggle shown in onboarding on a neutralized database. JS relocates it inside the
+// step card, right after the Instance Name field; it reuses the same Bootstrap form-switch
+// styling as the other onboarding toggles, so no extra theming is needed here.
+.o_mk_onboarding_golive {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+
+    // Pin the switch appearance so it reads well in both light and dark webclient modes:
+    // a white track with a grey knob when off (the dark-mode default knob is white and
+    // disappears on the forced-white track), and the blue track + white knob when on.
+    .form-check-input {
+        background-color: #ffffff !important;
+        border-color: #c8d0d8 !important;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='rgba%280,0,0,0.25%29'/%3e%3c/svg%3e") !important;
+
+        &:checked {
+            background-color: #{$o-mk-edge-blue} !important;
+            border-color: #{$o-mk-edge-blue} !important;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23ffffff'/%3e%3c/svg%3e") !important;
+        }
+    }
+}
+
+// Top-right close (same tones as former text Cancel control)
+.o_mk_edge_close_icon {
+    position: fixed;
+    top: $o-mk-edge-close-top;
+    inset-inline-end: $o-mk-edge-close-inset-end;
+    z-index: 1002;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.07);
+    color: $o-mk-edge-muted2;
+    font-size: 1.25rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+
+    &:hover:not(:disabled) {
+        color: $o-mk-edge-text;
+        background: rgba(255, 255, 255, 0.14);
+        border-color: rgba(255, 255, 255, 0.22);
+    }
+
+    &:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+    }
+
+    &:focus-visible {
+        outline: 2px solid rgba(255, 255, 255, 0.7);
+        outline-offset: 2px;
+    }
+}
+
+.o_mk_edge_nav_pair {
+    gap: 0.625rem;
+}
+
+// Edge common-button--edge primary
+.o_mk_edge_btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    font-weight: 500;
+    font-size: 0.9375rem;
+    line-height: 1.2;
+    box-shadow: none;
+    transition: background 0.15s ease, transform 0.1s ease, opacity 0.15s ease;
+
+    &:hover:not(:disabled) {
+        transform: scale(1.02);
+    }
+
+    &:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+    }
+
+    &:focus-visible {
+        outline: 2px solid rgba(255, 255, 255, 0.7);
+        outline-offset: 2px;
+    }
+}
+
+.o_mk_edge_btn_primary {
+    min-height: $o-mk-edge-btn-height;
+    padding: 0.5rem 1.5rem;
+    border-radius: $o-mk-edge-radius;
+    background: $o-mk-edge-blue;
+    color: #fff;
+    gap: 0.5em;
+
+    &:hover:not(:disabled) {
+        background: $o-mk-edge-blue-hover;
+        color: #fff;
+    }
+}
+
+// Back / Next / Save: flat filled blue, white glyphs, same height (reference: Edge update slides)
+.o_marketplace_onboarding.o_mk_edge .o_mk_edge_nav_pair {
+    .o_mk_edge_btn {
+        transition: background 0.18s ease, transform 0.2s cubic-bezier(0.33, 1, 0.68, 1), opacity 0.15s ease;
+    }
+
+    .o_mk_edge_btn:hover:not(:disabled) {
+        transform: scale(1.06);
+    }
+
+    .o_mk_edge_btn:active:not(:disabled) {
+        transform: scale(1.02);
+    }
+
+    .o_mk_edge_btn_icon {
+        width: $o-mk-edge-slide-h;
+        min-width: $o-mk-edge-slide-h;
+        height: $o-mk-edge-slide-h;
+        border-radius: $o-mk-edge-slide-r;
+        background: $o-mk-edge-slide-btn;
+        color: #fff;
+
+        &:hover:not(:disabled) {
+            background: $o-mk-edge-slide-btn-hover;
+        }
+    }
+
+    .o_mk_edge_btn_primary {
+        min-height: $o-mk-edge-slide-h;
+        height: $o-mk-edge-slide-h;
+        padding: 0 2rem;
+        border-radius: $o-mk-edge-slide-r;
+        background: $o-mk-edge-slide-btn;
+        color: #fff;
+        box-shadow: none;
+        gap: 0.65rem;
+        font-size: 1.625rem;
+
+        &:hover:not(:disabled) {
+            background: $o-mk-edge-slide-btn-hover;
+            color: #fff;
+        }
+    }
+
+    .o_mk_edge_icon_arrow {
+        width: 2rem;
+        height: 1.35rem;
+    }
+
+    .o_mk_nav_save_spinner {
+        width: 1.625rem;
+        height: 1.625rem;
+        border-width: 0.17rem;
+    }
+}
+
+.o_mk_edge_btn_secondary {
+    min-height: 2.75rem;
+    padding: 0.5rem 1.25rem;
+    border-radius: $o-mk-edge-radius;
+    background: rgba(77, 163, 255, 0.15);
+    color: $o-mk-edge-secondary;
+    border: 1px solid rgba(77, 163, 255, 0.35);
+
+    &:hover:not(:disabled) {
+        background: rgba(77, 163, 255, 0.25);
+    }
+}
+
+.o_mk_edge_btn_icon {
+    width: $o-mk-edge-btn-height;
+    min-width: $o-mk-edge-btn-height;
+    height: $o-mk-edge-btn-height;
+    padding: 0;
+    border-radius: $o-mk-edge-radius;
+    background: $o-mk-edge-blue;
+    color: #fff;
+
+    &:hover:not(:disabled) {
+        background: $o-mk-edge-blue-hover;
+    }
+}
+
+.o_mk_edge_icon_arrow {
+    width: 1.2em;
+    height: 0.8em;
+    flex-shrink: 0;
+}
+
+.o_mk_edge_icon_arrow_back {
+    transform: scaleX(-1);
+}
+
+.o_mk_nav_save_spinner {
+    width: 1rem;
+    height: 1rem;
+    border-width: 0.125rem;
+}
+
+// Right column: media frame centered vertically (row must use 1fr so cell height matches grid area)
+.o_mk_edge_right {
+    min-width: 0;
+    min-height: 0;
+    height: 100%;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.o_mk_edge_media_frame {
+    flex: 0 1 auto;
+    width: 100%;
+    max-height: 100%;
+    min-height: 0;
+    margin-top: auto;
+    margin-bottom: auto;
+    display: flex;
+    flex-direction: column;
+    background: $o-mk-edge-panel;
+    border-radius: $o-mk-edge-radius;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+    padding: 0.75rem;
+    overflow: hidden;
+}
+
+.o_mk_onboarding_card.o_mk_edge_card_inner {
+    flex: 0 1 auto;
+    min-height: 0;
+    max-height: 100%;
+    overflow-y: auto;
+    background: $o-mk-edge-inner-card !important;
+    color: #1a1a1a !important;
+    border-radius: calc(#{$o-mk-edge-radius} - 2px);
+    border: none;
+    padding: 1.5rem 1.75rem;
+
+    // Force dark text on light card — overrides Odoo dark mode
+    label, .o_form_label, .o_field_widget, .o_wrap_field,
+    h1, h2, h3, h4, h5, h6, span, div, p, a,
+    .nav-link, .nav-item {
+        color: #1a1a1a !important;
+    }
+
+    .text-muted, .o_field_widget .text-muted {
+        color: #6c757d !important;
+    }
+
+    .nav-link.active, .nav-link.is-selected {
+        color: #0066ff !important;
+        border-color: #0066ff !important;
+    }
+
+    // Exclude form-check inputs (switches/checkboxes/radios) so Bootstrap's
+    // native `:checked` styling (e.g. the boolean toggle turning on) is not
+    // clobbered by the forced white background.
+    input:not(.form-check-input), .form-control, .form-select, textarea {
+        color: #1a1a1a !important;
+        background-color: #ffffff !important;
+        border-color: #c8d0d8 !important;
+
+        &::placeholder {
+            color: #9ca3af !important;
+        }
+    }
+}
+
+.o_mk_onboarding_loading {
+    min-height: 60vh;
+}
+
+.o_mk_onboarding_fallback {
+    min-height: 120px;
+}
+
+// Form controls inside inner card
+.o_mk_onboarding_card.o_mk_edge_card_inner {
+    .form-control,
+    .form-select {
+        border-radius: 8px;
+        border-color: #c8d0d8;
+        background: #fff;
+    }
+
+    // Checkboxes & switches: the broad `input { background:#fff !important }` above
+    // also matches .form-check-input, so when checked the white Bootstrap check/knob
+    // sits on a white fill and is invisible in light mode (it only shows in dark mode,
+    // where Odoo restyles the checked state). Pin the primary fill back on the checked
+    // state so the glyph is visible in both modes. Type-agnostic: keeps the checkbox
+    // tick and the switch knob images intact.
+    .form-check-input:checked {
+        background-color: $o-mk-edge-blue !important;
+        border-color: $o-mk-edge-blue !important;
+    }
+
+    .o_mk_radio_card {
+        border-radius: $o-mk-edge-radius;
+        border: 2px solid #dde3e8;
+        padding: 1rem 1.25rem;
+        cursor: pointer;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        background: #fff;
+    }
+
+    .o_mk_radio_card.is-selected {
+        border-color: $o-mk-edge-blue;
+        background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+        color: #1d4ed8;
+        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    }
+
+    .o_mk_tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        border: 1px solid #e2e8f0;
+        background: #ffffff;
+        color: #64748b;
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        position: relative;
+
+        &::before {
+            content: '';
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid #cbd5e1;
+            border-radius: 3px;
+            transition: all 0.2s ease;
+        }
+
+        &:hover {
+            border-color: #cbd5e1;
+            background: #f8fafc;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+        }
+    }
+
+    .o_mk_tag.is-on {
+        border-color: $o-mk-edge-blue;
+        background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+        color: #1d4ed8;
+        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+
+        &::before {
+            background: $o-mk-edge-blue;
+            border-color: $o-mk-edge-blue;
+        }
+
+        &::after {
+            content: '';
+            position: absolute;
+            left: 23px;
+            top: calc(50% - 1px);
+            width: 4px;
+            height: 8px;
+            border-right: 2px solid #ffffff;
+            border-bottom: 2px solid #ffffff;
+            transform: translate(-50%, -50%) rotate(45deg);
+        }
+    }
+
+    .o_mk_review_section {
+        border-radius: $o-mk-edge-radius;
+        background: #fff;
+        border: 1px solid #dde3e8;
+        padding: 1rem 1.25rem;
+        margin-bottom: 1rem;
+    }
+
+    .o_mk_review_section h6 {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: #5c6b7a;
+    }
+}
+
+// Marketplace picker: title + lead centered at top, cards centered below (Edge-style)
+.o_mk_edge_body_pick {
+    padding-bottom: $o-mk-edge-grid-vpad;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+.o_mk_picker_layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 96rem;
+    margin-inline: auto;
+    min-height: 0;
+    padding: clamp(0, 1.25vh, 0.5rem) $o-mk-edge-pad-x clamp(1rem, 2.5vh, 2rem);
+    box-sizing: border-box;
+    flex: 0 0 auto;
+}
+
+.o_mk_picker_header {
+    text-align: center;
+    max-width: #{unquote("min(42rem, 92vw)")};
+    margin-top: -0.35rem;
+    margin-bottom: clamp(1.5rem, 3vh, 2.75rem);
+}
+
+.o_mk_picker_heading.o_mk_edge_heading {
+    margin-top: 0;
+    font-size: clamp(1.85rem, 2.75vw, 2.5rem);
+}
+
+.o_mk_picker_lead.o_mk_edge_lead {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 36rem;
+}
+
+.o_mk_picker_cards_wrap {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+    flex: 0 0 auto;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+// Exactly one row with up to 3 equal-width tiles (centered when fewer than 3)
+.o_mk_picker_grid {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: stretch;
+    gap: clamp(1.25rem, 2vw, 2rem);
+    width: 100%;
+    max-width: 96rem;
+    margin-inline: auto;
+}
+
+.o_mk_picker_card {
+    position: relative;
+    display: block;
+    flex: 1 1 0;
+    min-width: 12rem;
+    max-width: $o-mk-picker-card-max-w;
+    width: auto;
+    padding: 0;
+    border: none;
+    border-radius: $o-mk-picker-card-radius;
+    background: transparent;
+    cursor: pointer;
+    text-align: left;
+
+    &:hover:not(:disabled) {
+        .o_mk_picker_card_surface {
+            background: $o-mk-picker-card-bg-hover;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.42);
+        }
+    }
+
+    &:focus-visible {
+        outline: 2px solid rgba(110, 201, 255, 0.9);
+        outline-offset: 4px;
+        border-radius: $o-mk-picker-card-radius;
+    }
+
+    &:disabled {
+        opacity: 0.6;
+        cursor: wait;
+    }
+}
+
+// Outer tile: square (1:1), slate shell + inner padding
+.o_mk_picker_card_surface {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    box-sizing: border-box;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    min-height: 0;
+    padding: clamp(1.1rem, 2.2vw, 1.35rem);
+    border-radius: $o-mk-picker-card-radius;
+    background: $o-mk-picker-card-bg;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    transition: background 0.2s ease, box-shadow 0.22s ease;
+}
+
+// Illustration / icon zone fills space above the label inside the square
+.o_mk_picker_card_illustration {
+    flex: 1 1 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    margin-bottom: 0.75rem;
+}
+
+.o_mk_picker_card_icon_wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1 1 auto;
+    width: 100%;
+    min-height: 0;
+    padding: 1.35rem 1.1rem;
+    border-radius: $o-mk-picker-illustration-inner-radius;
+    background: #222F38;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.o_mk_picker_card_icon {
+    max-width: 8rem;
+    max-height: 8rem;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 0.75rem;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.25));
+}
+
+.o_mk_picker_card_icon_placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 7.25rem;
+    height: 7.25rem;
+    border-radius: 1.25rem;
+    background: rgba($o-mk-picker-ill-teal, 0.22);
+    color: rgba(255, 255, 255, 0.88);
+    font-size: 2.5rem;
+}
+
+.o_mk_picker_card_spinner {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba($o-mk-picker-ill-deep, 0.55);
+    border-radius: $o-mk-picker-illustration-inner-radius;
+}
+
+// Bottom label strip: distinct panel, centered white text (reference #3C4A54)
+.o_mk_picker_card_label {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 3.25rem;
+    padding: 0.9rem 1rem;
+    border-radius: $o-mk-picker-label-radius;
+    background: $o-mk-picker-label-bg;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.o_mk_picker_card_label_text {
+    font-size: 1.0625rem;
+    font-weight: 600;
+    line-height: 1.3;
+    color: #ffffff;
+    text-align: center;
+}
+
+@media (max-width: 991.98px) {
+    .o_mk_edge_close_icon {
+        top: 0.875rem;
+        inset-inline-end: 0.65rem;
+    }
+
+    .o_mk_picker_layout {
+        min-height: unset;
+        padding-top: 0.65rem;
+    }
+
+    .o_mk_picker_grid {
+        flex-direction: column;
+        flex-wrap: nowrap;
+        align-items: center;
+        max-width: $o-mk-picker-card-max-w;
+        margin-inline: auto;
+    }
+
+    .o_mk_picker_cards_wrap {
+        overflow-x: visible;
+    }
+
+    .o_mk_picker_card {
+        flex: 0 1 auto;
+        min-width: 0;
+        width: 100%;
+        max-width: $o-mk-picker-card-max-w;
+    }
+
+    .o_mk_edge_grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto;
+        min-height: unset;
+    }
+
+    .o_mk_edge_left {
+        min-height: unset;
+        height: auto;
+        text-align: center;
+    }
+
+    .o_mk_edge_right {
+        height: auto;
+    }
+
+    .o_mk_edge_lead {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .o_mk_edge_bottom_nav {
+        padding: 0.5rem 1rem;
+    }
+
+    .o_mk_edge_bottom_nav_inner {
+        flex-wrap: wrap;
+        row-gap: 0.65rem;
+    }
+
+    .o_mk_edge_bottom_nav_title {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+
+    .o_mk_edge_bottom_nav_actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    .o_mk_edge_bottom_nav_tabs {
+        width: 100%;
+    }
+}

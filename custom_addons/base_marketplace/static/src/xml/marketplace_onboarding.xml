@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="base_marketplace.MarketplaceOnboardingMain">
+        <div t-ref="mkOnboardingRoot" class="o_marketplace_onboarding o_mk_edge fluent-dark d-flex flex-column vh-100 w-100 position-fixed top-0 start-0" style="z-index: 1000;">
+            <t t-if="!state.loading || state.wizardPhase === 'pick' || state.loadError">
+                <button type="button"
+                        class="o_mk_edge_close_icon"
+                        t-on-click="onCancel"
+                        t-att-disabled="state.saving || state.pickerLoadingKey"
+                        t-att-title="this.closeWizardLabel"
+                        t-att-aria-label="this.closeWizardLabel">
+                    <i class="fa fa-times" aria-hidden="true"/>
+                </button>
+            </t>
+            <t t-if="state.loading">
+                <div class="o_mk_onboarding_loading d-flex align-items-center justify-content-center flex-grow-1">
+                    <span class="spinner-border o_mk_edge_spinner"/>
+                </div>
+            </t>
+            <t t-elif="state.loadError">
+                <div class="o_mk_onboarding_loading d-flex flex-column align-items-center justify-content-center flex-grow-1 gap-3">
+                    <p class="o_mk_edge_text_muted mb-0"><t t-esc="state.loadError"/></p>
+                </div>
+            </t>
+            <t t-elif="state.wizardPhase === 'pick'">
+                <div class="o_mk_edge_shell d-flex flex-column flex-grow-1 min-h-0">
+                    <div class="o_mk_edge_body flex-grow-1 overflow-auto min-h-0 o_mk_edge_body_pick">
+                        <div class="o_mk_picker_layout">
+                            <header class="o_mk_picker_header">
+                                <p class="o_mk_edge_kicker text-uppercase small mb-2">Setup</p>
+                                <h2 class="o_mk_edge_heading o_mk_picker_heading mb-3"><t t-esc="this.pickerTitle"/></h2>
+                                <p class="o_mk_edge_lead o_mk_picker_lead mb-0"><t t-esc="this.pickerLead"/></p>
+                            </header>
+                            <div class="o_mk_picker_cards_wrap">
+                                <div class="o_mk_picker_grid" role="list">
+                                    <button t-foreach="state.connectors" t-as="conn" t-key="conn.key" type="button"
+                                            class="o_mk_picker_card"
+                                            t-att-disabled="state.pickerLoadingKey"
+                                            t-on-click="makePickHandler(conn.key)"
+                                            role="listitem">
+                                        <div class="o_mk_picker_card_surface">
+                                            <div class="o_mk_picker_card_illustration">
+                                                <div class="o_mk_picker_card_icon_wrap">
+                                                    <t t-if="this.connectorShowsImage(conn)">
+                                                        <img class="o_mk_picker_card_icon"
+                                                             t-att-src="pickerIconSrc(conn)"
+                                                             t-att-alt="conn.name"
+                                                             loading="lazy"
+                                                             t-on-error="makeConnectorIconErrorHandler(conn.key)"/>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <span class="o_mk_picker_card_icon_placeholder" aria-hidden="true">
+                                                            <i class="fa fa-store"/>
+                                                        </span>
+                                                    </t>
+                                                    <t t-if="state.pickerLoadingKey === conn.key">
+                                                        <span class="o_mk_picker_card_spinner">
+                                                            <span class="spinner-border o_mk_edge_spinner"/>
+                                                        </span>
+                                                    </t>
+                                                </div>
+                                            </div>
+                                            <div class="o_mk_picker_card_label">
+                                                <span class="o_mk_picker_card_label_text"><t t-esc="conn.name"/></span>
+                                            </div>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+            <t t-else="">
+                <div class="o_mk_edge_shell d-flex flex-column flex-grow-1 min-h-0">
+                    <div class="o_mk_edge_body flex-grow-1 overflow-auto min-h-0 o_mk_edge_body_has_bottom_nav">
+                        <div class="o_mk_edge_grid">
+                            <div class="o_mk_edge_left d-flex flex-column min-h-0">
+                                <div class="o_mk_edge_left_content flex-grow-1">
+                                    <div class="o_mk_edge_slide_zone o_mk_edge_left_slide">
+                                        <p class="o_mk_edge_kicker text-uppercase small mb-2" t-if="this.currentStepInfo?.icon">
+                                            <i t-att-class="'fa ' + this.currentStepInfo.icon + ' me-2'"/>
+                                            <t t-esc="state.marketplace"/>
+                                        </p>
+                                        <h2 class="o_mk_edge_heading mb-3">
+                                            <t t-esc="this.currentStepInfo?.title"/>
+                                        </h2>
+                                        <p class="o_mk_edge_lead mb-4">
+                                            <t t-esc="this.currentStepInfo?.description"/>
+                                        </p>
+                                        <div t-if="this.currentStepInfo?.image" class="o_mk_edge_step_image mb-4">
+                                            <img t-att-src="this.currentStepInfo.image" alt="Step illustration" class="img-fluid"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="o_mk_edge_right min-h-0">
+                                <div class="o_mk_edge_media_frame w-100 d-flex flex-column min-h-0">
+                                    <div class="o_mk_onboarding_card o_mk_edge_card_inner overflow-auto o_mk_edge_slide_zone o_mk_edge_right_slide">
+                                        <t t-call="{{ this.activeStepTemplate }}"/>
+                                    </div>
+                                    <div t-if="state.stepError" class="o_mk_edge_alert mt-3" role="alert">
+                                        <t t-esc="state.stepError"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <nav class="o_mk_edge_bottom_nav w-100 flex-shrink-0" aria-label="Steps">
+                        <div class="o_mk_edge_bottom_nav_inner d-flex align-items-center flex-nowrap justify-content-between gap-3 w-100 min-w-0">
+                            <div class="o_mk_edge_bottom_nav_title min-w-0 flex-grow-1">
+                                <div class="o_mk_edge_slide_zone o_mk_edge_pagination_slide w-100 min-w-0">
+                                    <div class="o_mk_edge_bottom_nav_tabs position-relative min-w-0" role="tablist">
+                                        <div class="o_mk_edge_bottom_tabs_buttons d-flex align-items-start flex-nowrap w-100 justify-content-start min-w-0">
+                                        <t t-foreach="this.dotSteps" t-as="step" t-key="step">
+                                            <button type="button"
+                                                    role="tab"
+                                                    t-att-class="stepTabClass(step)"
+                                                    t-att-aria-selected="step === state.currentStep ? 'true' : 'false'"
+                                                    t-att-aria-label="stepNavTitle(step)"
+                                                    t-on-click="makeStepTabHandler(step)">
+                                                <span class="o_mk_edge_bottom_tab_counter" t-esc="formatStepNum(step)"/>
+                                                <span class="o_mk_edge_bottom_tab_line" aria-hidden="true"/>
+                                                <div t-if="step === state.currentStep" class="o_mk_edge_bottom_tab_active_row">
+                                                    <span class="o_mk_edge_bottom_tab_title text-truncate" t-esc="stepNavTitle(step)"/>
+                                                </div>
+                                            </button>
+                                        </t>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="o_mk_edge_bottom_nav_actions flex-shrink-0 d-flex align-items-center">
+                                <div class="o_mk_edge_nav_pair o_mk_edge_bottom_nav_pair d-flex align-items-center flex-nowrap">
+                                    <button type="button" class="o_mk_edge_btn o_mk_edge_btn_icon o_mk_nav_btn_back"
+                                            t-on-click="onPrevious"
+                                            t-att-disabled="state.currentStep === 1"
+                                            title="Back"
+                                            aria-label="Back">
+                                        <svg class="o_mk_edge_icon_arrow o_mk_edge_icon_arrow_back" viewBox="0 0 120 100" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="m70.2373565 0c1.6990435 0 3.1569652.61020408 4.3707131 1.82959184l43.5708004 43.77857146c1.213747 1.2183673 1.82113 2.6836734 1.82113 4.3918367s-.607383 3.172449-1.82113 4.3918367l-43.5708004 43.7785715c-1.2137479 1.2193877-2.6696348 1.8295918-4.3707131 1.8295918-1.749913 0-3.2190261-.622449-4.4093739-1.8673469-1.188313-1.2428572-1.7845043-2.7193878-1.7845043-4.4285715 0-1.7081632.6073826-3.1724489 1.8211304-4.3918367l33.0326609-33.1897959h-92.79292177c-3.37133822 0-6.10434783-2.7411138-6.10434783-6.122449s2.73300961-6.122449 6.10434783-6.122449h92.79292177l-33.0326609-33.1897959c-1.2137478-1.21836734-1.8211304-2.68367347-1.8211304-4.39183673 0-1.70816327.5951739-3.18469388 1.7855217-4.42959184 1.1893304-1.24387755 2.6594609-1.86632653 4.4083565-1.86632653z"/></svg>
+                                    </button>
+                                    <button type="button"
+                                            class="o_mk_edge_btn o_mk_edge_btn_primary o_mk_nav_btn_next"
+                                            t-on-click="onNext"
+                                            t-if="state.currentStep &lt; state.totalSteps">
+                                        <span>Next</span>
+                                        <svg class="o_mk_edge_icon_arrow" viewBox="0 0 120 100" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="m70.2373565 0c1.6990435 0 3.1569652.61020408 4.3707131 1.82959184l43.5708004 43.77857146c1.213747 1.2183673 1.82113 2.6836734 1.82113 4.3918367s-.607383 3.172449-1.82113 4.3918367l-43.5708004 43.7785715c-1.2137479 1.2193877-2.6696348 1.8295918-4.3707131 1.8295918-1.749913 0-3.2190261-.622449-4.4093739-1.8673469-1.188313-1.2428572-1.7845043-2.7193878-1.7845043-4.4285715 0-1.7081632.6073826-3.1724489 1.8211304-4.3918367l33.0326609-33.1897959h-92.79292177c-3.37133822 0-6.10434783-2.7411138-6.10434783-6.122449s2.73300961-6.122449 6.10434783-6.122449h92.79292177l-33.0326609-33.1897959c-1.2137478-1.21836734-1.8211304-2.68367347-1.8211304-4.39183673 0-1.70816327.5951739-3.18469388 1.7855217-4.42959184 1.1893304-1.24387755 2.6594609-1.86632653 4.4083565-1.86632653z"/></svg>
+                                    </button>
+                                    <button type="button" class="o_mk_edge_btn o_mk_edge_btn_primary o_mk_nav_btn_next o_mk_nav_btn_save"
+                                            t-on-click="onDone"
+                                            t-if="state.currentStep === state.totalSteps"
+                                            t-att-disabled="state.saving">
+                                        <t t-if="state.saving">
+                                            <span class="spinner-border spinner-border-sm o_mk_nav_save_spinner"/>
+                                        </t>
+                                        <t t-else="">
+                                            <span>Save &amp; Confirm</span>
+                                            <i class="fa fa-check"/>
+                                        </t>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+            </t>
+        </div>
+    </t>
+
+    <t t-name="base_marketplace.MarketplaceOnboarding_fallback_step">
+        <div class="o_mk_onboarding_fallback">
+            <p class="text-muted mb-0">No step template is registered for this marketplace.</p>
+        </div>
+    </t>
+
+    <!-- Template for Quick Onboarding Instance Boxes Widget -->
+    <t t-name="base_marketplace.QuickOnboardingInstanceBoxes">
+        <!-- This widget loads and populates the instance boxes -->
+        <QuickOnboardingInstanceBoxes/>
+    </t>
+</templates>

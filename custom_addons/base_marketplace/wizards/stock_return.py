@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from odoo.exceptions import UserError
 from odoo.tools.float_utils import float_round
 
 from odoo import _, api, fields, models
+from odoo.addons.base_marketplace.models.exceptions import MarketplaceException
 
 
 class ReturnPicking(models.TransientModel):
@@ -36,12 +36,13 @@ class ReturnPicking(models.TransientModel):
     def default_get(self, fields):
         """
         Override default_get to prefill sale order and product return moves.
+        Task: T7493 - Added MarketplaceException error.
         """
         res = super(ReturnPicking, self).default_get(fields)
 
         if self.env.context.get('active_id') and self.env.context.get('active_model') == 'sale.order':
             if len(self.env.context.get('active_ids', list())) > 1:
-                raise UserError("You may only return one sale order at a time.")
+                raise MarketplaceException("You may only return one sale order at a time.")
             order_id = self.env['sale.order'].browse(self.env.context.get('active_id'))
             if order_id.exists():
                 # Update the result dictionary with the sale order ID and product return moves
@@ -71,12 +72,13 @@ class ReturnPicking(models.TransientModel):
     def action_create_returns_ts(self):
         """
         Create return moves for products and validate them.
+        Task: T7493 - Added MarketplaceException error.
         """
         returned_lines = False
         # Iterate through each product return move to create return lines
         for return_line in self.product_return_moves:
             if not return_line.move_id:
-                raise UserError("You have manually created product lines, please delete them to proceed.")
+                raise MarketplaceException("You have manually created product lines, please delete them to proceed.")
             if return_line.quantity:
                 returned_lines = True
                 # Create and process the return move for the given line
@@ -84,7 +86,7 @@ class ReturnPicking(models.TransientModel):
 
         # Raise an error if no valid return lines were found
         if not returned_lines and not self.env.context.get('skip_error', False):
-            raise UserError("Please specify at least one non-zero quantity.")
+            raise MarketplaceException("Please specify at least one non-zero quantity.")
         return True
 
     def _create_and_process_return_move(self, return_line):

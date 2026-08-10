@@ -1,9 +1,10 @@
 import logging
 import datetime
-from odoo.exceptions import UserError
+
 from odoo import models, fields, api, _
 from odoo.tools.misc import split_every
 from dateutil.relativedelta import relativedelta
+from odoo.addons.base_marketplace.models.exceptions import MarketplaceException
 
 _logger = logging.getLogger("Teqstars:Base Marketplace")
 
@@ -107,12 +108,15 @@ class MkQueueJob(models.Model):
         return True
 
     def _check_cron_running_status(self):
+        """
+        Task: T7493 - Added MarketplaceException error.
+        """
         try:
             process_queue_cron_id = self.env.ref('base_marketplace.mk_process_queue_job')
             self.env['mk.operation']._check_process_cron_job(process_queue_cron_id)
         except Exception:
             cron_message = _("Restricted! The processing of Queue Job is already running. Proceeding with this action may result in duplicate records.")
-            raise UserError(cron_message)
+            raise MarketplaceException(cron_message)
         return True
 
     def do_process(self, cron=False):
@@ -149,11 +153,11 @@ class MkQueueJob(models.Model):
                 else:
                     record.do_process(cron=True)
             except Exception as e:
-                record.message_post(body='Facing issue while process Queue {}, ERROR: {}'.format(record.name, e))
+                record.message_post(body=f'Facing issue while process Queue {record.name}, ERROR: {e}')
             finally:
                 if record.no_of_retry_count == 2 and record.failed_count:
                     record.create_activity_action(
-                        "System tried 3 times to process queue but something went wrong! Therefor, Manual attention needed to process failed queue lines.")
+                        _("System tried 3 times to process queue but something went wrong! Therefor, Manual attention needed to process failed queue lines."))
                 record.no_of_retry_count += 1
             self.env.cr.commit()
         return True
@@ -187,7 +191,7 @@ class MkQueueJob(models.Model):
                     try:
                         mail_activity_obj.create(vals)
                     except Exception as e:
-                        _logger.error("Error while creating activity, ERROR: {}".format(e))
+                        _logger.error(f"Error while creating activity, ERROR: {e}")
 
     def do_retry_failed(self):
         if not self.mk_log_id:
@@ -213,7 +217,7 @@ class MkQueueJob(models.Model):
                 self.env.cr.execute("DELETE FROM mail_message WHERE model='mk.queue.job' AND res_id IN %s", (mk_queue_job_batch,))
                 self.env.cr.execute("DELETE FROM mk_queue_job WHERE id IN %s", (mk_queue_job_batch,))
         except Exception as e:
-            _logger.error('Error while cleaning queue job log: {} '.format(e))
+            _logger.error(f'Error while cleaning queue job log: {e}')
 
     def manage_queue_activity(self, action):
         """

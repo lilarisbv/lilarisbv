@@ -36,7 +36,8 @@ class SaleOrder(models.Model):
             rate = self._get_tax_rate(tax_line, mk_instance_id)
 
             # Construct the tax title and search for the tax in Odoo
-            tax_title = "{} {} {}".format(tax_line['title'], rate, 'Included' if taxes_included else 'Excluded')
+            # Task: T7493 - Converted strings to f-strings.
+            tax_title = f"{tax_line['title']} {rate} {'Included' if taxes_included else 'Excluded'}"
             tax_ids |= self._find_or_create_tax(tax_title, rate, tax_included_override, mk_instance_id)
 
         return tax_ids
@@ -122,13 +123,14 @@ class SaleOrder(models.Model):
         mk_log_line_dict = self.env.context.get('mk_log_line_dict', {'error': [], 'success': []})
         queue_line_id = self.env.context.get('queue_line_id', False)
 
+        # Task: T7493 - Converted strings to f-strings.
         tax_vals = {
             'name': tax_title,
             'amount': rate,
             'type_tax_use': 'sale',
             'price_include_override': tax_included_override,
             'company_id': company_id.id,
-            'description': "{}% {}".format(rate, 'Included' if tax_included_override == 'tax_included' else 'Excluded')
+            'description': f"{rate}% {'Included' if tax_included_override == 'tax_included' else 'Excluded'}"
         }
 
         # Create the tax in Odoo
@@ -138,8 +140,8 @@ class SaleOrder(models.Model):
         self._assign_tax_accounts(tax_id, mk_instance_id)
 
         # Log the creation of the new tax
-        log_message = "Tax not found, so created new Tax '{}' for Company '{}' with rate {}%.".format(tax_title, company_id.name, rate)
-        mk_log_line_dict['success'].append({'log_message': 'IMPORT ORDER: {}'.format(log_message), 'queue_job_line_id': queue_line_id and queue_line_id.id or False})
+        log_message = _("IMPORT ORDER: Tax not found, so created new Tax '%s' for Company '%s' with rate %s%%.") % (tax_title, company_id.name, rate)
+        mk_log_line_dict['success'].append({'log_message': log_message, 'queue_job_line_id': queue_line_id and queue_line_id.id or False})
 
         return tax_id
 
@@ -210,7 +212,7 @@ class SaleOrder(models.Model):
                 }
                 return client_action
         marketplace_values = dict(self.mk_instance_id._fields['marketplace'].selection)
-        raise MarketplaceException(_(f"Navigation not available for {marketplace_values.get(self.mk_instance_id.marketplace)} marketplace."))
+        raise MarketplaceException(_("Navigation not available for %s marketplace.") % marketplace_values.get(self.mk_instance_id.marketplace))
 
     def check_marketplace_order_date(self, order_create_date, mk_instance_id):
         if mk_instance_id.import_order_after_date and str(mk_instance_id.import_order_after_date) > order_create_date:
@@ -258,15 +260,53 @@ class SaleOrder(models.Model):
         else:
             return should_lock
 
+    def _get_product_quantity_and_lot(self):
+        """
+        Task:T6366 - Hook method to validate stock availability and lot/serial assignment
+        based on the marketplace-specific implementation.
+
+        The method dynamically invokes a marketplace-specific handler named
+        ``<marketplace>_get_product_quantity_and_lot`` when available.
+        This allows each marketplace to define its own stock validation logic
+        before order fulfillment is processed.
+
+        Returns:
+            tuple(bool, bool):
+                - has_stock: True when all required products have sufficient
+                  stock available for fulfillment.
+                - has_lot_assigned: True when all required lot/serial-tracked
+                  products have valid lot/serial information available.
+        """
+
+        has_stock, has_lot_assigned = True, True
+        if hasattr(self, '%s_get_product_quantity_and_lot' % self.marketplace):
+            has_stock, has_lot_assigned = getattr(self, '%s_get_product_quantity_and_lot' % self.marketplace)()
+        return has_stock, has_lot_assigned
+
     def process_order(self, order_workflow_id):
+        """
+        Task: T6366 - Process the marketplace order according to its fulfillment status
+        and inventory validation rules.
+
+        Args:
+            order_workflow_id: Workflow configuration that controls order
+                processing and locking behavior.
+
+        Returns:
+            bool: Always returns True when processing completes successfully.
+        """
         try:
             if self.state not in ['sale']:
                 fulfillment_status = self._get_order_fulfillment_status()
                 if self.env.context.get('create_date', False):
                     self.write({'date_order': self.env.context.get('create_date')})
                 if fulfillment_status:
-                    self.process_fulfilled_order(fulfillment_status)
-                    if fulfillment_status == 'partial':
+                    has_stock, has_lot_assigned = self._get_product_quantity_and_lot()
+                    if has_stock and has_lot_assigned:
+                        self.process_fulfilled_order(fulfillment_status)
+                        if fulfillment_status == 'partial':
+                            self.action_confirm()
+                    else:
                         self.action_confirm()
                 else:
                     self.action_confirm()
@@ -308,15 +348,30 @@ class SaleOrder(models.Model):
         return True
 
     def process_invoice(self, order_workflow_id):
+        """Create, validate, and register payment for invoices based on workflow configuration.
+
+        - Creates invoices if `is_create_invoice` is enabled, order is in 'sale' state, and fiscal lock date allows it.
+        - When `is_create_single_invoice` is True on the marketplace instance, skips invoice creation if there are
+          undelivered delivery-policy products (waits until all products are ready for a single invoice).
+        - Validates (posts) draft invoices if `is_validate_invoice` is enabled.
+        - Registers payment for unpaid invoices if `is_register_payment` is enabled.
+
+        Args:
+            order_workflow_id: The marketplace workflow configuration record.
+        Returns:
+            bool: True if the method completes without errors.
+        """
         try:
-            if order_workflow_id.is_create_invoice:
-                self._create_invoices()
-            if order_workflow_id.is_validate_invoice:
-                for invoice_id in self.invoice_ids.filtered(lambda i: i.payment_state == 'not_paid' and i.state in ['draft', 'posted']):
-                    if invoice_id.state == 'draft':
-                        invoice_id.action_post()
-                    if order_workflow_id.is_register_payment:
-                        self.pay_and_reconcile(order_workflow_id, invoice_id)
+            if order_workflow_id.is_create_invoice and self.state == 'sale' and self._check_fiscalyear_lock_date():
+                if not self.invoice_ids and not (self.mk_instance_id.is_create_single_invoice and self.order_line.filtered(
+                        lambda x: x.product_id.invoice_policy == 'delivery' and x.qty_delivered < x.product_uom_qty)):
+                    self._create_invoices()
+                if order_workflow_id.is_validate_invoice:
+                    for invoice_id in self.invoice_ids.filtered(lambda i: i.payment_state == 'not_paid' and i.state in ['draft', 'posted']):
+                        if invoice_id.state == 'draft':
+                            invoice_id.action_post()
+                        if order_workflow_id.is_register_payment:
+                            self.pay_and_reconcile(order_workflow_id, invoice_id)
         except Exception as e:
             raise
         return True
@@ -325,17 +380,34 @@ class SaleOrder(models.Model):
         lock_date = self.company_id._get_user_fiscal_lock_date(self.order_workflow_id.sale_journal_id)
         if self.date_order.date() <= lock_date:
             mk_log_id = self.env.context.get('mk_log_id', False)
-            log_message = "PROCESS ORDER: You cannot create invoice prior to and inclusive of the lock date {} for Marketplace Order {}.".format(format_date(self.env, lock_date), self.name)
+            log_message = _("PROCESS ORDER: You cannot create invoice prior to and inclusive of the lock date %s for Marketplace Order %s.") % (format_date(self.env, lock_date), self.name)
             if mk_log_id:
                 mk_log_id = self.env.context.get('mk_log_id', False)
                 queue_line_id = self.env.context.get('queue_line_id', False)
                 self.env['mk.log'].create_update_log(mk_log_id=mk_log_id,
                                                      mk_log_line_dict={'error': [{'log_message': log_message, 'queue_job_line_id': queue_line_id and queue_line_id.id or False}]})
-            _logger.error(_(log_message))
+            _logger.error(log_message)
             return False
         return True
 
     def do_marketplace_workflow_process(self, marketplace_workflow_id=False, order_list=None):
+        """Execute the marketplace workflow for one or more sale orders.
+
+        Processes each order in two phases:
+        1. **Order Confirmation** (if `is_confirm_order` is enabled): Confirms the order,
+           marks service products as delivered, and skips invoicing if only delivery-policy
+           storable products exist (awaiting delivery).
+        2. **Invoice Processing**: Calls `process_invoice` to create, validate, and register
+           payment for invoices based on workflow settings.
+
+        Already fully invoiced orders are skipped.
+
+        Args:
+            marketplace_workflow_id: Fallback workflow configuration if an order has none assigned.
+            order_list: List of sale order records to process. Defaults to `[self]`.
+        Returns:
+            bool: True if all orders are processed successfully.
+        """
         if order_list is None or not order_list:
             order_list = [self]
         if not order_list:
@@ -358,15 +430,8 @@ class SaleOrder(models.Model):
                 if not order_line_ids.filtered(lambda x: x.is_storable) and len(order_id.order_line) != len(order_line_ids.filtered(lambda y: y.product_id.type in ['service', 'consu'])):
                     continue
 
-                if not order_id._check_fiscalyear_lock_date():
-                    continue
-
-                # Process Invoice
-                if not order_id.invoice_ids:
-                    if order_id.mk_instance_id.is_create_single_invoice and self.order_line.filtered(lambda x: x.product_id.invoice_policy == 'delivery'):
-                        continue
-                    if not order_id.process_invoice(order_workflow_id):
-                        continue
+            # Process Invoice
+            order_id.process_invoice(order_workflow_id)
         return True
 
     def _mark_service_products_delivered(self, order_id):
@@ -574,7 +639,8 @@ class SaleOrder(models.Model):
                 boms, lines = bom.sudo().explode(product_id, factor, picking_type=bom.picking_type_id)
                 return lines
         except Exception as e:
-            _logger.info("Error when trying to find BOM product components for Order {}. ERROR: {}".format(self.name, e))
+            # Task: T7493 - Converted strings to f-strings.
+            _logger.info(f"Error when trying to find BOM product components for Order {self.name}. ERROR: {e}")
         return {}
 
     def _check_invoice_policy_ordered(self):
@@ -606,6 +672,7 @@ class SaleOrderLine(models.Model):
     mk_id = fields.Char("Marketplace Identification", copy=False)
     is_discount = fields.Boolean("Is Marketplace Discount", copy=False)
     related_disc_sale_line_id = fields.Many2one("sale.order.line", copy=False)
+    marketplace_discount_amount = fields.Float("Marketplace Discount Amount", copy=False)
 
     def prepare_sale_order_line_ts(self, vals, mk_instance):
         order_line = {
@@ -622,3 +689,13 @@ class SaleOrderLine(models.Model):
         if mk_instance:
             order_line.update({'analytic_distribution': mk_instance.analytic_distribution})
         return order_line
+
+    def _prepare_base_line_for_taxes_computation(self, **kwargs):
+        """ inherit method to pass marketplace_discount_amount. It will be used while calculate unit price.
+        :return: A python dictionary.
+        """
+        res = super()._prepare_base_line_for_taxes_computation(**kwargs)
+        quantity = res.get('quantity', 0)
+        if self.marketplace_discount_amount and quantity:
+            res['marketplace_discount_amount'] = self.marketplace_discount_amount / quantity
+        return res

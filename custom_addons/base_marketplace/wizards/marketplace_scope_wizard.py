@@ -55,6 +55,8 @@ class MKScopeWizard(models.TransientModel):
             res (dictionary): dictionary that sets default value for the field.
         """
         res = super().default_get(fields_list)
+        if not self.env.context.get('mk_instance_id'):
+            return res
         missing, granted = self._get_scopes()
         res['permissions_html_missing'] = self.make_chips(missing, 'missing', 'fa-times-circle')
         res['permissions_html_granted'] = self.make_chips(granted, 'granted', 'fa-check-circle')

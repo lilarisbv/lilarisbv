@@ -1,10 +1,9 @@
 {
-    "name": "Base Marketplace Connector",
-    "version": "1.0.2",
+    "name": "Base Marketplace",
+    "version": "19.0.1.1.0",
     "category": "Extra",
-    "summary": "Base app for all the marketplace connector of TeqStars.",
-
-    "depends": ['account', 'delivery', 'sale_management', 'stock'],
+    'summary': 'TeqStars Base Marketplace app for Odoo provides the core framework required for TeqStars marketplace connector integrations. This base module helps manage common marketplace functionalities, shared configurations, and integration workflows across multiple marketplace connectors. The module simplifies connector management, improves integration consistency, and serves as the foundation for TeqStars marketplace solutions in Odoo such as WooCommerce (woo, woo commerce), Shopify, Bol (bol.com), BigCommerce, Etsy, eBay, Mirakl, PrestaShop (Presta Shop).',
+    "depends": ['delivery', 'sale_management', 'sale_stock'],
 
     'data': [
         'security/group.xml',
@@ -40,19 +39,22 @@
 
     ],
 
-    'images': ['static/description/base_marketplace.jpg'],
+    'images': ['static/description/base_marketplace_odoo.png'],
 
     'assets': {
         'web._assets_primary_variables': [
             'base_marketplace/static/src/scss/primary_variables.scss',
         ],
         'web.assets_backend': [
-            'base_marketplace/static/src/js/chart_lib/apexcharts.min.js',
             'base_marketplace/static/src/js/**/*',
+            ('remove', 'base_marketplace/static/src/js/chart_lib/**/*'),
+            'base_marketplace/static/src/xml/**/*',
             'base_marketplace/static/src/css/dashboard.css',
             'base_marketplace/static/src/scss/instance_dashboard.scss',
             'base_marketplace/static/src/scss/kanban_image_view.scss',
             'base_marketplace/static/src/scss/marketplace_scope_wizard.scss',
+            'base_marketplace/static/src/scss/marketplace_onboarding.scss',
+            'base_marketplace/static/src/scss/marketplace_onboarding_panel.scss',
         ],
     },
     "cloc_exclude": [
@@ -62,7 +64,7 @@
         'static/description/**/*',  # exclude all files in a folder hierarchy recursively
     ],
     "author": "TeqStars",
-    "website": "http://teqstars.com/r/bSq",
+    "website": "https://teqstars.com/r/bSq",
     'support': 'support@teqstars.com',
     'maintainer': 'TeqStars',
 
