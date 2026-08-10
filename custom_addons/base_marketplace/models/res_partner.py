@@ -53,7 +53,7 @@ class ResPartner(models.Model):
                     update_partner_vals.update({'phone': partner_vals.get('phone')})
                 not parent_id and update_partner_vals.update({'mk_instance_ids': [(4, mk_instance_id.id)]})
                 update_partner_vals and res_partner.write(update_partner_vals)
-                log_message = 'EXISTING CUSTOMER FOUND: Found customer with same address, CUSTOMER NAME: {}({})'.format(res_partner.name, res_partner.email)
+                log_message = _("EXISTING CUSTOMER FOUND: Found customer with same address, CUSTOMER NAME: %s (%s)") % (res_partner.name, res_partner.email)
                 self.env['mk.log'].create_update_log(mk_log_id=mk_log_id,
                                                      mk_log_line_dict={'success': [{'log_message': log_message, 'queue_job_line_id': queue_line_id and queue_line_id.id or False}]})
                 if not self.env.context.get('skip_queue_change_state', False):
@@ -66,7 +66,7 @@ class ResPartner(models.Model):
                 partner_vals.update({'email': parent_id.email})
             res_partner = self.with_context(tracking_disable=True).create({'lang': mk_instance_id.lang or self.env.user.lang, 'parent_id': parent_id and parent_id.id or False,
                                                                            'property_product_pricelist': mk_instance_id.pricelist_id.id, **partner_vals})
-            log_message = 'IMPORT CUSTOMER: Successfully created new customer with name : {}({})'.format(res_partner.name, res_partner.email)
+            log_message = _("IMPORT CUSTOMER: Successfully created new customer with name: %s (%s)") % (res_partner.name, res_partner.email)
             self.env['mk.log'].create_update_log(mk_log_id=mk_log_id,
                                                  mk_log_line_dict={'success': [{'log_message': log_message, 'queue_job_line_id': queue_line_id and queue_line_id.id or False}]})
             if not self.env.context.get('skip_queue_change_state', False):

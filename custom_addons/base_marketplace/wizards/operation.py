@@ -1,7 +1,5 @@
 from datetime import timedelta
 
-from odoo.exceptions import UserError
-
 from odoo import api, models, fields, tools, _
 from odoo.addons.base_marketplace.models.exceptions import MarketplaceException
 
@@ -75,12 +73,15 @@ class MarketplaceOperation(models.TransientModel):
         if active_model == 'mk.listing' and active_ids:
             listing = self.env[active_model].browse(active_ids)
             if len(listing.mapped('mk_instance_id')) > 1:
-                raise UserError(_('Operation not allowed! Make sure selected listing belongs to only one instance'))
+                raise MarketplaceException(_('Operation not allowed! Make sure selected listing belongs to only one instance'))
         return res
 
     def do_import_operations(self):
+        """
+        Task: T7493 - Added MarketplaceException error.
+        """
         if not self.mk_instance_id:
-            raise UserError(_("Please select marketplace instance to process."))
+            raise MarketplaceException(_("Please select marketplace instance to process."))
         instance = self.mk_instance_id
         if self.import_customers:
             if hasattr(self.env['res.partner'], '%s_import_customers' % instance.marketplace):
@@ -98,8 +99,11 @@ class MarketplaceOperation(models.TransientModel):
                 getattr(self.env['mk.listing'], '%s_import_stock' % instance.marketplace)(instance)
 
     def do_export_operations(self):
+        """
+        Task: T7493 - Added MarketplaceException error.
+        """
         if not self.mk_instance_id:
-            raise UserError(_("Please select marketplace instance to process."))
+            raise MarketplaceException(_("Please select marketplace instance to process."))
         instance = self.mk_instance_id
         if self.is_export_products:
             self.export_listing_to_mk()
@@ -119,17 +123,20 @@ class MarketplaceOperation(models.TransientModel):
                 getattr(self.env['sale.order'], '%s_update_order_status' % instance.marketplace)(instance)
 
     def mk_add_to_listing(self):
+        """
+        Task: T7493 - Added MarketplaceException error and Converted strings to f-strings.
+        """
         self.ensure_one()
         product_template_obj = self.env['product.template']
         product_active_ids = self.env.context.get('active_ids', [])
         odoo_template_ids = product_template_obj.search([('id', 'in', product_active_ids)])
         if not odoo_template_ids:
-            raise UserError(_("Something went wrong! Odoo isn't able to identify selected products or please select product again."))
+            raise MarketplaceException(_("Something went wrong! Odoo isn't able to identify selected products or please select product again."))
         listing_ids = self.env['mk.listing']
         for instance in self.mk_instance_ids:
             for product_template in odoo_template_ids:
                 if not product_template._check_barcode_and_sku(instance):
-                    raise UserError(_("Product : {} Internal Reference (SKU) or Barcode is missing in some product(s)! \n\nPlease set the unique internal reference or Barcode in all variants as per your Instance Configuration.".format(product_template.name)))
+                    raise MarketplaceException(_("Product : %s Internal Reference (SKU) or Barcode is missing in some product(s)! \n\nPlease set the unique internal reference or Barcode in all variants as per your Instance Configuration.") % product_template.name)
                 listing_ids |= product_template.create_or_update_listing(instance)
         if listing_ids:
             action = self.sudo().env.ref('base_marketplace.action_marketplace_listing_all').read()[0]
@@ -138,6 +145,9 @@ class MarketplaceOperation(models.TransientModel):
         return True
 
     def export_listing_to_mk(self):
+        """
+        Task: T7493 - Added MarketplaceException error.
+        """
         self.ensure_one()
         mk_listing_obj = self.env['mk.listing']
         if self.env.context.get('active_model') == 'mk.listing' and self.env.context.get('active_ids', []):
@@ -145,12 +155,12 @@ class MarketplaceOperation(models.TransientModel):
         else:
             listing_to_export = mk_listing_obj.search([('mk_instance_id', '=', self.mk_instance_id.id), ('is_listed', '=', False)])
         if not listing_to_export:
-            raise UserError(_("Could not find any listing for export."))
+            raise MarketplaceException(_("Could not find any listing for export."))
         if len(listing_to_export.mapped('mk_instance_id')) > 1:
-            raise UserError(_("Operation not allowed! Make sure selected listing belongs to only one instance."))
+            raise MarketplaceException(_("Operation not allowed! Make sure selected listing belongs to only one instance."))
         instance_id = listing_to_export[0].mk_instance_id
         if listing_to_export[0].mk_instance_id.state != 'confirmed':
-            raise UserError(_("You can export a listing only with a confirmed instance. Please ensure the instance is confirmed before exporting the listing."))
+            raise MarketplaceException(_("You can export a listing only with a confirmed instance. Please ensure the instance is confirmed before exporting the listing."))
         if hasattr(listing_to_export, '%s_export_product_limit' % instance_id.marketplace):
             getattr(listing_to_export, '%s_export_product_limit' % instance_id.marketplace)()
         if hasattr(listing_to_export, '%s_export_listing_to_mk' % instance_id.marketplace):
@@ -158,6 +168,9 @@ class MarketplaceOperation(models.TransientModel):
         return True
 
     def update_listing_to_mk(self):
+        """
+        Task: T7493 - Added MarketplaceException error.
+        """
         self.ensure_one()
         mk_listing_obj = self.env['mk.listing']
         if self.env.context.get('active_model') == 'mk.listing' and self.env.context.get('active_ids', []):
@@ -165,11 +178,11 @@ class MarketplaceOperation(models.TransientModel):
         else:
             listing_to_update = mk_listing_obj.search([('mk_instance_id', '=', self.mk_instance_id.id), ('is_listed', '=', True)])
         if not listing_to_update:
-            raise UserError(_("Could not find any listing for update."))
+            raise MarketplaceException(_("Could not find any listing for update."))
         if len(listing_to_update.mapped('mk_instance_id')) > 1:
-            raise UserError(_("Operation not allowed! Make sure selected listing belongs to only one instance."))
+            raise MarketplaceException(_("Operation not allowed! Make sure selected listing belongs to only one instance."))
         if listing_to_update[0].mk_instance_id.state != 'confirmed':
-            raise UserError(_("You can update a listing only with a confirmed instance. Please ensure the instance is confirmed before updating the listing."))
+            raise MarketplaceException(_("You can update a listing only with a confirmed instance. Please ensure the instance is confirmed before updating the listing."))
         mk_instance_id = listing_to_update.mk_instance_id
         if hasattr(listing_to_update, '%s_update_listing_to_mk' % mk_instance_id.marketplace):
             return getattr(listing_to_update, '%s_update_listing_to_mk' % mk_instance_id.marketplace)(self)
@@ -192,15 +205,15 @@ class MarketplaceOperation(models.TransientModel):
         else:
             listing_items_to_update = mk_listing_item_obj.search([('mk_instance_id', '=', self.mk_instance_id.id), ('is_listed', '=', True)])
         if not listing_items_to_update:
-            raise MarketplaceException("Could not find any listing items for update.")
+            raise MarketplaceException(_("Could not find any listing items for update."))
         if len(listing_items_to_update.mapped('mk_instance_id')) > 1:
-            raise MarketplaceException("Operation not allowed! Make sure selected listing items belongs to only one instance.")
+            raise MarketplaceException(_("Operation not allowed! Make sure selected listing items belongs to only one instance."))
         if listing_items_to_update[0].mk_instance_id.state != 'confirmed':
-            raise MarketplaceException("You can update a listing items only with a confirmed instance. Please ensure the instance is confirmed before updating the listing items.")
+            raise MarketplaceException(_("You can update a listing items only with a confirmed instance. Please ensure the instance is confirmed before updating the listing items."))
         mk_instance_id = listing_items_to_update.mk_instance_id
         method_name = '%s_update_listing_item_to_mk' % mk_instance_id.marketplace
         if not hasattr(listing_items_to_update, method_name):
-            raise MarketplaceException(f"This operation is not supported for the {mk_instance_id.marketplace}.", "Operation not allowed!")
+            raise MarketplaceException(_("This operation is not supported for the %s.") % mk_instance_id.marketplace, _("Operation not allowed!"))
         return getattr(listing_items_to_update, method_name)(self)
 
     def _get_active_cron_operation_wise(self):
@@ -219,7 +232,8 @@ class MarketplaceOperation(models.TransientModel):
         if not diff_days < 0 and cron.active:
             days = diff_days * 1440 if diff_days > 0 else 0
             minutes = int(difference.seconds / 60) + days
-            self.cron_message = _("Selected operation is scheduled to be executed by an automated scheduler, and the next scheduled run for this process will occur in {} minute(s).".format(minutes))
+            # Task: T7493 - Converted strings to f-strings.
+            self.cron_message = _(f"Selected operation is scheduled to be executed by an automated scheduler, and the next scheduled run for this process will occur in {minutes} minute(s).")
         return True
 
     def do_check_cron_status(self, operation_type, operation):

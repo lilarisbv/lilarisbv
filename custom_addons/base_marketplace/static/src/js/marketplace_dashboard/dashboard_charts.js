@@ -5,6 +5,9 @@ import {formatCurrency} from "@web/core/currency";
 import {loadJS} from "@web/core/assets";
 
 export class MarketplaceDashboardCharts extends Component {
+    static props = {
+        dashboardData: { type: Object, optional: true },
+    };
     setup() {
         this.data = this.props.dashboardData.dashboards;
         this.total_selling_canvasRef = useRef('total_selling_chart');

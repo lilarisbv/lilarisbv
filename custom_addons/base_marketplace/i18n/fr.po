@@ -1,0 +1,4044 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* base_marketplace
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-26 08:39+0000\n"
+"PO-Revision-Date: 2026-05-26 08:39+0000\n"
+"Last-Translator: TeqStars <support@teqstars.com>\n"
+"Language-Team: French <https://teqstars.com>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__tax_system
+msgid ""
+"1. Odoo Default Tax Behaviour – Taxes are applied using Odoo’s configured tax rates and fiscal position mappings.\n"
+"\n"
+"                                  2. Follow Marketplace Tax – The system creates a new tax in Odoo matching the marketplace rate if none exists, without applying fiscal position mappings.\n"
+"\n"
+"                                  3. Follow Marketplace Tax & Apply Fiscal Position – The system creates a new tax in Odoo matching the marketplace rate if none exists and then applies fiscal position mappings."
+msgstr ""
+"1. Comportement fiscal par défaut d'Odoo – Les taxes sont appliquées en utilisant les taux de taxe et les mappages de position fiscale configurés dans Odoo.\n"
+"\n"
+"                                  2. Suivre la taxe de la marketplace – Le système crée une nouvelle taxe dans Odoo correspondant au taux de la marketplace si elle n'existe pas, sans appliquer les mappages de position fiscale.\n"
+"\n"
+"                                  3. Suivre la taxe de la marketplace et appliquer la position fiscale – Le système crée une nouvelle taxe dans Odoo correspondant au taux de la marketplace si elle n'existe pas, puis applique les mappages de position fiscale."
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "<b>Forecasted Quantity:</b> Quantity on Hand - Outgoing + Incoming"
+msgstr "<b>Quantité prévisionnelle :</b> Quantité en stock - Sortantes + Entrantes"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "<b>Free To Use Quantity:</b> Quantity on Hand - Reserved Quantity"
+msgstr "<b>Quantité disponible :</b> Quantité en stock - Quantité réservée"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid ""
+"<i class=\"fa fa-area-chart mk-saas-btn-icon\"/>\n"
+"                                            Dashboard"
+msgstr "<i class=\"fa fa-area-chart mk-saas-btn-icon\"/>\n"
+"                                            Tableau de bord"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid "<i class=\"fa fa-check\" title=\"Success\"/>"
+msgstr "<i class=\"fa fa-check\" title=\"Succès\"/>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid ""
+"<i class=\"fa fa-check-circle mk-saas-badge-icon\" title=\"Connected\"/>\n"
+"                                                <span>Connected</span>"
+msgstr "<i class=\"fa fa-check-circle mk-saas-badge-icon\" title=\"Connecté\"/>\n"
+"                                                <span>Connecté</span>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid ""
+"<i class=\"fa fa-clock-o mk-saas-view-logs-icon\"/>\n"
+"                                            View Logs"
+msgstr "<i class=\"fa fa-clock-o mk-saas-view-logs-icon\"/>\n"
+"                                            Voir les journaux"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid ""
+"<i class=\"fa fa-exchange mk-saas-btn-icon\"/>\n"
+"                                            Operations"
+msgstr "<i class=\"fa fa-exchange mk-saas-btn-icon\"/>\n"
+"                                            Opérations"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid "<i class=\"fa fa-exclamation\" title=\"Warning\"/>"
+msgstr "<i class=\"fa fa-exclamation\" title=\"Avertissement\"/>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid ""
+"<i class=\"fa fa-exclamation-triangle mk-saas-alert-icon\" title=\"Attention"
+" Needed\"/>"
+msgstr "<i class=\"fa fa-exclamation-triangle mk-saas-alert-icon\" title=\"Attention requise\"/>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid "<i class=\"fa fa-file-text-o mk-saas-stat-icon\" title=\"Invoices\"/>"
+msgstr "<i class=\"fa fa-file-text-o mk-saas-stat-icon\" title=\"Factures\"/>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid ""
+"<i class=\"fa fa-flask mk-saas-badge-icon\" title=\"Test Mode\"/>\n"
+"                                                <span>Test Mode</span>"
+msgstr "<i class=\"fa fa-flask mk-saas-badge-icon\" title=\"Mode test\"/>\n"
+"                                                <span>Mode test</span>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid ""
+"<i class=\"fa fa-line-chart mk-saas-btn-icon\"/>\n"
+"                                            Reports"
+msgstr "<i class=\"fa fa-line-chart mk-saas-btn-icon\"/>\n"
+"                                            Rapports"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid "<i class=\"fa fa-product-hunt mk-saas-stat-icon\" title=\"Listings\"/>"
+msgstr "<i class=\"fa fa-product-hunt mk-saas-stat-icon\" title=\"Annonces\"/>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid "<i class=\"fa fa-shopping-cart mk-saas-stat-icon\" title=\"Orders\"/>"
+msgstr "<i class=\"fa fa-shopping-cart mk-saas-stat-icon\" title=\"Commandes\"/>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid "<i class=\"fa fa-tasks mk-saas-stat-icon\" title=\"Queues\"/>"
+msgstr "<i class=\"fa fa-tasks mk-saas-stat-icon\" title=\"Files d'attente\"/>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid "<i class=\"fa fa-times\" title=\"Failed\"/>"
+msgstr "<i class=\"fa fa-times\" title=\"Échoué\"/>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid "<i class=\"fa fa-truck mk-saas-stat-icon\" title=\"Shipments\"/>"
+msgstr "<i class=\"fa fa-truck mk-saas-stat-icon\" title=\"Expéditions\"/>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid "<i class=\"fa fa-users mk-saas-stat-icon\" title=\"Customers\"/>"
+msgstr "<i class=\"fa fa-users mk-saas-stat-icon\" title=\"Clients\"/>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid ""
+"<span class=\"badge badge-warning text-uppercase "
+"o_sample_data_label\">Sample data</span>"
+msgstr "<span class=\"badge badge-warning text-uppercase o_sample_data_label\">Données d'exemple</span>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid "<span class=\"mk-saas-alert-title\">Attention Needed</span>"
+msgstr "<span class=\"mk-saas-alert-title\">Attention requise</span>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid ""
+"<span class=\"mk-saas-sync-dot\"/>\n"
+"                                        <span class=\"mk-saas-sync-label\">Last Sync:</span>"
+msgstr "<span class=\"mk-saas-sync-dot\"/>\n"
+"                                        <span class=\"mk-saas-sync-label\">Dernière synchro :</span>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_form_view
+msgid "<span class=\"o_stat_text\">Cancelled</span>"
+msgstr "<span class=\"o_stat_text\">Annulé</span>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_form_view
+msgid "<span class=\"o_stat_text\">Failed</span>"
+msgstr "<span class=\"o_stat_text\">Échoué</span>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_form_view
+msgid "<span class=\"o_stat_text\">Listings</span>"
+msgstr "<span class=\"o_stat_text\">Annonces</span>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_form_view
+msgid "<span class=\"o_stat_text\">Orders</span>"
+msgstr "<span class=\"o_stat_text\">Commandes</span>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_form_view
+msgid "<span class=\"o_stat_text\">Processed</span>"
+msgstr "<span class=\"o_stat_text\">Traité</span>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_form_view
+msgid "<span class=\"o_stat_text\">Retry Count</span>"
+msgstr "<span class=\"o_stat_text\">Nombre de tentatives</span>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_form_view
+msgid "<span class=\"o_stat_text\">To Process</span>"
+msgstr "<span class=\"o_stat_text\">À traiter</span>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_form_view
+msgid "<span class=\"o_stat_text\">Total</span>"
+msgstr "<span class=\"o_stat_text\">Total</span>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_listing_image_kanban
+msgid "<span class=\"text-bg-primary\">Template</span>"
+msgstr "<span class=\"text-bg-primary\">Modèle</span>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_listing_image_kanban
+msgid "<span class=\"text-bg-secondary\">Variant</span>"
+msgstr "<span class=\"text-bg-secondary\">Variante</span>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_picking_form_inherit_base_marketplace
+msgid ""
+"<strong>\n"
+"                            Order has been successfully updated/fulfilled in marketplace.\n"
+"                        </strong>"
+msgstr "<strong>\n"
+"                            La commande a été mise à jour/exécutée avec succès dans la marketplace.\n"
+"                        </strong>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_picking_form_inherit_base_marketplace
+msgid ""
+"<strong>\n"
+"                            The order has already been canceled on the marketplace.\n"
+"                        </strong>"
+msgstr "<strong>\n"
+"                            La commande a déjà été annulée sur la marketplace.\n"
+"                        </strong>"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "API Fetch record limit?"
+msgstr "Limite de récupération d'enregistrements API ?"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__api_limit
+msgid "API Record Count"
+msgstr "Nombre d'enregistrements API"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_listing_image_kanban
+msgid "Acceptable file size"
+msgstr "Taille de fichier acceptable"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__access_warning
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__access_warning
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__access_warning
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__access_warning
+msgid "Access warning"
+msgstr "Avertissement d'accès"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__tax_account_id
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__tax_refund_account_id
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Account that will be set while creating tax."
+msgstr "Compte qui sera défini lors de la création d'une taxe."
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__message_needaction
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__message_needaction
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__message_needaction
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__message_needaction
+msgid "Action Needed"
+msgstr "Action requise"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__activity_ids
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__activity_ids
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__activity_ids
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__activity_ids
+msgid "Activities"
+msgstr "Activités"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__mk_activity_type_id
+msgid "Activity"
+msgstr "Activité"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Activity Configuration"
+msgstr "Configuration des activités"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__activity_exception_decoration
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__activity_exception_decoration
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__activity_exception_decoration
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Décoration d'exception d'activité"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__activity_state
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__activity_state
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__activity_state
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__activity_state
+msgid "Activity State"
+msgstr "État de l'activité"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__activity_type_icon
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__activity_type_icon
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__activity_type_icon
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Icône du type d'activité"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_form_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_item_form_view
+msgid "Add Image"
+msgstr "Ajouter une image"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_product_add_to_listing
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_operation_add_to_listing
+msgid "Add to Listing"
+msgstr "Ajouter à l'annonce"
+
+#. module: base_marketplace
+#: model:product.template,name:base_marketplace.marketplace_adjustment_product_product_template
+msgid "Adjustment Product"
+msgstr "Produit d'ajustement"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_instance__log_level__all
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_notification__type__all
+msgid "All"
+msgstr "Tous"
+
+#. module: base_marketplace
+#: model:ir.ui.menu,name:base_marketplace.menu_marketplace_listing_all
+msgid "All Listing"
+msgstr "Toutes les annonces"
+
+#. module: base_marketplace
+#: model:ir.ui.menu,name:base_marketplace.menu_marketplace_listing_all_items
+msgid "All Listing Items"
+msgstr "Tous les articles d'annonce"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_queue_job_all
+msgid "All Queue"
+msgstr "Toutes les files d'attente"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_cancel_order__create_refund_option_visible
+msgid "Allow Credit Note Creation"
+msgstr "Autoriser la création d'avoir"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "Amount"
+msgstr "Montant"
+
+#. module: base_marketplace
+#: model:ir.model.constraint,message:base_marketplace.constraint_mk_notification_user_id_type_unique
+msgid ""
+"An user cannot have twice the same notification type for this marketplace."
+msgstr "Un utilisateur ne peut pas avoir deux fois le même type de notification pour cette marketplace."
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Analytic Account"
+msgstr "Compte analytique"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__analytic_distribution
+msgid "Analytic Distribution"
+msgstr "Distribution analytique"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__analytic_precision
+msgid "Analytic Precision"
+msgstr "Précision analytique"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_marketplace_scope_wizard_form
+msgid "App settings."
+msgstr "Paramètres de l'application."
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "Apply"
+msgstr "Appliquer"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_instance.py:0
+msgid "As of %s"
+msgstr "Au %s"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__stock_field_id
+msgid "At the time of Export/Update inventory this field is used."
+msgstr "Ce champ est utilisé lors de l'exportation/mise à jour de l'inventaire."
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__message_attachment_count
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__message_attachment_count
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__message_attachment_count
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__message_attachment_count
+msgid "Attachment Count"
+msgstr "Nombre de pièces jointes"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__is_create_product
+msgid "Auto Create Product?"
+msgstr "Créer automatiquement un produit ?"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid ""
+"Auto validate inventory adjustment right after inventory import process."
+msgstr "Valider automatiquement l'ajustement d'inventaire juste après le processus d'importation."
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__cron_ids
+msgid "Automated Actions"
+msgstr "Actions automatisées"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Automatic Jobs"
+msgstr "Tâches automatiques"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__automatic_jobs_note
+msgid "Automatic Jobs Note"
+msgstr "Note sur les tâches automatiques"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Automatically set category to newly created Odoo products."
+msgstr "Définir automatiquement la catégorie des nouveaux produits Odoo créés."
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_order_workflow_config_ts__available_payment_method_line_ids
+msgid "Available Payment Method Line"
+msgstr "Ligne de mode de paiement disponible"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "Average Order Value"
+msgstr "Valeur moyenne des commandes"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/xml/marketplace_onboarding.xml:0
+msgid "Back"
+msgstr "Retour"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__barcode
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_instance__sync_product_with__barcode
+msgid "Barcode"
+msgstr "Code-barres"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_instance__sync_product_with__barcode_or_sku
+msgid "Barcode or SKU"
+msgstr "Code-barres ou SKU"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Batch size of process queues"
+msgstr "Taille de lot des files de traitement"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_operation_add_to_listing
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_operation_export_form_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_operation_export_listing_to_mk_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_operation_import_form_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_operation_update_listing_item_to_mk_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_operation_update_listing_to_mk_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_stock_return_picking_form
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_mk_cancel_order
+msgid "Cancel Order In Marketplace"
+msgstr "Annuler la commande dans la marketplace"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_sale_order__canceled_in_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_stock_picking__cancel_in_marketplace
+msgid "Cancel in Marketplace"
+msgstr "Annuler dans la marketplace"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_queue_job_line__state__cancelled
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_line_search_view
+msgid "Cancelled"
+msgstr "Annulé"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__cancelled_count
+msgid "Cancelled Count"
+msgstr "Nombre d'annulés"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_item_form_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_item_tree_view
+msgid "Change Sale Price"
+msgstr "Modifier le prix de vente"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_marketplace_scope_wizard_form
+msgid "Check Again"
+msgstr "Vérifier à nouveau"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/onboarding/marketplace_onboarding.js:0
+msgid "Choose a marketplace"
+msgstr "Choisir une marketplace"
+
+#. module: base_marketplace
+#: model_terms:ir.actions.act_window,help:base_marketplace.action_marketplace_overview
+msgid "Click here"
+msgstr "Cliquez ici"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/errors/error_dialogs.xml:0
+#: code:addons/base_marketplace/static/src/js/onboarding/marketplace_onboarding.js:0
+msgid "Close"
+msgstr "Fermer"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__color
+msgid "Color Index"
+msgstr "Indice de couleur"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__company_id
+#: model:ir.model.fields,field_description:base_marketplace.field_order_workflow_config_ts__company_id
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Company"
+msgstr "Société"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__company_currency_id
+msgid "Company Currency"
+msgstr "Devise de la société"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Company related to this Instance."
+msgstr "Société liée à cette instance."
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/onboarding/marketplace_onboarding.js:0
+msgid "Complete this step before continuing."
+msgstr "Complétez cette étape avant de continuer."
+
+#. module: base_marketplace
+#: model:ir.ui.menu,name:base_marketplace.menu_marketplace_configuration
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Configuration"
+msgstr "Configuration"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/onboarding/marketplace_onboarding.js:0
+msgid "Configuration saved."
+msgstr "Configuration enregistrée."
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_marketplace_scope_wizard_form
+msgid "Confirm"
+msgstr "Confirmer"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_order_workflow_config_ts__is_confirm_order
+msgid "Confirm Order"
+msgstr "Confirmer la commande"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_marketplace_scope_wizard
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_marketplace_scope_wizard_form
+msgid "Confirm Permissions"
+msgstr "Confirmer les autorisations"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_instance__state__confirmed
+msgid "Confirmed"
+msgstr "Confirmé"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_res_partner
+msgid "Contact"
+msgstr "Contact"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/errors/error_dialogs.xml:0
+msgid "Copy error to clipboard"
+msgstr "Copier l'erreur dans le presse-papiers"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/wizards/operation.py:0
+msgid "Could not find any listing for export."
+msgstr "Aucune annonce trouvée pour l'exportation."
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/wizards/operation.py:0
+msgid "Could not find any listing for update."
+msgstr "Aucune annonce trouvée pour la mise à jour."
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/simple_panel_handler.js:0
+msgid ""
+"Could not open the Setup Wizard. Please use the Setup Wizard control in the "
+"screen header or contact your administrator."
+msgstr "Impossible d'ouvrir l'assistant de configuration. Veuillez utiliser le contrôle de l'assistant de configuration dans l'en-tête de l'écran ou contacter votre administrateur."
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/onboarding/marketplace_onboarding.js:0
+msgid "Could not start onboarding for this marketplace."
+msgstr "Impossible de démarrer l'intégration pour cette marketplace."
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__country_id
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Country"
+msgstr "Pays"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Country related to Instance."
+msgstr "Pays lié à cette instance."
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_order_workflow_config_ts__is_create_invoice
+msgid "Create Invoice"
+msgstr "Créer une facture"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_sale_order_tree_view
+msgid "Create Invoices"
+msgstr "Créer des factures"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__is_create_products
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Create Odoo Products?"
+msgstr "Créer des produits Odoo ?"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Create Odoo product if not found while doing sync operation."
+msgstr "Créer un produit Odoo s'il n'est pas trouvé lors de la synchronisation."
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_cancel_order__is_create_refund
+msgid "Create Refund?"
+msgstr "Créer un remboursement ?"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__is_create_single_invoice
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Create Single Invoice?"
+msgstr "Créer une facture unique ?"
+
+#. module: base_marketplace
+#: model_terms:ir.actions.act_window,help:base_marketplace.marketplace_ent_sale_report_action_dashboard
+msgid "Create a new sales order"
+msgstr "Créer une nouvelle commande client"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__is_create_single_invoice
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Create invoice only when all products are ready to be invoiced."
+msgstr "Créer une facture uniquement lorsque tous les produits sont prêts à être facturés."
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_marketplace_scope_wizard__create_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_cancel_order__create_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__create_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__create_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_image__create_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__create_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_log__create_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_log_line__create_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_notification__create_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__create_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__create_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job_line__create_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_order_workflow_config_ts__create_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_res_partner_mk__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_marketplace_scope_wizard__create_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_cancel_order__create_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__create_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__create_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_image__create_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__create_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_log__create_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_log_line__create_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_notification__create_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__create_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__create_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job_line__create_date
+#: model:ir.model.fields,field_description:base_marketplace.field_order_workflow_config_ts__create_date
+#: model:ir.model.fields,field_description:base_marketplace.field_res_partner_mk__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__listing_create_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__item_create_date
+msgid "Creation Date"
+msgstr "Date de création"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Credentials"
+msgstr "Identifiants"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_cancel_order__date_invoice
+msgid "Credit Note Date"
+msgstr "Date d'avoir"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_marketplace_credit_notes
+#: model:ir.ui.menu,name:base_marketplace.menu_credit_notes
+msgid "Credit Notes"
+msgstr "Avoirs"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__cron_message
+msgid "Cron/Schedule Action Message"
+msgstr "Message d'action planifiée/cron"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_cancel_order__currency_id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__currency_id
+msgid "Currency"
+msgstr "Devise"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "Custom"
+msgstr "Personnalisé"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/filters/filter_date.xml:0
+msgid "Custom Dates"
+msgstr "Dates personnalisées"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_queue_job_customer
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Customer"
+msgstr "Client"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__mk_customer_count
+msgid "Customer Count"
+msgstr "Nombre de clients"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_queue_job__type__customer
+msgid "Customer Import"
+msgstr "Importation de clients"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "Customer Name"
+msgstr "Nom du client"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__access_url
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing__access_url
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing_item__access_url
+#: model:ir.model.fields,help:base_marketplace.field_mk_queue_job__access_url
+msgid "Customer Portal URL"
+msgstr "URL du portail client"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_marketplace_customer
+#: model:ir.actions.act_window,name:base_marketplace.action_marketplace_customer_kanban
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__mk_customer_ids
+#: model:ir.ui.menu,name:base_marketplace.menu_customer
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid "Customers"
+msgstr "Clients"
+
+#. module: base_marketplace
+#: model:ir.ui.menu,name:base_marketplace.menu_mk_dashboard
+msgid "Dashboard"
+msgstr "Tableau de bord"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job_line__data_to_process
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_line_form_view
+msgid "Data"
+msgstr "Données"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.js:0
+msgid "Date cannot be empty"
+msgstr "La date ne peut pas être vide"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Date were listing are imported."
+msgstr "Date d'importation des annonces."
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Date were listing's price are updated in marketplace."
+msgstr "Date de mise à jour des prix des annonces dans la marketplace."
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__last_stock_import_date
+msgid "Date were stock imported from marketplace."
+msgstr "Date d'importation du stock depuis la marketplace."
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__last_stock_update_date
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Date were stock updated to marketplace."
+msgstr "Date de mise à jour du stock vers la marketplace."
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Date where Stock are imported from Marketplace."
+msgstr "Date d'importation du stock depuis la marketplace."
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Date where customers are imported."
+msgstr "Date d'importation des clients."
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Date where order are imported."
+msgstr "Date d'importation des commandes."
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "Dates"
+msgstr "Dates"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_instance__activity_date_deadline_range_type__days
+msgid "Days"
+msgstr "Jours"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid ""
+"Default Pricelist (If not set, Automatically set at the time of instance "
+"confirmation)"
+msgstr "Liste de prix par défaut (si non définie, définie automatiquement lors de la confirmation de l'instance)"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Default Tax System"
+msgstr "Système de taxe par défaut"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__order_workflow_config_ts__picking_policy__one
+msgid "Deliver all products at once"
+msgstr "Livrer tous les produits en une seule fois"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__order_workflow_config_ts__picking_policy__direct
+msgid "Deliver each product when available"
+msgstr "Livrer chaque produit quand il est disponible"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_sale_report__delivery_amount
+msgid "Delivery Amount"
+msgstr "Montant de livraison"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__delivery_product_id
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Delivery Product"
+msgstr "Produit de livraison"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__delivery_product_id
+msgid "Delivery product used in sale order line."
+msgstr "Produit de livraison utilisé dans la ligne de commande client."
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__description
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_form_view
+msgid "Description"
+msgstr "Description"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing_item__sequence
+msgid "Determine the display order"
+msgstr "Déterminer l'ordre d'affichage"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__is_export_product_sale_price
+msgid ""
+"Directly exporting the product's sale price instead of the price from the "
+"pricelist"
+msgstr "Exporter directement le prix de vente du produit au lieu du prix de la liste de prix"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__discount_product_id
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Discount Product"
+msgstr "Produit de remise"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__discount_product_id
+msgid "Discount product used in sale order line."
+msgstr "Produit de remise utilisé dans la ligne de commande client."
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_account_move__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_account_tax__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_ir_actions_server__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_ir_cron__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_marketplace_scope_wizard__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_cancel_order__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_image__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_log__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_log_line__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_notification__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job_line__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_order_workflow_config_ts__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_product_product__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_product_template__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_product_template_attribute_line__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_res_partner__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_res_partner_mk__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_res_users__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_sale_order__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_sale_order_line__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_sale_report__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_stock_move__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_stock_picking__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_stock_quant__display_name
+#: model:ir.model.fields,field_description:base_marketplace.field_stock_return_picking__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__distribution_analytic_account_ids
+msgid "Distribution Analytic Account"
+msgstr "Compte analytique de distribution"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_instance__state__draft
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_queue_job__state__draft
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_queue_job_line__state__draft
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_search_view
+msgid "Draft"
+msgstr "Brouillon"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__draft_count
+msgid "Draft Count"
+msgstr "Nombre de brouillons"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_line_search_view
+msgid "Draft/To Process"
+msgstr "Brouillon/À traiter"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__activity_date_deadline_range
+msgid "Due Date In"
+msgstr "Date d'échéance dans"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__activity_date_deadline_range_type
+msgid "Due type"
+msgstr "Type d'échéance"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "End Date :"
+msgstr "Date de fin :"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.js:0
+msgid "End of Month"
+msgstr "Fin du mois"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.js:0
+msgid "End of Quarter"
+msgstr "Fin du trimestre"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.js:0
+msgid "End of Year"
+msgstr "Fin de l'année"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__environment
+msgid "Environment"
+msgstr "Environnement"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_instance__log_level__error
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_instance__state__error
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_log_line__state__error
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_notification__type__error
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid "Error"
+msgstr "Erreur"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_log__operation_type__export
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_operation_export_form_view
+msgid "Export"
+msgstr "Exporter"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_operation_export_listing_to_mk_view
+msgid "Export Listing"
+msgstr "Exporter l'annonce"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_product_export_to_marketplace
+msgid "Export New Products in Marketplace"
+msgstr "Exporter de nouveaux produits dans la marketplace"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__is_export_product_sale_price
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Export Odoo Product's Sale Price?"
+msgstr "Exporter le prix de vente du produit Odoo ?"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_marketplace_export_operation
+msgid "Export Operation"
+msgstr "Opération d'exportation"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__is_export_products
+msgid "Export Products?"
+msgstr "Exporter les produits ?"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__export_qty_type
+msgid "Export Qty Type"
+msgstr "Type de quantité à exporter"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__export_qty_value
+msgid "Export Qty Value"
+msgstr "Valeur de quantité à exporter"
+
+#. module: base_marketplace
+#: model:ir.actions.server,name:base_marketplace.action_listing_operation_to_marketplace
+msgid "Export/Update Listing in Marketplace"
+msgstr "Exporter/Mettre à jour l'annonce dans la marketplace"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_tree_view
+msgid "Export/Update to Marketplace"
+msgstr "Exporter/Mettre à jour vers la marketplace"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid ""
+"Exporting the sale price of the Odoo product directly, rather than using the price from the pricelist. However, it still updates the price of\n"
+"                                                the pricelist item."
+msgstr "Exporter directement le prix de vente du produit Odoo, plutôt que d'utiliser le prix de la liste de prix. Cependant, cela met quand même à jour le prix de\n"
+"                                                l'article de la liste de prix."
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__failed_count
+msgid "Fail Count"
+msgstr "Nombre d'échecs"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_queue_job__state__failed
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_queue_job_line__state__failed
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_line_search_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_search_view
+msgid "Failed"
+msgstr "Échoué"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__failed_orders_count
+msgid "Failed Orders Count"
+msgstr "Nombre de commandes échouées"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__failed_products_count
+msgid "Failed Products Count"
+msgstr "Nombre de produits échoués"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_instance.py:0
+msgid "Failed Queue Lines"
+msgstr "Lignes de file d'attente échouées"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_instance.py:0
+#: model:ir.actions.act_window,name:base_marketplace.action_marketplace_failed_queue_job
+msgid "Failed Queues"
+msgstr "Files d'attente échouées"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__sync_failed_count
+msgid "Failed Sync Count"
+msgstr "Nombre de synchronisations échouées"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_listing_item__export_qty_type__fix
+msgid "Fix"
+msgstr "Fixe"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_instance__tax_system__according_to_marketplace
+msgid "Follow Marketplace Tax (no fiscal position mappings)"
+msgstr "Suivre la taxe de la marketplace (sans mappages de position fiscale)"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_instance__tax_system__marketplace_with_fiscal_position
+msgid "Follow Marketplace Tax and applies fiscal position mappings"
+msgstr "Suivre la taxe de la marketplace et appliquer les mappages de position fiscale"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__message_follower_ids
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__message_follower_ids
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__message_follower_ids
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__message_follower_ids
+msgid "Followers"
+msgstr "Abonnés"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__message_partner_ids
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__message_partner_ids
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__message_partner_ids
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Abonnés (Partenaires)"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__activity_type_icon
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing__activity_type_icon
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing_item__activity_type_icon
+#: model:ir.model.fields,help:base_marketplace.field_mk_queue_job__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Icône Font Awesome ex. fa-tasks"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_order_workflow_config_ts__force_invoice_date
+msgid "Force Invoice Date"
+msgstr "Forcer la date de facture"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_order_workflow_config_ts__is_force_payment_reference
+msgid "Force Payment Reference"
+msgstr "Forcer la référence de paiement"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_instance.py:0
+msgid ""
+"From %(date_from)s\n"
+"to  %(date_to)s"
+msgstr "Du %(date_from)s\n"
+"au  %(date_to)s"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__from_date
+msgid "From Date"
+msgstr "Date de début"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "From:"
+msgstr "De :"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_marketplace_scope_wizard__permissions_html_granted
+msgid "Granted HTML"
+msgstr "HTML accordé"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_marketplace_scope_wizard_form
+msgid "Granted Scopes"
+msgstr "Autorisations accordées"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__has_message
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__has_message
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__has_message
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__has_message
+msgid "Has Message"
+msgstr "A un message"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid "Healthy"
+msgstr "Sain"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Help"
+msgstr "Aide"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_listing_image_kanban
+msgid "Huge file size. The image should be optimized/reduced."
+msgstr "Taille de fichier énorme. L'image doit être optimisée/réduite."
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_account_move__id
+#: model:ir.model.fields,field_description:base_marketplace.field_account_tax__id
+#: model:ir.model.fields,field_description:base_marketplace.field_ir_actions_server__id
+#: model:ir.model.fields,field_description:base_marketplace.field_ir_cron__id
+#: model:ir.model.fields,field_description:base_marketplace.field_marketplace_scope_wizard__id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_cancel_order__id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_image__id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_log__id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_log_line__id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_notification__id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job_line__id
+#: model:ir.model.fields,field_description:base_marketplace.field_order_workflow_config_ts__id
+#: model:ir.model.fields,field_description:base_marketplace.field_product_product__id
+#: model:ir.model.fields,field_description:base_marketplace.field_product_template__id
+#: model:ir.model.fields,field_description:base_marketplace.field_product_template_attribute_line__id
+#: model:ir.model.fields,field_description:base_marketplace.field_res_partner__id
+#: model:ir.model.fields,field_description:base_marketplace.field_res_partner_mk__id
+#: model:ir.model.fields,field_description:base_marketplace.field_res_users__id
+#: model:ir.model.fields,field_description:base_marketplace.field_sale_order__id
+#: model:ir.model.fields,field_description:base_marketplace.field_sale_order_line__id
+#: model:ir.model.fields,field_description:base_marketplace.field_sale_report__id
+#: model:ir.model.fields,field_description:base_marketplace.field_stock_move__id
+#: model:ir.model.fields,field_description:base_marketplace.field_stock_picking__id
+#: model:ir.model.fields,field_description:base_marketplace.field_stock_quant__id
+#: model:ir.model.fields,field_description:base_marketplace.field_stock_return_picking__id
+msgid "ID"
+msgstr "ID"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__activity_exception_icon
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__activity_exception_icon
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__activity_exception_icon
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__activity_exception_icon
+msgid "Icon"
+msgstr "Icône"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__activity_exception_icon
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing__activity_exception_icon
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing_item__activity_exception_icon
+#: model:ir.model.fields,help:base_marketplace.field_mk_queue_job__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Icône pour indiquer une activité d'exception."
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__is_create_products
+msgid "If Odoo products not found while Sync create Odoo products."
+msgstr "Si les produits Odoo ne sont pas trouvés lors de la synchronisation, créer des produits Odoo."
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_operation__update_existing_product
+msgid "If True than it will update listing and listing item."
+msgstr "Si vrai, cela mettra à jour l'annonce et l'article d'annonce."
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_operation__update_product_price
+#: model:ir.model.fields,help:base_marketplace.field_mk_queue_job__update_product_price
+msgid "If True than it will update price in instance's pricelist."
+msgstr "Si vrai, cela mettra à jour le prix dans la liste de prix de l'instance."
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_queue_job__update_existing_product
+msgid "If True than product detail will be updated."
+msgstr "Si vrai, les détails du produit seront mis à jour."
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__message_needaction
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing__message_needaction
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing_item__message_needaction
+#: model:ir.model.fields,help:base_marketplace.field_mk_queue_job__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si coché, de nouveaux messages nécessitent votre attention."
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__message_has_error
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__message_has_sms_error
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing__message_has_error
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing__message_has_sms_error
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing_item__message_has_error
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing_item__message_has_sms_error
+#: model:ir.model.fields,help:base_marketplace.field_mk_queue_job__message_has_error
+#: model:ir.model.fields,help:base_marketplace.field_mk_queue_job__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si coché, certains messages ont une erreur de livraison."
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_res_users__show_marketplace_quick_onboarding
+msgid ""
+"If enabled, the Quick Onboarding panel will be displayed on the marketplace "
+"overview screen."
+msgstr "Si activé, le panneau d'intégration rapide sera affiché sur l'écran d'aperçu de la marketplace."
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_order_workflow_config_ts__is_force_payment_reference
+msgid ""
+"If enabled, the marketplace order number will be used as the payment "
+"reference on the invoice. This helps with reconciliation of payments."
+msgstr "Si activé, le numéro de commande de la marketplace sera utilisé comme référence de paiement sur la facture. Cela aide à la réconciliation des paiements."
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid ""
+"If it's true, the order will be imported with the currency that is available in the marketplace. Otherwise, it will use the company's\n"
+"                                                currency."
+msgstr "Si vrai, la commande sera importée avec la devise disponible dans la marketplace. Sinon, elle utilisera la devise de la\n"
+"                                                société."
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__use_marketplace_currency
+msgid ""
+"If it's true, the order will be imported with the currency that is available"
+" in the marketplace. Otherwise, it will use the company's currency."
+msgstr "Si vrai, la commande sera importée avec la devise disponible dans la marketplace. Sinon, elle utilisera la devise de la société."
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__is_sync_images
+msgid "If true then Images will be sync at the time of Import Listing."
+msgstr "Si vrai, les images seront synchronisées lors de l'importation de l'annonce."
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__is_validate_adjustment
+msgid ""
+"If true then validate Inventory adjustment at the time of Import Stock "
+"Operation."
+msgstr "Si vrai, valider l'ajustement d'inventaire lors de l'opération d'importation de stock."
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_order_workflow_config_ts__picking_policy
+msgid ""
+"If you deliver all products at once, the delivery order will be scheduled "
+"based on the greatest product lead time. Otherwise, it will be based on the "
+"shortest."
+msgstr "Si vous livrez tous les produits en une fois, la commande de livraison sera planifiée sur la base du délai le plus long. Sinon, elle sera basée sur le plus court."
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_marketplace_scope_wizard_form
+msgid "Ignore & Confirm"
+msgstr "Ignorer et confirmer"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_image__image
+msgid "Image"
+msgstr "Image"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_image__image_hex
+msgid "Image Hex"
+msgstr "Hexadécimal de l'image"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_listing_image_form
+msgid "Image Name"
+msgstr "Nom de l'image"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_image__url
+msgid "Image URL"
+msgstr "URL de l'image"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__image_ids
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__image_ids
+msgid "Images"
+msgstr "Images"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Images will be sync at the time of Import Listing."
+msgstr "Les images seront synchronisées lors de l'importation de l'annonce."
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_log__operation_type__import
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_operation_import_form_view
+msgid "Import"
+msgstr "Importer"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__import_customers
+msgid "Import Customers"
+msgstr "Importer les clients"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__import_products
+msgid "Import Listing"
+msgstr "Importer l'annonce"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_marketplace_import_operation
+msgid "Import Operation"
+msgstr "Opération d'importation"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__import_order_after_date
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Import Order After"
+msgstr "Importer la commande après"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__import_orders
+msgid "Import Sale Orders"
+msgstr "Importer les commandes client"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__import_stock
+msgid "Import Stock"
+msgstr "Importer le stock"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid ""
+"Import orders that are created after the specified date. Any orders created "
+"prior to the given date will be skipped."
+msgstr "Importer les commandes créées après la date spécifiée. Toute commande créée avant la date indiquée sera ignorée."
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_item_form_view
+msgid "Information"
+msgstr "Informations"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_marketplace_instance
+#: model:ir.model.fields,field_description:base_marketplace.field_account_bank_statement_line__mk_instance_id
+#: model:ir.model.fields,field_description:base_marketplace.field_account_move__mk_instance_id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__mk_instance_id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__mk_instance_id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_log__mk_instance_id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_log_line__mk_instance_id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_notification__mk_instance_id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__mk_instance_id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job_line__mk_instance_id
+#: model:ir.model.fields,field_description:base_marketplace.field_res_partner_mk__mk_instance_id
+#: model:ir.model.fields,field_description:base_marketplace.field_sale_order__mk_instance_id
+#: model:ir.model.fields,field_description:base_marketplace.field_sale_report__mk_instance_id
+#: model:ir.ui.menu,name:base_marketplace.menu_marketplace_instance
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_listing_search_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_log_view_search
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_search_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_line_search_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_search_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_marketplace_report_search_inherit
+msgid "Instance"
+msgstr "Instance"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Instance Name"
+msgstr "Nom de l'instance"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__lang
+msgid "Instance language."
+msgstr "Langue de l'instance."
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid "Integration Health"
+msgstr "Santé de l'intégration"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__default_code
+msgid "Internal Reference"
+msgstr "Référence interne"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing_item__barcode
+msgid "International Article Number used for product identification."
+msgstr "Numéro d'article international utilisé pour l'identification du produit."
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_instance.py:0
+msgid "Invalid marketplace."
+msgstr "Marketplace invalide."
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_item_form_view
+msgid "Inventory"
+msgstr "Inventaire"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.order_workflow_form_view
+msgid "Invoice"
+msgstr "Facture"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__mk_invoice_count
+msgid "Invoice Count"
+msgstr "Nombre de factures"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_marketplace_invoice
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__mk_invoice_ids
+#: model:ir.ui.menu,name:base_marketplace.menu_invoices
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid "Invoices"
+msgstr "Factures"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__message_is_follower
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__message_is_follower
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__message_is_follower
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__message_is_follower
+msgid "Is Follower"
+msgstr "Est abonné"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_stock_picking__is_fbm_order
+msgid "Is Fulfillment By Marketplace Order?"
+msgstr "Est une commande exécutée par la marketplace ?"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_sale_order_line__is_discount
+msgid "Is Marketplace Discount"
+msgstr "Est une remise de la marketplace"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__is_sample_data
+msgid "Is Sample Data"
+msgstr "Est une donnée d'exemple"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_item_form_view
+msgid "Item Name"
+msgstr "Nom de l'article"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__item_count
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_form_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.product_template_only_form_view
+msgid "Items"
+msgstr "Articles"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.order_workflow_form_view
+msgid "Journal"
+msgstr "Journal"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_account_move
+msgid "Journal Entry"
+msgstr "Écriture comptable"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__kanban_badge_color
+msgid "Kanban Badge Color"
+msgstr "Couleur du badge Kanban"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__kanban_dashboard_graph
+msgid "Kanban Dashboard Graph"
+msgstr "Graphique du tableau de bord Kanban"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__lang
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Language"
+msgstr "Langue"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Language related to Instance."
+msgstr "Langue liée à l'instance."
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Last Customer Imported On"
+msgstr "Dernier client importé le"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__last_customer_import_date
+msgid "Last Customers Imported On"
+msgstr "Derniers clients importés le"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "Last Financial Year"
+msgstr "Dernier exercice financier"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__last_listing_import_date
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Last Listing Imported On"
+msgstr "Dernière annonce importée le"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__last_listing_price_update_date
+msgid "Last Listing Price Updated On"
+msgstr "Dernier prix d'annonce mis à jour le"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Last Listing's Price Updated On"
+msgstr "Dernier prix d'annonce mis à jour le"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "Last Month"
+msgstr "Le mois dernier"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__last_order_sync_date
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Last Order Imported On"
+msgstr "Dernière commande importée le"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Last Processed On"
+msgstr "Dernier traitement le"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "Last Quarter"
+msgstr "Dernier trimestre"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__last_stock_update_date
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Last Stock Exported On"
+msgstr "Dernier stock exporté le"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__last_stock_import_date
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Last Stock Imported On"
+msgstr "Dernier stock importé le"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__last_sync_display
+msgid "Last Sync Display"
+msgstr "Affichage de la dernière synchronisation"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_marketplace_scope_wizard__write_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_cancel_order__write_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__write_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__write_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_image__write_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__write_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_log__write_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_log_line__write_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_notification__write_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__write_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__write_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job_line__write_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_order_workflow_config_ts__write_uid
+#: model:ir.model.fields,field_description:base_marketplace.field_res_partner_mk__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_marketplace_scope_wizard__write_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_cancel_order__write_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__write_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__write_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_image__write_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__write_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_log__write_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_log_line__write_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_notification__write_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__write_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__write_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job_line__write_date
+#: model:ir.model.fields,field_description:base_marketplace.field_order_workflow_config_ts__write_date
+#: model:ir.model.fields,field_description:base_marketplace.field_res_partner_mk__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_search_view
+msgid "Listed"
+msgstr "Listé"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__is_listed
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__is_listed
+msgid "Listed?"
+msgstr "Listé ?"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/product.py:0
+#: model:ir.actions.act_window,name:base_marketplace.action_marketplace_listing_all
+#: model:ir.actions.act_window,name:base_marketplace.action_marketplace_listing_kanban
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__mk_listing_ids
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__mk_listing_id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job_line__mk_listing_id
+#: model:ir.model.fields,field_description:base_marketplace.field_product_product__mk_listing_ids
+#: model:ir.model.fields,field_description:base_marketplace.field_product_template__mk_listing_ids
+#: model:ir.ui.menu,name:base_marketplace.menu_marketplace_listing_main
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_listing_search_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_form_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_item_form_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_tree_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.product_template_only_form_view
+msgid "Listing"
+msgstr "Annonce"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__mk_listing_count
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__listing_count
+msgid "Listing Count"
+msgstr "Nombre d'annonces"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_mk_listing_image
+msgid "Listing Image"
+msgstr "Image de l'annonce"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_listing_image_form
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_listing_image_kanban
+msgid "Listing Images"
+msgstr "Images de l'annonce"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_item_form_view
+msgid "Listing Item Name"
+msgstr "Nom de l'article d'annonce"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_listing_items_from_listing
+#: model:ir.actions.act_window,name:base_marketplace.action_marketplace_listing_items_all
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__listing_item_ids
+#: model:ir.model.fields,field_description:base_marketplace.field_product_product__mk_listing_item_ids
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_listing_search_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_item_tree_view
+msgid "Listing Items"
+msgstr "Articles d'annonce"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_form_view
+msgid "Listing Name"
+msgstr "Nom de l'annonce"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_product_pricelistitem_mk
+msgid "Listing Pricing"
+msgstr "Tarification de l'annonce"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_search_view
+msgid "Listing Search"
+msgstr "Recherche d'annonce"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid "Listings"
+msgstr "Annonces"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_order_workflow_config_ts__is_lock_order
+msgid "Lock Confirmed Order"
+msgstr "Verrouiller la commande confirmée"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_log_line__log_id
+msgid "Log ID"
+msgstr "ID du journal"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__log_level
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Log Level"
+msgstr "Niveau de journal"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_log_view_form
+msgid "Log Line"
+msgstr "Ligne de journal"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_log__log_line_ids
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job_line__log_line_ids
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_line_form_view
+msgid "Log Lines"
+msgstr "Lignes de journal"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_log__log_message
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_log_line__log_message
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_log_view_search
+msgid "Log Message"
+msgstr "Message de journal"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_log__name
+msgid "Log Reference"
+msgstr "Référence du journal"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__mk_log_ids
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__mk_log_id
+#: model:ir.ui.menu,name:base_marketplace.menu_marketplace_logs_main
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Logs"
+msgstr "Journaux"
+
+#. module: base_marketplace
+#: model:res.groups,name:base_marketplace.group_base_marketplace_manager
+msgid "Manager"
+msgstr "Responsable"
+
+#. module: base_marketplace
+#: model:ir.actions.server,name:base_marketplace.action_marked_as_processed
+msgid "Mark As Processed"
+msgstr "Marquer comme traité"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_form_view
+msgid "Mark as Processed"
+msgstr "Marquer comme traité"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_picking_form_inherit_base_marketplace
+msgid "Marked as Updated in Odoo"
+msgstr "Marqué comme mis à jour dans Odoo"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_image__mk_instance_id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__mk_instance_id
+#: model:ir.model.fields,field_description:base_marketplace.field_sale_order__marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_sale_report__marketplace_type
+#: model:ir.model.fields,field_description:base_marketplace.field_stock_picking__marketplace
+#: model:ir.module.category,name:base_marketplace.module_base_marketplace
+#: model:res.groups.privilege,name:base_marketplace.res_groups_privilege_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_marketplace_report_search_inherit
+msgid "Marketplace"
+msgstr "Marketplace"
+
+#. module: base_marketplace
+#: model:ir.actions.server,name:base_marketplace.mk_process_queue_job_ir_actions_server
+msgid "Marketplace : Process Queue Job"
+msgstr "Marketplace : Traiter la tâche en file d'attente"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_marketplace_scope_wizard
+msgid "Marketplace API Permissions Confirmation Wizard"
+msgstr "Assistant de confirmation des autorisations API de la marketplace"
+
+#. module: base_marketplace
+#: model:ir.ui.menu,name:base_marketplace.menu_menu_marketplace_automation
+msgid "Marketplace Automation"
+msgstr "Automatisation de la marketplace"
+
+#. module: base_marketplace
+#: model:ir.actions.act_url,name:base_marketplace.action_marketplace_dashboard
+#: model:ir.actions.act_url,name:base_marketplace.action_mk_general_dashboard
+#: model:ir.actions.client,name:base_marketplace.backend_mk_general_dashboard
+msgid "Marketplace Dashboard"
+msgstr "Tableau de bord de la marketplace"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_sale_order_form_view
+msgid "Marketplace Detail"
+msgstr "Détail de la marketplace"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_sale_order_line__marketplace_discount_amount
+msgid "Marketplace Discount Amount"
+msgstr "Montant de remise de la marketplace"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_stock_picking__exception_message
+msgid "Marketplace Exception Message"
+msgstr "Message d'exception de la marketplace"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_stock_picking__is_marketplace_exception
+msgid "Marketplace Exception?"
+msgstr "Exception de la marketplace ?"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job_line__mk_id
+msgid "Marketplace ID"
+msgstr "ID de la marketplace"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__mk_id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_image__mk_id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__mk_id
+#: model:ir.model.fields,field_description:base_marketplace.field_res_partner_mk__mk_id
+#: model:ir.model.fields,field_description:base_marketplace.field_sale_order__mk_id
+#: model:ir.model.fields,field_description:base_marketplace.field_sale_order_line__mk_id
+msgid "Marketplace Identification"
+msgstr "Identification de la marketplace"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__image
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__mk_instance_image
+msgid "Marketplace Image"
+msgstr "Image de la marketplace"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_instance.py:0
+#: model:ir.model,name:base_marketplace.model_mk_instance
+#: model:ir.model.fields,field_description:base_marketplace.field_ir_cron__mk_instance_id
+#: model:ir.model.fields,field_description:base_marketplace.field_stock_picking__mk_instance_id
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_tree_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_marketplace_report_search_inherit
+msgid "Marketplace Instance"
+msgstr "Instance Marketplace"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_marketplace_scope_wizard__mk_instance_name
+msgid "Marketplace Instance name"
+msgstr "Nom de l'instance de la marketplace"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_marketplace_invoice_kanban
+msgid "Marketplace Invoices"
+msgstr "Factures de la marketplace"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_mk_listing
+msgid "Marketplace Listing"
+msgstr "Annonce Marketplace"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__mk_listing_id
+msgid "Marketplace Listing ID"
+msgstr "ID d'annonce Marketplace"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_mk_listing_item
+msgid "Marketplace Listing Items"
+msgstr "Éléments d'annonce Marketplace"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_mk_log
+msgid "Marketplace Log"
+msgstr "Journal de la marketplace"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_mk_log_line
+msgid "Marketplace Log Line"
+msgstr "Ligne de journal Marketplace"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_marketplace_log
+#: model:ir.actions.act_window,name:base_marketplace.action_marketplace_log_kanban
+msgid "Marketplace Logs"
+msgstr "Journaux de la marketplace"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_image__marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__marketplace
+msgid "Marketplace Name"
+msgstr "Nom de la marketplace"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_mk_notification
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__notification_ids
+msgid "Marketplace Notification"
+msgstr "Notification de la marketplace"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_mk_operation
+msgid "Marketplace Operation"
+msgstr "Opération Marketplace"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_log_view_form
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_log_view_search
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_log_view_tree
+msgid "Marketplace Operation Log"
+msgstr "Journal des opérations de la marketplace"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_log_line_view_form
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_log_line_view_tree
+msgid "Marketplace Operation Log Line"
+msgstr "Ligne de journal des opérations de la marketplace"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__mk_order_id
+msgid "Marketplace Order ID"
+msgstr "ID de commande de la marketplace"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.order_workflow_form_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.order_workflow_tree_view
+msgid "Marketplace Order Workflow"
+msgstr "Flux de travail des commandes de la marketplace"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_mk_queue_job
+msgid "Marketplace Queue Job"
+msgstr "Tâche en file d'attente Marketplace"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_marketplace_orders_kanban
+msgid "Marketplace Sale Orders"
+msgstr "Commandes client de la marketplace"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.marketplace_comm_sale_report_action_dashboard
+#: model:ir.actions.act_window,name:base_marketplace.marketplace_ent_sale_report_action_dashboard
+msgid "Marketplace Sales Analysis"
+msgstr "Analyse des ventes de la marketplace"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_instance.py:0
+msgid "Marketplace Setup"
+msgstr "Configuration de la marketplace"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_marketplace_shipment_kanban
+msgid "Marketplace Shipments"
+msgstr "Expéditions de la marketplace"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_marketplace_report_search_inherit
+msgid "Marketplace Type"
+msgstr "Type de marketplace"
+
+#. module: base_marketplace
+#: model:ir.module.category,description:base_marketplace.module_base_marketplace
+msgid "Marketplace User Access Right"
+msgstr "Droit d'accès utilisateur de la marketplace"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_sale_order__order_workflow_id
+msgid "Marketplace Workflow"
+msgstr "Flux de travail de la marketplace"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "Marketplace wise Revenue"
+msgstr "Revenus par marketplace"
+
+#. module: base_marketplace
+#: model:ir.actions.server,name:base_marketplace.ir_actions_server_mk_general_dashboard
+msgid "Marketplace: Dashboard"
+msgstr "Marketplace : Tableau de bord"
+
+#. module: base_marketplace
+#: model:ir.actions.server,name:base_marketplace.action_redirect_sales_report
+msgid "Marketplace: Sales Analysis"
+msgstr "Marketplace : Analyse des ventes"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__mk_instance_ids
+#: model:ir.model.fields,field_description:base_marketplace.field_res_partner__mk_instance_ids
+#: model:ir.model.fields,field_description:base_marketplace.field_res_users__mk_instance_ids
+#: model:ir.ui.menu,name:base_marketplace.menu_marketplace
+msgid "Marketplaces"
+msgstr "Marketplaces"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__image_medium
+msgid "Medium-sized photo"
+msgstr "Photo de taille moyenne"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__image_medium
+msgid ""
+"Medium-sized photo of the marketplace. It is automatically resized as a "
+"128x128px image, with aspect ratio preserved. "
+msgstr "Photo de taille moyenne de la marketplace. Elle est automatiquement redimensionnée en image 128x128px, avec le ratio d'aspect préservé."
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__message_has_error
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__message_has_error
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__message_has_error
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__message_has_error
+msgid "Message Delivery error"
+msgstr "Erreur de livraison du message"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__message_ids
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__message_ids
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__message_ids
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_marketplace_scope_wizard__permissions_html_missing
+msgid "Missing HTML"
+msgstr "HTML manquant"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_marketplace_scope_wizard_form
+msgid "Missing Scopes"
+msgstr "Autorisations manquantes"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.js:0
+msgid "Month"
+msgstr "Mois"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_instance__activity_date_deadline_range_type__months
+msgid "Months"
+msgstr "Mois"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__my_activity_date_deadline
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__my_activity_date_deadline
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__my_activity_date_deadline
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "Échéance de mon activité"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__name
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__name
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_image__name
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__name
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__name
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job_line__name
+#: model:ir.model.fields,field_description:base_marketplace.field_order_workflow_config_ts__name
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_log_view_search
+msgid "Name"
+msgstr "Nom"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__name
+msgid "Name of your marketplace instance."
+msgstr "Nom de votre instance de marketplace."
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/logs.py:0
+#: code:addons/base_marketplace/models/marketplace_queue_job.py:0
+msgid "New"
+msgstr "Nouveau"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_instance.py:0
+msgid "New %s"
+msgstr "Nouveau %s"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/xml/marketplace_onboarding.xml:0
+msgid "Next"
+msgstr "Suivant"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__activity_date_deadline
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__activity_date_deadline
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__activity_date_deadline
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Prochaine échéance d'activité"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__activity_summary
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__activity_summary
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__activity_summary
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__activity_summary
+msgid "Next Activity Summary"
+msgstr "Résumé de la prochaine activité"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__activity_type_id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__activity_type_id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__activity_type_id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__activity_type_id
+msgid "Next Activity Type"
+msgstr "Type de prochaine activité"
+
+#. module: base_marketplace
+#: model_terms:ir.actions.act_window,help:base_marketplace.action_marketplace_overview
+msgid "No Marketplace Instance Found!"
+msgstr "Aucune instance de marketplace trouvée !"
+
+#. module: base_marketplace
+#: model_terms:ir.actions.act_window,help:base_marketplace.marketplace_ent_sale_report_action_dashboard
+msgid "No data yet!"
+msgstr "Pas encore de données !"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_order_workflow_config_ts__is_lock_order
+msgid "No longer edit orders once confirmed"
+msgstr "Ne plus modifier les commandes une fois confirmées"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_instance.py:0
+msgid ""
+"No marketplace connector modules are installed which support quick "
+"onboarding."
+msgstr "Aucun module de connecteur de marketplace installé ne prend en charge l'intégration rapide."
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_queue_job__no_of_retry_count
+#: model:ir.model.fields,help:base_marketplace.field_stock_picking__no_of_retry_count
+msgid "No of count that queue went in process."
+msgstr "Nombre de fois que la file d'attente a été traitée."
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/xml/marketplace_onboarding.xml:0
+msgid "No step template is registered for this marketplace."
+msgstr "Aucun modèle d'étape n'est enregistré pour cette marketplace."
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/onboarding/marketplace_onboarding.js:0
+msgid "None selected"
+msgstr "Aucun sélectionné"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_search_view
+msgid "Not Listed"
+msgstr "Non listé"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Note:"
+msgstr "Remarque :"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Notification & Alerts"
+msgstr "Notifications et alertes"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_notification__user_id
+msgid "Notify to"
+msgstr "Notifier à"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_sale_order_tree_view
+msgid "Number"
+msgstr "Numéro"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__message_needaction_counter
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__message_needaction_counter
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__message_needaction_counter
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Nombre d'actions"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__number_of_variants_in_mk
+msgid "Number of Variants in Marketplace."
+msgstr "Nombre de variantes dans la marketplace."
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__message_has_error_counter
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__message_has_error_counter
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__message_has_error_counter
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__message_has_error_counter
+msgid "Number of errors"
+msgstr "Nombre d'erreurs"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__message_needaction_counter
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing__message_needaction_counter
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing_item__message_needaction_counter
+#: model:ir.model.fields,help:base_marketplace.field_mk_queue_job__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Nombre de messages nécessitant une action"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__message_has_error_counter
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing__message_has_error_counter
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing_item__message_has_error_counter
+#: model:ir.model.fields,help:base_marketplace.field_mk_queue_job__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Nombre de messages avec erreur de livraison"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.js:0
+msgid "Odoo Warning"
+msgstr "Avertissement Odoo"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__queue_batch_limit
+msgid "Odoo will create a batch with defined limit."
+msgstr "Odoo créera un lot avec la limite définie."
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_instance__tax_system__default
+msgid "Odoo's Default Tax Behaviour (Taxes will be taken from Odoo Product)"
+msgstr "Comportement fiscal par défaut d'Odoo (les taxes seront prises du produit Odoo)"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.product_template_only_form_view
+msgid "Open Listing"
+msgstr "Ouvrir l'annonce"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_form_view
+msgid "Open Record"
+msgstr "Ouvrir l'enregistrement"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_log_line__state
+msgid "Operation Status"
+msgstr "Statut de l'opération"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_log__operation_type
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_log_view_search
+msgid "Operation Type"
+msgstr "Type d'opération"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/wizards/operation.py:0
+msgid ""
+"Operation not allowed! Make sure selected listing belongs to only one "
+"instance"
+msgstr "Opération non autorisée ! Assurez-vous que l'annonce sélectionnée appartient à une seule instance"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/wizards/operation.py:0
+msgid ""
+"Operation not allowed! Make sure selected listing belongs to only one "
+"instance."
+msgstr "Opération non autorisée ! Assurez-vous que l'annonce sélectionnée appartient à une seule instance."
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_listing_image_kanban
+msgid ""
+"Optimization required! Reduce the image size or increase your compression "
+"settings."
+msgstr "Optimisation requise ! Réduisez la taille de l'image ou augmentez vos paramètres de compression."
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_queue_job_order
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job_line__order_id
+#: model_terms:ir.ui.view,arch_db:base_marketplace.order_workflow_form_view
+msgid "Order"
+msgstr "Commande"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__mk_order_count
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__order_count
+msgid "Order Count"
+msgstr "Nombre de commandes"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_notification__is_order_create
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_queue_job__type__order
+msgid "Order Import"
+msgstr "Importation de commandes"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_order_workflow_config_ts__sale_journal_id
+msgid "Order Journal"
+msgstr "Journal des commandes"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_sale_order__mk_order_number
+msgid "Order Number"
+msgstr "Numéro de commande"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__order_prefix
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Order Prefix"
+msgstr "Préfixe de commande"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Order Prefix (FBM)"
+msgstr "Préfixe de commande (FBM)"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__fbm_order_prefix
+msgid "Order Prefix (Fulfilment by Marketplace)"
+msgstr "Préfixe de commande (Exécution par la marketplace)"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_order_workflow_config_ts
+msgid "Order Workflow Configuration"
+msgstr "Configuration du flux de travail des commandes"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__order_prefix
+msgid "Order name will be set with given Prefix while importing Order."
+msgstr "Le nom de la commande sera défini avec le préfixe donné lors de l'importation de la commande."
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Order name will be set with given Prefix while importing Orders."
+msgstr "Le nom de la commande sera défini avec le préfixe donné lors de l'importation des commandes."
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__fbm_order_prefix
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid ""
+"Order name will be set with given Prefix while importing fulfillment by "
+"marketplace orders."
+msgstr "Le nom de la commande sera défini avec le préfixe donné lors de l'importation des commandes exécutées par la marketplace."
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid ""
+"Order will name according to the marketplace order number instead of Odoo "
+"sequence."
+msgstr "La commande sera nommée selon le numéro de commande de la marketplace au lieu de la séquence Odoo."
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__mk_order_ids
+#: model:ir.ui.menu,name:base_marketplace.menu_mk_order_root
+#: model:ir.ui.menu,name:base_marketplace.menu_sale_order
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Orders"
+msgstr "Commandes"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_marketplace_overview
+#: model:ir.ui.menu,name:base_marketplace.menu_mk_overview
+msgid "Overview"
+msgstr "Aperçu"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_queue_job__state__partial_processed
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_search_view
+msgid "Partial Processed"
+msgstr "Partiellement traité"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_res_partner_mk__partner_id
+msgid "Partner"
+msgstr "Partenaire"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_res_partner_mk
+msgid "Partner Marketplaces"
+msgstr "Marketplaces du partenaire"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_cancel_order__payment_journal_id
+#: model:ir.model.fields,field_description:base_marketplace.field_order_workflow_config_ts__journal_id
+msgid "Payment Journal"
+msgstr "Journal de paiement"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_order_workflow_config_ts__payment_method_line_id
+msgid "Payment Method"
+msgstr "Mode de paiement"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "Pending Shipments"
+msgstr "Expéditions en attente"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_listing_item__export_qty_type__percentage
+msgid "Percentage"
+msgstr "Pourcentage"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_marketplace_operation
+msgid "Perform Operation"
+msgstr "Effectuer l'opération"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/onboarding/marketplace_onboarding.js:0
+msgid ""
+"Pick where you sell. We will prepare a draft instance for that connector if "
+"needed."
+msgstr "Choisissez où vous vendez. Nous préparerons une instance brouillon pour ce connecteur si nécessaire."
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/wizards/operation.py:0
+msgid "Please select marketplace instance to process."
+msgstr "Veuillez sélectionner une instance de marketplace à traiter."
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__access_url
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__access_url
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__access_url
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__access_url
+msgid "Portal Access URL"
+msgstr "URL d'accès au portail"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_product_pricelist_item_advanced_tree_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_product_pricelist_item_tree_view
+msgid "Price"
+msgstr "Prix"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__pricelist_id
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Pricelist"
+msgstr "Liste de prix"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_product_pricelist_item_advanced_tree_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_product_pricelist_item_tree_view
+msgid "Pricelist Items"
+msgstr "Articles de la liste de prix"
+
+#. module: base_marketplace
+#: model:ir.actions.server,name:base_marketplace.action_process_manually
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_form_view
+msgid "Process Manually"
+msgstr "Traiter manuellement"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_queue_job__state__processed
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_queue_job_line__state__processed
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_line_search_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_search_view
+msgid "Processed"
+msgstr "Traité"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job_line__processed_date
+msgid "Processed At"
+msgstr "Traité le"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__processed_count
+msgid "Processed Count"
+msgstr "Nombre de traités"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_queue_job_product
+#: model:ir.model,name:base_marketplace.model_product_template
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__product_id
+msgid "Product"
+msgstr "Produit"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__product_category_id
+msgid "Product Category"
+msgstr "Catégorie de produit"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_form_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_item_form_view
+msgid "Product Images"
+msgstr "Images du produit"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_notification__is_product_import
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_queue_job__type__product
+msgid "Product Import"
+msgstr "Importation de produit"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "Product Name"
+msgstr "Nom du produit"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Product Quantity will be export according to selected field."
+msgstr "La quantité de produit sera exportée selon le champ sélectionné."
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__product_tmpl_id
+msgid "Product Template"
+msgstr "Modèle de produit"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_product_template_attribute_line
+msgid "Product Template Attribute Line"
+msgstr "Ligne d'attribut du modèle du produit"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_sale_report__product_type
+msgid "Product Type"
+msgstr "Type de produit"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_product_product
+msgid "Product Variant"
+msgstr "Variante de produit"
+
+#. module: base_marketplace
+#: model:ir.ui.menu,name:base_marketplace.menu_products
+msgid "Product Variants"
+msgstr "Variantes de produit"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_instance__environment__production
+msgid "Production"
+msgstr "Production"
+
+#. module: base_marketplace
+#: model:ir.ui.menu,name:base_marketplace.menu_product_catalog
+#: model:ir.ui.menu,name:base_marketplace.menu_product_root
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_product_pricelist_item_advanced_tree_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_product_pricelist_item_tree_view
+msgid "Products"
+msgstr "Produits"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "Profit"
+msgstr "Bénéfice"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__is_publish_in_store
+msgid "Publish in Store?"
+msgstr "Publier dans la boutique ?"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__is_published
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_search_view
+msgid "Published"
+msgstr "Publié"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__listing_publish_date
+msgid "Published On"
+msgstr "Publié le"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "Qty Sold"
+msgstr "Qté vendue"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_stock_quant
+msgid "Quants"
+msgstr "Quantités"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.js:0
+msgid "Quarter"
+msgstr "Trimestre"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job_line__queue_id
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_form_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_tree_view
+msgid "Queue"
+msgstr "File d'attente"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__queue_batch_limit
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Queue Batch Limit"
+msgstr "Limite de lot de file d'attente"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__mk_queue_count
+msgid "Queue Count"
+msgstr "Nombre de files d'attente"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_marketplace_queue_job_kanban
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__mk_queue_ids
+msgid "Queue Job"
+msgstr "Tâche en file d'attente"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_mk_queue_job_line
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_log_line__queue_job_line_id
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_form_view
+msgid "Queue Line"
+msgstr "Ligne de file d'attente"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__queue_line_id
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_search_view
+msgid "Queue Line ID"
+msgstr "ID de ligne de file d'attente"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__queue_line_name
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_search_view
+msgid "Queue Line Name"
+msgstr "Nom de ligne de file d'attente"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_queue_job_line_all
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__mk_queue_line_ids
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_line_search_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_line_tree_view
+msgid "Queue Lines"
+msgstr "Lignes de file d'attente"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_form_view
+msgid "Queue Name"
+msgstr "Nom de la file d'attente"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_queue_job.py:0
+msgid "Queue lines were manually set to cancelled : %s"
+msgstr "Les lignes de file d'attente ont été manuellement définies comme annulées : %s"
+
+#. module: base_marketplace
+#: model:ir.ui.menu,name:base_marketplace.menu_marketplace_queue
+#: model:ir.ui.menu,name:base_marketplace.menu_marketplace_queues_main
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_search_view
+msgid "Queues"
+msgstr "Files d'attente"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/onboarding/marketplace_onboarding.js:0
+msgid ""
+"Quick onboarding is not available for this marketplace. You can configure it"
+" manually."
+msgstr "L'intégration rapide n'est pas disponible pour cette marketplace. Vous pouvez la configurer manuellement."
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_marketplace_quotation
+#: model:ir.ui.menu,name:base_marketplace.menu_sale_quotations
+msgid "Quotations"
+msgstr "Devis"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__account_receivable_id
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Receivable Account"
+msgstr "Compte débiteur"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Record fetch limit while perform api calling."
+msgstr "Limite de récupération d'enregistrements lors des appels API."
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__api_limit
+msgid "Record limit while perform api calling."
+msgstr "Limite d'enregistrements lors des appels API."
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Refresh"
+msgstr "Actualiser"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_cancel_order__refund_description
+msgid "Refund Reason"
+msgstr "Motif de remboursement"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_account_bank_statement_line__is_refunded_in_mk
+#: model:ir.model.fields,field_description:base_marketplace.field_account_move__is_refunded_in_mk
+msgid "Refunded in Marketplace"
+msgstr "Remboursé dans la marketplace"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_order_workflow_config_ts__is_register_payment
+msgid "Register Payment"
+msgstr "Enregistrer le paiement"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_sale_order_line__related_disc_sale_line_id
+msgid "Related Disc Sale Line"
+msgstr "Ligne de vente de remise associée"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_image__mk_listing_id
+msgid "Related Listing"
+msgstr "Annonce associée"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_image__mk_listing_item_ids
+msgid "Related Listing Item"
+msgstr "Article d'annonce associé"
+
+#. module: base_marketplace
+#: model:ir.ui.menu,name:base_marketplace.menu_mk_sale_report
+msgid "Reporting"
+msgstr "Rapports"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Reset"
+msgstr "Réinitialiser"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__activity_user_ids
+msgid "Responsible"
+msgstr "Responsable"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__activity_user_id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__activity_user_id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__activity_user_id
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__activity_user_id
+msgid "Responsible User"
+msgstr "Utilisateur responsable"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__restricted_operation
+msgid "Restricted Operation?"
+msgstr "Opération restreinte ?"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/wizards/operation.py:0
+msgid ""
+"Restricted! The execution of this cron task is in progress. Proceeding with "
+"this action may result in duplicate records."
+msgstr "Restreint ! L'exécution de cette tâche cron est en cours. Procéder avec cette action peut entraîner des enregistrements en double."
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_queue_job.py:0
+msgid ""
+"Restricted! The processing of Queue Job is already running. Proceeding with "
+"this action may result in duplicate records."
+msgstr "Restreint ! Le traitement de la tâche en file d'attente est déjà en cours. Procéder avec cette action peut entraîner des enregistrements en double."
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_form_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_line_form_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_line_tree_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_picking_form_inherit_base_marketplace
+msgid "Retry"
+msgstr "Réessayer"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__no_of_retry_count
+#: model:ir.model.fields,field_description:base_marketplace.field_stock_picking__no_of_retry_count
+msgid "Retry Count"
+msgstr "Nombre de tentatives"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_form_view
+msgid "Retry Failed Lines"
+msgstr "Réessayer les lignes échouées"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_queue_job__type__return
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_sale_order_form_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_stock_return_picking_form
+msgid "Return"
+msgstr "Retour"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_stock_return_picking
+msgid "Return Picking"
+msgstr "Transfert de retour"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "Revenue"
+msgstr "Revenus"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.act_stock_return_picking_ts
+msgid "Reverse Stock"
+msgstr "Retourner le stock"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Run Manually"
+msgstr "Exécuter manuellement"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_instance__sync_product_with__sku
+msgid "SKU"
+msgstr "SKU"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__message_has_sms_error
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__message_has_sms_error
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__message_has_sms_error
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Erreur de livraison SMS"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_order_workflow
+msgid "Sale Order Workflow"
+msgstr "Flux de travail des commandes client"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.order_workflow_form_view
+msgid "Sale Order Workflow Name"
+msgstr "Nom du flux de travail des commandes client"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__sale_price
+msgid "Sale Price"
+msgstr "Prix de vente"
+
+#. module: base_marketplace
+#: model:ir.ui.menu,name:base_marketplace.menu_report_product_all
+msgid "Sales"
+msgstr "Ventes"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_sale_report
+msgid "Sales Analysis Report"
+msgstr "Rapport d'analyse des ventes"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_sale_order
+#: model:ir.model.fields,field_description:base_marketplace.field_stock_return_picking__sale_order_id
+msgid "Sales Order"
+msgstr "Commande client"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_sale_order_line
+msgid "Sales Order Line"
+msgstr "Ligne de commande"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_marketplace_orders
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_sale_order_tree_view
+msgid "Sales Orders"
+msgstr "Commandes client"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__team_id
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Sales Team"
+msgstr "Équipe de vente"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__team_id
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Sales Team used for imported order."
+msgstr "Équipe de vente utilisée pour la commande importée."
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__salesperson_user_id
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Salesperson"
+msgstr "Commercial"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_instance.py:0
+msgid "Sample data"
+msgstr "Données d'exemple"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_instance__environment__sandbox
+msgid "Sandbox"
+msgstr "Bac à sable"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/xml/marketplace_onboarding.xml:0
+msgid "Save & Confirm"
+msgstr "Enregistrer et confirmer"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_ir_cron
+msgid "Scheduled Actions"
+msgstr "Actions planifiées"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__access_token
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__access_token
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__access_token
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__access_token
+msgid "Security Token"
+msgstr "Jeton de sécurité"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__environment
+msgid ""
+"Select the environment for the eBay API connection: use Sandbox for testing "
+"and Production for live operations."
+msgstr "Sélectionnez l'environnement pour la connexion API eBay : utilisez Bac à sable pour les tests et Production pour les opérations en direct."
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__salesperson_user_id
+msgid "Selected sales person will be used to process order."
+msgstr "Le commercial sélectionné sera utilisé pour traiter la commande."
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid ""
+"Selected sales person will be used to process order. Make sure to set user "
+"with enough access rights."
+msgstr "Le commercial sélectionné sera utilisé pour traiter la commande. Assurez-vous de définir un utilisateur avec suffisamment de droits d'accès."
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__sequence
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_image__sequence
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__sequence
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing_image__sequence
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_ir_actions_server
+msgid "Server Action"
+msgstr "Action de serveur"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__is_set_images
+msgid "Set Images?"
+msgstr "Définir les images ?"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_order_workflow_config_ts__force_invoice_date
+msgid "Set Invoice date and Payment date same as Order date."
+msgstr "Définir la date de facture et la date de paiement identiques à la date de commande."
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__is_set_price
+msgid "Set Price?"
+msgstr "Définir le prix ?"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__is_set_quantity
+msgid "Set Quantity?"
+msgstr "Définir la quantité ?"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/xml/marketplace_onboarding.xml:0
+msgid "Setup"
+msgstr "Configuration"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_instance.py:0
+msgid "Setup Wizard is only available while the instance is in draft state."
+msgstr "L'assistant de configuration n'est disponible que lorsque l'instance est à l'état brouillon."
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_queue_job__type__shipment
+msgid "Shipment"
+msgstr "Expédition"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__mk_shipment_count
+msgid "Shipment Count"
+msgstr "Nombre d'expéditions"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__mk_shipment_ids
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid "Shipments"
+msgstr "Expéditions"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_order_workflow_config_ts__picking_policy
+msgid "Shipping Policy"
+msgstr "Politique d'expédition"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_res_users__show_marketplace_quick_onboarding
+msgid "Show Marketplace Quick Onboarding Panel"
+msgstr "Afficher le panneau d'intégration rapide de la marketplace"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_sale_order_form_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_form_view
+msgid "Show in Marketplace"
+msgstr "Afficher dans la marketplace"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__show_in_systray
+msgid "Show in Systray Menu?"
+msgstr "Afficher dans le menu de la barre système ?"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__image_small
+msgid "Small-sized photo"
+msgstr "Photo de petite taille"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__image_small
+msgid ""
+"Small-sized photo of the marketplace. It is automatically resized as a "
+"64x64px image, with aspect ratio preserved. "
+msgstr "Photo de petite taille de la marketplace. Elle est automatiquement redimensionnée en image 64x64px, avec le ratio d'aspect préservé."
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Smart Notification Configuration"
+msgstr "Configuration des notifications intelligentes"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/wizards/operation.py:0
+msgid ""
+"Something went wrong! Odoo isn't able to identify selected products or "
+"please select product again."
+msgstr "Quelque chose a mal tourné ! Odoo n'est pas en mesure d'identifier les produits sélectionnés ou veuillez sélectionner à nouveau le produit."
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_instance.py:0
+msgid "Something went wrong! Please contact your integration provider."
+msgstr "Quelque chose a mal tourné ! Veuillez contacter votre fournisseur d'intégration."
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "Start Date :"
+msgstr "Date de début :"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__state
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__state
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job_line__state
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_line_search_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_search_view
+msgid "State"
+msgstr "État"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__activity_state
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing__activity_state
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing_item__activity_state
+#: model:ir.model.fields,help:base_marketplace.field_mk_queue_job__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr "Statut basé sur les activités\n"
+"En retard : La date d'échéance est dépassée\n"
+"Aujourd'hui : La date d'activité est aujourd'hui\n"
+"Planifié : Activités futures."
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/xml/marketplace_onboarding.xml:0
+msgid "Step illustration"
+msgstr "Illustration de l'étape"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/xml/marketplace_onboarding.xml:0
+msgid "Steps"
+msgstr "Étapes"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_notification__is_sticky
+msgid "Sticky"
+msgstr "Épinglé"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.order_workflow_form_view
+msgid "Stock"
+msgstr "Stock"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__stock_field_id
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Stock Based On"
+msgstr "Stock basé sur"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_stock_move
+msgid "Stock Move"
+msgstr "Mouvement de stock"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_sale_order__stock_moves_count
+msgid "Stock Move Count for Sale Order without Stock Picking."
+msgstr "Nombre de mouvements de stock pour la commande client sans transfert de stock."
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_sale_order__stock_moves_count
+msgid "Stock Moves"
+msgstr "Mouvements de stock"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_instance__log_level__success
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_log_line__state__success
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_notification__type__success
+msgid "Success"
+msgstr "Succès"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__is_sync_images
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Sync Listing Images?"
+msgstr "Synchroniser les images de l'annonce ?"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Sync Listings Based On"
+msgstr "Synchroniser les annonces basées sur"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__sync_product_with
+msgid "Sync Product With"
+msgstr "Synchroniser le produit avec"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_account_tax
+msgid "Tax"
+msgstr "Taxe"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__tax_account_id
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Tax Account"
+msgstr "Compte de taxe"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__tax_refund_account_id
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Tax Account on Credit Notes"
+msgstr "Compte de taxe sur les avoirs"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__tax_rounding
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Tax Rounding"
+msgstr "Arrondi de taxe"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__tax_system
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Tax System"
+msgstr "Système de taxe"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_sale_order_tree_view
+msgid "Tax Total"
+msgstr "Total des taxes"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_stock_picking__is_marketplace_exception
+msgid ""
+"Technical field to filter out problematic records from update order status "
+"process."
+msgstr "Champ technique pour filtrer les enregistrements problématiques du processus de mise à jour du statut de commande."
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing__mk_instance_image
+msgid "Technical field to get the instance image for display purpose."
+msgstr "Champ technique pour obtenir l'image de l'instance à des fins d'affichage."
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_operation__restricted_operation
+msgid "Technical field to hide process button in some use case."
+msgstr "Champ technique pour masquer le bouton de traitement dans certains cas d'utilisation."
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing_image__image_hex
+msgid "Technical field to identify the duplicate image"
+msgstr "Champ technique pour identifier l'image en double"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_cancel_order__create_refund_option_visible
+msgid "Technical field to identify user can create credit note or not."
+msgstr "Champ technique pour identifier si l'utilisateur peut créer un avoir ou non."
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Test Connection"
+msgstr "Tester la connexion"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_instance.py:0
+msgid "Test Connection Failed: Invalid Credentials."
+msgstr "Échec du test de connexion : Identifiants invalides."
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_instance.py:0
+msgid "Test Connection is not supported for this Marketplace."
+msgstr "Le test de connexion n'est pas pris en charge pour cette marketplace."
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Test Mode"
+msgstr "Mode test"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/simple_panel_handler.js:0
+msgid "The application is still loading. Please wait a moment and try again."
+msgstr "L'application est encore en cours de chargement. Veuillez patienter un instant et réessayer."
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid ""
+"The configured analytic account for this instance will be assigned to all sale order lines created by the connector. This means that the Analytic Default\n"
+"                                                Rule set up in Odoo will not be applied to Marketplace orders."
+msgstr "Le compte analytique configuré pour cette instance sera attribué à toutes les lignes de commande client créées par le connecteur. Cela signifie que la règle analytique par défaut\n"
+"                                                configurée dans Odoo ne sera pas appliquée aux commandes de la marketplace."
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid ""
+"The product used to model the delivery charge or while creating new delivery"
+" method."
+msgstr "Le produit utilisé pour modéliser les frais de livraison ou lors de la création d'un nouveau mode de livraison."
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "The product used to model the discount."
+msgstr "Le produit utilisé pour modéliser la remise."
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__sequence
+msgid "The sequence field is used to define Instance Sequence."
+msgstr "Le champ de séquence est utilisé pour définir la séquence d'instance."
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "This Financial Year"
+msgstr "Cet exercice financier"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "This Month"
+msgstr "Ce mois-ci"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "This Quarter"
+msgstr "Ce trimestre"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_instance.py:0
+msgid "This Week"
+msgstr "Cette semaine"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__image
+msgid ""
+"This field holds the image used as photo for the marketplace, limited to "
+"1024x1024px."
+msgstr "Ce champ contient l'image utilisée comme photo de la marketplace, limitée à 1024x1024px."
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_instance.py:0
+msgid "This marketplace connector is not installed."
+msgstr "Ce connecteur de marketplace n'est pas installé."
+
+#. module: base_marketplace
+#: model_terms:ir.actions.act_window,help:base_marketplace.marketplace_comm_sale_report_action_dashboard
+msgid ""
+"This report performs analysis on your Marketplace quotations and sales orders. Analysis check your sales revenues and sort it by different group\n"
+"                criteria (salesman, partner, product, marketplace, etc.) Use this report to perform analysis on sales not having invoiced yet."
+msgstr "Ce rapport effectue une analyse de vos devis et commandes client de la marketplace. L'analyse vérifie vos revenus de vente et les trie selon différents critères de regroupement\n"
+"                (commercial, partenaire, produit, marketplace, etc.) Utilisez ce rapport pour analyser les ventes non encore facturées."
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_picking_form_inherit_base_marketplace
+msgid "This will update order in Marketplace. Do you want to proceed?"
+msgstr "Cela mettra à jour la commande dans la marketplace. Voulez-vous continuer ?"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__to_date
+msgid "To Date"
+msgstr "Date de fin"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "Top 10 Customers"
+msgstr "Top 10 des clients"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "Top 10 Performing Products"
+msgstr "Top 10 des produits performants"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "Top 5 Performing Categories"
+msgstr "Top 5 des catégories performantes"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "Top 5 Performing Countries"
+msgstr "Top 5 des pays performants"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__total_count
+msgid "Total Count"
+msgstr "Nombre total"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "Total Orders"
+msgstr "Total des commandes"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_sale_order_tree_view
+msgid "Total Tax Excluded"
+msgstr "Total HT"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_sale_order_tree_view
+msgid "Total Tax Included"
+msgstr "Total TTC"
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_stock_picking
+msgid "Transfer"
+msgstr "Transfert"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_notification__type
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__type
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_search_view
+msgid "Type"
+msgstr "Type"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__activity_exception_decoration
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing__activity_exception_decoration
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing_item__activity_exception_decoration
+#: model:ir.model.fields,help:base_marketplace.field_mk_queue_job__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Type d'activité d'exception sur l'enregistrement."
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_search_view
+msgid "UnPublished"
+msgstr "Non publié"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid "Unhealthy"
+msgstr "Défaillant"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_instance.py:0
+msgid "Untaxed Total"
+msgstr "Total HT"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__is_update_odoo_product_category
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Update Category in Odoo Products?"
+msgstr "Mettre à jour la catégorie dans les produits Odoo ?"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__is_update_product
+msgid "Update Detail?"
+msgstr "Mettre à jour les détails ?"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_queue_job_form_view
+msgid "Update Existing Listing"
+msgstr "Mettre à jour l'annonce existante"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__update_existing_product
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__update_existing_product
+msgid "Update Existing Listing?"
+msgstr "Mettre à jour l'annonce existante ?"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_operation_update_listing_to_mk_view
+msgid "Update Listing"
+msgstr "Mettre à jour l'annonce"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_operation_update_listing_item_to_mk_view
+msgid "Update Listing Item"
+msgstr "Mettre à jour l'article d'annonce"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_update_listing_item_to_marketplace
+#: model:ir.actions.server,name:base_marketplace.action_listing_item_operation_to_marketplace
+msgid "Update Listing Item in Marketplace"
+msgstr "Mettre à jour l'article d'annonce dans la marketplace"
+
+#. module: base_marketplace
+#: model:ir.actions.act_window,name:base_marketplace.action_listing_update_to_marketplace
+msgid "Update Listing in Marketplace"
+msgstr "Mettre à jour l'annonce dans la marketplace"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__is_update_odoo_product_category
+msgid "Update Odoo Products Category."
+msgstr "Mettre à jour la catégorie des produits Odoo."
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__is_update_order_status
+msgid "Update Order Status"
+msgstr "Mettre à jour le statut de la commande"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__update_product_price
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__update_product_price
+msgid "Update Price?"
+msgstr "Mettre à jour le prix ?"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_operation__is_update_products
+msgid "Update Products?"
+msgstr "Mettre à jour les produits ?"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_picking_form_inherit_base_marketplace
+msgid "Update in Marketplace"
+msgstr "Mettre à jour dans la marketplace"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_item_tree_view
+msgid "Update to Marketplace"
+msgstr "Mettre à jour vers la marketplace"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__listing_update_date
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__item_update_date
+msgid "Updated On"
+msgstr "Mis à jour le"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_sale_order__updated_in_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_stock_picking__updated_in_marketplace
+msgid "Updated in Marketplace?"
+msgstr "Mis à jour dans la marketplace ?"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__use_marketplace_currency
+msgid "Use Marketplace Order Currency?"
+msgstr "Utiliser la devise de commande de la marketplace ?"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__use_marketplace_sequence
+msgid "Use Marketplace Order Sequence?"
+msgstr "Utiliser la séquence de commande de la marketplace ?"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Use Marketplace's Order Currency?"
+msgstr "Utiliser la devise de commande de la marketplace ?"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Use Marketplace's Order Sequence?"
+msgstr "Utiliser la séquence de commande de la marketplace ?"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_operation__mk_order_id
+msgid "Used to import specific Order from Marketplace using Marketplace ID."
+msgstr "Utilisé pour importer une commande spécifique de la marketplace en utilisant l'ID de la marketplace."
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_operation__mk_listing_id
+msgid "Used to import specific Product from Marketplace using Marketplace ID."
+msgstr "Utilisé pour importer un produit spécifique de la marketplace en utilisant l'ID de la marketplace."
+
+#. module: base_marketplace
+#: model:ir.model,name:base_marketplace.model_res_users
+#: model:res.groups,name:base_marketplace.group_base_marketplace
+msgid "User"
+msgstr "Utilisateur"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__is_validate_adjustment
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Validate Inventory Adjustment?"
+msgstr "Valider l'ajustement d'inventaire ?"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_order_workflow_config_ts__is_validate_invoice
+msgid "Validate Invoice"
+msgstr "Valider la facture"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/onboarding/marketplace_onboarding.js:0
+msgid "Validation failed."
+msgstr "Validation échouée."
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_listing_form_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_product_pricelist_item_advanced_tree_view
+#: model_terms:ir.ui.view,arch_db:base_marketplace.mk_product_pricelist_item_tree_view
+msgid "Variants"
+msgstr "Variantes"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid ""
+"View All\n"
+"                                            <i class=\"fa fa-chevron-right mk-saas-alert-arrow\"/>"
+msgstr "Voir tout\n"
+"                                            <i class=\"fa fa-chevron-right mk-saas-alert-arrow\"/>"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__warehouse_id
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Warehouse"
+msgstr "Entrepôt"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Warehouse related to Instance."
+msgstr "Entrepôt lié à cette instance."
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid "Warning"
+msgstr "Avertissement"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.view_marketplace_scope_wizard_form
+msgid ""
+"We detected missing permissions required for full functionality. Please "
+"update these in your"
+msgstr "Nous avons détecté des autorisations manquantes requises pour un fonctionnement complet. Veuillez les mettre à jour dans votre"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_cancel_order__is_create_refund
+msgid "Weather to Create Refund/Credit Note in Odoo?"
+msgstr "Créer un remboursement/avoir dans Odoo ?"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_log__operation_type__webhook
+msgid "Webhook"
+msgstr "Webhook"
+
+#. module: base_marketplace
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_instance__website_message_ids
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing__website_message_ids
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_listing_item__website_message_ids
+#: model:ir.model.fields,field_description:base_marketplace.field_mk_queue_job__website_message_ids
+msgid "Website Messages"
+msgstr "Messages du site web"
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__website_message_ids
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing__website_message_ids
+#: model:ir.model.fields,help:base_marketplace.field_mk_listing_item__website_message_ids
+#: model:ir.model.fields,help:base_marketplace.field_mk_queue_job__website_message_ids
+msgid "Website communication history"
+msgstr "Historique des communications du site web"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid "Weekly Activity Trend"
+msgstr "Tendance d'activité hebdomadaire"
+
+#. module: base_marketplace
+#: model:ir.model.fields.selection,name:base_marketplace.selection__mk_instance__activity_date_deadline_range_type__weeks
+msgid "Weeks"
+msgstr "Semaines"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid ""
+"When a queue job line process will fail, it will create activity based on "
+"the below configuration."
+msgstr "Lorsqu'un traitement de ligne de file d'attente échoue, une activité sera créée selon la configuration ci-dessous."
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Which type of logs you want to create for import/export operation."
+msgstr "Quel type de journaux souhaitez-vous créer pour l'opération d'importation/exportation."
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_instance__account_receivable_id
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid ""
+"While creating Customer set this field in Account Receivable instead of "
+"default."
+msgstr "Lors de la création du client, définissez ce champ dans le compte débiteur au lieu de la valeur par défaut."
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid ""
+"While searching/creating tax rounding will be applied according to "
+"configuration. If set zero means no rounding."
+msgstr "Lors de la recherche/création, l'arrondi des taxes sera appliqué selon la configuration. Si défini à zéro, aucun arrondi."
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid "Workflow"
+msgstr "Flux de travail"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.js:0
+msgid "Year"
+msgstr "Année"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/wizards/operation.py:0
+msgid ""
+"You can export a listing only with a confirmed instance. Please ensure the "
+"instance is confirmed before exporting the listing."
+msgstr "Vous ne pouvez exporter une annonce qu'avec une instance confirmée. Veuillez vous assurer que l'instance est confirmée avant d'exporter l'annonce."
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/wizards/operation.py:0
+msgid ""
+"You can update a listing only with a confirmed instance. Please ensure the "
+"instance is confirmed before updating the listing."
+msgstr "Vous ne pouvez mettre à jour une annonce qu'avec une instance confirmée. Veuillez vous assurer que l'instance est confirmée avant de mettre à jour l'annonce."
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/product.py:0
+msgid ""
+"You cannot archive a product that is already linked to a listing. Please "
+"delete the below listing(s) first in order to archive the product.\n"
+msgstr "Vous ne pouvez pas archiver un produit déjà lié à une annonce. Veuillez d'abord supprimer la/les annonce(s) ci-dessous afin d'archiver le produit.\n"
+""
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_instance_form_view
+msgid ""
+"You have the flexibility to choose the synchronization behavior of your "
+"listings by selecting either Barcode, SKU, or Barcode/SKU."
+msgstr "Vous avez la flexibilité de choisir le comportement de synchronisation de vos annonces en sélectionnant Code-barres, SKU ou Code-barres/SKU."
+
+#. module: base_marketplace
+#: model:ir.model.fields,help:base_marketplace.field_mk_operation__is_create_product
+msgid "create a new Odoo product if not found."
+msgstr "créer un nouveau produit Odoo s'il n'est pas trouvé."
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/product.py:0
+msgid "id"
+msgstr "id"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_instance.py:0
+msgid "mk_instance_id"
+msgstr "mk_instance_id"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid "orders failed to import"
+msgstr "commandes dont l'importation a échoué"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid "products failed to sync"
+msgstr "produits dont la synchronisation a échoué"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_instance.py:0
+msgid "queue_id"
+msgstr "queue_id"
+
+#. module: base_marketplace
+#: model_terms:ir.ui.view,arch_db:base_marketplace.marketplace_dashboard_kanban
+msgid "queues have failed items"
+msgstr "files d'attente avec des éléments échoués"
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/filters/filter_date.xml:0
+msgid "to"
+msgstr "à"
+
+#. module: base_marketplace
+#: model_terms:ir.actions.act_window,help:base_marketplace.action_marketplace_overview
+msgid "to create new Instance."
+msgstr "pour créer une nouvelle instance."
+
+#. module: base_marketplace
+#. odoo-javascript
+#: code:addons/base_marketplace/static/src/js/marketplace_dashboard/dashboard.backend.xml:0
+msgid "to:"
+msgstr "à :"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_listing.py:0
+#: code:addons/base_marketplace/models/sale.py:0
+msgid "Navigation not available for %s marketplace."
+msgstr "Navigation non disponible pour le marketplace %s."
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_listing.py:0
+#: code:addons/base_marketplace/models/marketplace_listing_item.py:0
+msgid "Operation not allowed!"
+msgstr "Opération non autorisée !"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_listing_item.py:0
+msgid "Please ensure the selected items are already listed. Only listed items can be updated."
+msgstr "Veuillez vous assurer que les articles sélectionnés sont déjà listés. Seuls les articles listés peuvent être mis à jour."
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_listing.py:0
+msgid "Please ensure that the selected listings are intended for either updating or exporting only. Do not mix exported listings and not exported listings."
+msgstr "Veuillez vous assurer que les annonces sélectionnées sont destinées uniquement à la mise à jour ou à l'exportation. Ne mélangez pas les annonces exportées et non exportées."
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_instance.py:0
+msgid "Please set pricelist manually with currency: %s"
+msgstr "Veuillez définir manuellement la liste de prix avec la devise : %s"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_instance.py:0
+msgid "Pricelist's currency and currency get from Marketplace is not same. Marketplace Currency: %s"
+msgstr "La devise de la liste de prix et la devise du marketplace ne sont pas identiques. Devise du marketplace : %s"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_instance.py:0
+msgid "Set Pricelist currency %s is not match with %s Store Currency %s"
+msgstr "La devise de la liste de prix définie %s ne correspond pas à la devise du magasin %s %s"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_listing_item.py:0
+msgid "This operation is not supported for the %s."
+msgstr "Cette opération n'est pas prise en charge pour %s."
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/ir_cron.py:0
+msgid "You can not modify some fields of Marketplace Cron because it is associated with Marketplace Account: %s."
+msgstr "Vous ne pouvez pas modifier certains champs du Cron du marketplace car il est associé au compte marketplace : %s."
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/product.py:0
+msgid "Open Listing(s)"
+msgstr "Ouvrir l'annonce/les annonces"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/wizards/operation.py:0
+msgid "Product : %s Internal Reference (SKU) or Barcode is missing in some product(s)! \n\nPlease set the unique internal reference or Barcode in all variants as per your Instance Configuration."
+msgstr "Produit : %s La référence interne (SKU) ou le code-barres est manquant dans certains produit(s) ! \n\nVeuillez définir la référence interne unique ou le code-barres dans toutes les variantes conformément à la configuration de votre instance."
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/wizards/stock_return.py:0
+msgid "You may only return one sale order at a time."
+msgstr "Vous ne pouvez retourner qu'un seul bon de commande à la fois."
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/wizards/stock_return.py:0
+msgid "You have manually created product lines, please delete them to proceed."
+msgstr "Vous avez créé manuellement des lignes de produits, veuillez les supprimer pour continuer."
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/wizards/stock_return.py:0
+msgid "Please specify at least one non-zero quantity."
+msgstr "Veuillez spécifier au moins une quantité non nulle."
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/wizards/operation.py:0
+msgid "Could not find any listing items for update."
+msgstr "Aucun élément d'annonce à mettre à jour n'a été trouvé."
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/wizards/operation.py:0
+msgid "Operation not allowed! Make sure selected listing items belongs to only one instance."
+msgstr "Opération non autorisée ! Assurez-vous que les éléments d'annonce sélectionnés appartiennent à une seule instance."
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/wizards/operation.py:0
+msgid "You can update a listing items only with a confirmed instance. Please ensure the instance is confirmed before updating the listing items."
+msgstr "Vous ne pouvez mettre à jour des éléments d'annonce qu'avec une instance confirmée. Veuillez vous assurer que l'instance est confirmée avant de mettre à jour les éléments d'annonce."
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_listing.py:0
+msgid "IMPORT LISTING: %s in Marketplace Product: %s and Marketplace Listing ID: %s"
+msgstr "IMPORTER LISTING: %s dans le Produit Marketplace: %s et l'ID du Listing Marketplace: %s"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_listing.py:0
+msgid "SKU and Barcode not set"
+msgstr "SKU et code-barres non définis"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_listing.py:0
+msgid "SKU not set"
+msgstr "SKU non défini"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_listing.py:0
+msgid "Barcode not set"
+msgstr "Code-barres non défini"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_listing.py:0
+msgid "Duplicate Barcode found"
+msgstr "Code-barres en double trouvé"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_listing.py:0
+msgid "Duplicate SKU found"
+msgstr "SKU en double trouvé"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/sale.py:0
+msgid "IMPORT ORDER: Tax not found, so created new Tax '%s' for Company '%s' with rate %s%%."
+msgstr "IMPORTER COMMANDE: Taxe introuvable, une nouvelle taxe '%s' a donc été créée pour la société '%s' avec le taux %s%%."
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/sale.py:0
+msgid "PROCESS ORDER: You cannot create invoice prior to and inclusive of the lock date %s for Marketplace Order %s."
+msgstr "TRAITER LA COMMANDE: Il est impossible de créer une facture à la date de verrouillage %s ou avant pour la commande marketplace %s."
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_listing.py:0
+msgid "IMPORT LISTING: %s listing item deleted."
+msgstr "IMPORTER LISTING: %s élément(s) de listing supprimé(s)."
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_listing.py:0
+msgid "IMPORT LISTING : ⚠️ DUPLICATE BARCODE DETECTED | Barcode: %s | Marketplace Product: %s | Marketplace ID: %s"
+msgstr "IMPORTER LISTING : ⚠️ CODE-BARRES DUPLIQUÉ DÉTECTÉ | Code-barres: %s | Produit Marketplace: %s | ID Marketplace: %s"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/res_partner.py:0
+msgid "EXISTING CUSTOMER FOUND: Found customer with same address, CUSTOMER NAME: %s (%s)"
+msgstr "CLIENT EXISTANT TROUVÉ: Client trouvé avec la même adresse, NOM DU CLIENT: %s (%s)"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/res_partner.py:0
+msgid "IMPORT CUSTOMER: Successfully created new customer with name: %s (%s)"
+msgstr "IMPORTER CLIENT: Nouveau client créé avec succès avec le nom: %s (%s)"
+
+#. module: base_marketplace
+#. odoo-python
+#: code:addons/base_marketplace/models/marketplace_queue_job.py:0
+msgid "System tried 3 times to process queue but something went wrong! Therefor, Manual attention needed to process failed queue lines."
+msgstr "Le système a essayé 3 fois de traiter la file d'attente mais quelque chose a mal tourné! Par conséquent, une intervention manuelle est nécessaire pour traiter les lignes de file d'attente échouées."
+
+#. module: base_marketplace
+#: model:ir.module.module,shortdesc:base.module_base_marketplace
+msgid "Base Marketplace"
+msgstr "Marketplace de base"

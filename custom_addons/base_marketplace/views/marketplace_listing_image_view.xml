@@ -13,12 +13,12 @@
                                 <h2>
                                     <field name="name" placeholder="Image Name" required="True"/>
                                 </h2>
-                                <field name="mk_listing_id" invisible="1"/>
+                                <field name="mk_listing_id" invisible="1"/><!-- always invisible: technical field required by view logic -->
                             </div>
                             <group>
                                 <field name="sequence"/>
-                                <field name="marketplace" invisible="1"/>
-                                <field name="mk_instance_id" invisible="1"/>
+                                <field name="marketplace" invisible="1"/><!-- always invisible: technical field required by view logic -->
+                                <field name="mk_instance_id" invisible="1"/><!-- always invisible: technical field required by view logic -->
                             </group>
                         </div>
                         <div class="col-md-6 col-xl-7 text-center o_website_sale_image_modal_container">

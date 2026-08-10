@@ -28,7 +28,7 @@
                         <group>
                             <group string="Journal" name="journal">
                                 <field name="journal_id" required="is_register_payment" domain="[('type', 'in', ('bank', 'cash')), ('company_id', '=', company_id)]" options='{"no_create": True}'/>
-                                <field name="available_payment_method_line_ids" invisible="1"/>
+                                <field name="available_payment_method_line_ids" invisible="1"/><!-- always invisible: technical field required by view logic -->
                                 <field name="payment_method_line_id" required="is_register_payment" invisible="not is_register_payment" options='{"no_create": True}'/>
                                 <field name="sale_journal_id" domain="[('company_id', '=', company_id)]" options='{"no_create": True}'/>
                                 <field name="company_id" required="1" options='{"no_create": True}'/>

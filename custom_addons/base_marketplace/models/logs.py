@@ -1,7 +1,9 @@
 import logging
-from odoo import models, fields, api, _
-from odoo.tools.misc import split_every
+
 from dateutil.relativedelta import relativedelta
+from odoo.tools.misc import split_every
+
+from odoo import models, fields, api, _
 
 _logger = logging.getLogger("Teqstars:Base Marketplace")
 
@@ -37,7 +39,8 @@ class MKLog(models.Model):
         mk_log_line_dict = mk_log_line_dict or self.env.context.get('mk_log_line_dict', {})
         if mk_log_line_dict:
             for log_type, log_list in mk_log_line_dict.items():
-                _mk_logger = logging.getLogger("Teqstars:[{}]{}".format(mk_instance_id.marketplace, mk_instance_id.name))
+                # Task: T7493 - Converted strings to f-strings.
+                _mk_logger = logging.getLogger(f"Teqstars:[{mk_instance_id.marketplace}]{mk_instance_id.name}")
                 log_func = _mk_logger.error if log_type == 'error' else _mk_logger.info
                 for log_data in log_list:
                     log_func(log_data.get('log_message'))
@@ -75,7 +78,8 @@ class MKLog(models.Model):
             for mk_log_batch in split_every(200, mk_log_ids, piece_maker=tuple):
                 self.env.cr.execute("DELETE FROM mk_log WHERE id IN %s", (tuple(mk_log_batch),))
         except Exception as e:
-            _logger.error('Error while cleaning log: {} '.format(e))
+            # Task: T7493 - Converted strings to f-strings.
+            _logger.error(f'Error while cleaning log: {e}')
 
 
 class MKLogLine(models.Model):

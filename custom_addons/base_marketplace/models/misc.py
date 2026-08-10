@@ -1,9 +1,70 @@
 import functools
 import json
 import logging
-_logger = logging.getLogger("Teqstars:Base Marketplace")
 
 from odoo.tools.mimetypes import _mime_mappings
+
+_logger = logging.getLogger("Teqstars:Base Marketplace")
+
+
+def check_go_live(instance_arg=None):
+    """
+    Task: T7423 - Block marketplace API operations when the database is neutralized
+        and the instance has not enabled Go Live.
+
+    Wrap any per-marketplace request/operation method. Before the wrapped method
+    runs, it resolves the `mk.instance` record and, if the database is neutralized
+    (`is_neutralized=True`) while Go Live is off (`go_live=False`), it stops the
+    operation and redirects the user to the instance form to enable Go Live.
+
+    Usage:
+        @check_go_live()                  # self is mk.instance
+        def _send_bol_request(self, ...): ...
+
+        @check_go_live('mk_instance_id')  # self carries mk_instance_id
+        def shopify_export_listing_to_mk(self, ...): ...
+
+        @check_go_live(1)                 # instance is positional arg #1
+        def shopify_import_orders(self, mk_instance_ids, ...): ...
+
+    Args:
+        instance_arg (str|int|None): How to locate the `mk.instance` record.
+            - None  -> use `self` (the recordset the method is called on).
+            - str   -> read the keyword arg/attribute/field of that name.
+            - int   -> take it from positional args (index in *args, 0-based,
+                       not counting `self`).
+    """
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(self, *args, **kwargs):
+            # During module install/upgrade/migration the registry is not ready
+            # yet. Allow the API request through so migration scripts can sync and
+            # update marketplace data even on a neutralized database.
+            if not self.env.registry.ready:
+                return func(self, *args, **kwargs)
+            # Callers can explicitly bypass the Go Live gate via context (e.g. resetting
+            # an instance to draft, which must still clean up remote webhooks even when
+            # Go Live is off on a neutralized database).
+            if self.env.context.get('skip_instance_go_live', False):
+                return func(self, *args, **kwargs)
+            instance = None
+            if instance_arg is None:
+                instance = self
+            elif isinstance(instance_arg, str):
+                instance = kwargs.get(instance_arg) or getattr(self, instance_arg, None)
+            elif isinstance(instance_arg, int) and len(args) > instance_arg:
+                instance = args[instance_arg]
+            if instance is not None and getattr(instance, '_name', False) == 'mk.instance':
+                for mk_instance_id in instance:
+                    if mk_instance_id.is_neutralized and not mk_instance_id.go_live:
+                        # On UI this raises (redirect popup); during cron it only logs
+                        # a warning and returns False, so we skip the API request.
+                        mk_instance_id.redirect_instance_for_go_live(mk_instance_id)
+                        return False
+            return func(self, *args, **kwargs)
+        return wrapper
+
+    return decorator
 
 
 def process_response(response):
