@@ -7,16 +7,16 @@
             <field name="inherit_id" ref="stock.view_picking_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//button[@name='action_cancel']" position="after">
-                    <button name="update_order_status_to_marketplace" string=" Update in Marketplace" class="btn-primary" groups="base_marketplace.group_base_marketplace"
+                    <button name="update_order_status_to_marketplace" string="Update in Marketplace" class="btn-primary" groups="base_marketplace.group_base_marketplace"
                             invisible="not mk_instance_id or is_fbm_order or updated_in_marketplace or is_marketplace_exception or state != 'done' or cancel_in_marketplace or picking_type_code != 'outgoing'"
                             type="object" icon="fa-truck" confirm="This will update order in Marketplace. Do you want to proceed?"/>
                 </xpath>
                 <xpath expr="//header" position="after">
-                    <field name="is_marketplace_exception" invisible="1"/>
-                    <field name="updated_in_marketplace" invisible="1"/>
-                    <field name="mk_instance_id" invisible="1"/>
-                    <field name="is_fbm_order" invisible="1"/>
-                    <field name="cancel_in_marketplace" invisible="1"/>
+                    <field name="is_marketplace_exception" invisible="1"/><!-- always invisible: technical field required by view logic -->
+                    <field name="updated_in_marketplace" invisible="1"/><!-- always invisible: technical field required by view logic -->
+                    <field name="mk_instance_id" invisible="1"/><!-- always invisible: technical field required by view logic -->
+                    <field name="is_fbm_order" invisible="1"/><!-- always invisible: technical field required by view logic -->
+                    <field name="cancel_in_marketplace" invisible="1"/><!-- always invisible: technical field required by view logic -->
                     <div class="alert alert-danger row" role="alert" style="margin-bottom:0;" invisible="not is_marketplace_exception">
                         <field name="exception_message" readonly="1"/>
                         <strong>

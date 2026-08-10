@@ -7,9 +7,19 @@
             <field name="arch" type="xml">
                 <form string="Marketplace Instance">
                     <header>
-                        <button type="object" name="action_confirm" string="Confirm" invisible="state not in ['draft','error']"/>
-                        <button type="object" name="reset_to_draft" string="Reset" invisible="state != 'confirmed'" groups="base_marketplace.group_base_marketplace_manager"/>
-                        <button type="object" name="action_test_connection" string="Test Connection"/>
+                        <button type="object" name="action_confirm" string="Confirm" invisible="state not in ['draft','error']" class="btn-primary"/>
+                        <button type="object" name="reset_to_draft" string="Reset" invisible="state != 'confirmed'" context="{'skip_instance_go_live': True}" groups="base_marketplace.group_base_marketplace_manager"/>
+                        <button type="object" name="action_test_connection" string="Test Connection" class="'btn btn-success"/>
+                        <div class="mk-saas-golive-banner mk-gl-chip is-sandbox" invisible="go_live or not is_neutralized" title="When enabled, you can perform import/export operations.">
+                            <div class="mk-gl-icon"><i class="fa fa-globe"/></div>
+                            <div class="mk-gl-text"><span class="mk-gl-title">Go Live</span></div>
+                            <field name="go_live" widget="boolean_toggle" nolabel="1"/>
+                        </div>
+                        <div class="mk-saas-golive-banner mk-gl-chip is-live" invisible="not go_live or not is_neutralized" title="When enabled, you can perform import/export operations.">
+                            <div class="mk-gl-icon"><i class="fa fa-globe"/></div>
+                            <div class="mk-gl-text"><span class="mk-gl-title">Go Live</span></div>
+                            <field name="go_live" widget="boolean_toggle" nolabel="1"/>
+                        </div>
                         <field name="state" widget="statusbar" statusbar_visible="draft,confirmed"/>
                     </header>
                     <sheet>
@@ -31,6 +41,7 @@
                             </button>
                         </div>
                         <field name="image" widget='image' class="oe_avatar" options='{"preview_image": "image_medium", "size": [90, 90]}'/>
+                        <widget name="web_ribbon" title="Test Mode" bg_color="text-bg-warning" invisible="environment != 'sandbox'"/>
                         <div class="oe_title">
                             <label class="oe_edit_only" for="name" string="Instance Name"/>
                             <h1>
@@ -43,8 +54,13 @@
                                 <div name="marketplace_div" class="o_row">
                                     <field name="marketplace" required="1" readonly="id != False"/>
                                 </div>
-                                <field name="mk_log_ids" invisible="1"/>
-                                <field name="kanban_badge_color" invisible="1"/>
+                                <label for="environment" invisible="not marketplace"/>
+                                <div name="environment" class="o_row" invisible="not marketplace">
+                                    <field name="environment" widget="radio" required="1" readonly="state == 'confirmed'"/>
+                                </div>
+                                <field name="mk_log_ids" invisible="1"/><!-- always invisible: technical field required by view logic -->
+                                <field name="is_neutralized" invisible="1"/><!-- always invisible: technical field required by view logic -->
+                                <field name="kanban_badge_color" invisible="1"/><!-- always invisible: technical field required by view logic -->
                             </group>
                         </group>
 
@@ -590,15 +606,9 @@
                             <page string="Workflow" name="workflow_config">
                             </page>
                             <page string="Automatic Jobs" name="cron_config" groups="base.group_system">
-                                <p class="alert alert-warning" style="border-radius: 1em;" role="alert">
+                                <p class="alert alert-warning" style="border-radius: 1em;" role="alert" invisible="not automatic_jobs_note">
                                     <h3>Note:</h3>
-                                    <ul>
-                                        <li>
-                                            We only update the price of <strong>variant types price rules</strong> in the pricelist when performing the <strong> Update/Export Product's Price in
-                                            marketplace </strong> Schedule action. System will no
-                                            longer update the product prices in the marketplace if the price is set to zero.
-                                        </li>
-                                    </ul>
+                                    <field name="automatic_jobs_note" widget="html" readonly="1" nolabel="1"/>
                                 </p>
                                 <button type="object" class="float-end btn btn-primary" name="create_update_schedule_actions" icon="fa-cogs" string="Refresh" groups="base.group_no_one"/>
                                 <br/>
@@ -658,105 +668,246 @@
             <field name="name">mk.instance.kanban</field>
             <field name="model">mk.instance</field>
             <field name="arch" type="xml">
-                <kanban highlight_color="color" group_create="0" create="0" class="o_marketplace_kanban">
+                <kanban highlight_color="color" group_create="0" create="0" class="o_marketplace_kanban" default_order="sequence,name">
                     <field name="id"/>
                     <field name="name"/>
                     <field name="marketplace"/>
+                    <field name="state"/>
                     <field name="color"/>
                     <field name="kanban_badge_color"/>
                     <field name="image"/>
+                    <field name="image_small"/>
                     <field name="is_sample_data"/>
+                    <field name="mk_listing_count"/>
+                    <field name="mk_order_count"/>
+                    <field name="mk_invoice_count"/>
+                    <field name="mk_shipment_count"/>
+                    <field name="mk_queue_count"/>
+                    <field name="mk_customer_count"/>
+                    <field name="last_sync_display"/>
+                    <field name="sync_failed_count"/>
+                    <field name="failed_orders_count"/>
+                    <field name="failed_products_count"/>
+                    <field name="kanban_dashboard_graph"/>
+                    <field name="kanban_badge_color"/>
+                    <field name="environment"/>
+                    <field name="is_neutralized"/>
 
                     <templates>
-                        <t t-name="card" style="border-radius: 10px;">
-                            <t t-call="InstanceTop"/>
-                            <t t-call="KanbanButtons"/>
-                            <t t-call="CardContent"/>
-                            <t t-call="MarketplaceBodyGraph"/>
-                        </t>
-
-                        <t t-name="InstanceTop">
-                            <div class="d-flex align-items-center">
-                                <field name="image_small" widget="image" class="oe_avatar" options='{"preview_image": "image", "size": [35, 40]}'/>
-                                <a type="object" name="action_marketplace_open_instance_view" style="margin-left: 8px;">
-                                    <field name="name" class="fw-bold fs-4"/>
-                                </a>
-                            </div>
-                            <br/>
-                        </t>
-
-                        <t t-name="KanbanButtons">
-                            <div class="row mt-3">
-                                <div class="col-8">
-                                    <div class="col mb-3 mb-sm-0 o_kanban_primary_left">
-                                        <div name="bank_cash_buttons" class="d-flex gap-1">
-                                            <button type="object" name="get_marketplace_operation_wizard" class="btn btn-primary o_border_round m-1">
-                                                <span>
-                                                    <i class="fa fa-exchange me-1"/>
-                                                    Operations
-                                                </span>
-                                            </button>
-                                            <button type="object" name="redirect_to_general_dashboard" class="btn btn-primary o_border_round m-1"
-                                                    groups="base_marketplace.group_base_marketplace_manager">
-                                                <span>
-                                                    <i class="fa fa-area-chart me-1"/>
-                                                    Dashboard
-                                                </span>
-                                            </button>
-                                            <button type="object" name="redirect_to_sales_report" class="btn btn-primary o_border_round m-1" groups="base_marketplace.group_base_marketplace_manager">
-                                                <span>
-                                                    <i class="fa fa-line-chart me-1"/>
-                                                    Report
-                                                </span>
-                                            </button>
+                        <t t-name="card" clickable="false">
+                            <t t-set="mk_color" t-value="record.kanban_badge_color.raw_value or '#7C7BAD'"/>
+                            <div class="mk-saas-card" t-att-data-mk-color="mk_color">
+                                <div t-attf-class="mk-saas-golive-banner #{record.go_live.raw_value ? 'is-live' : 'is-sandbox'}" title="When enabled, you can perform import/export operations." invisible="not is_neutralized">
+                                    <div class="mk-gl-icon">
+                                        <i class="fa fa-globe"/>
+                                    </div>
+                                    <div class="mk-gl-text">
+                                        <span class="mk-gl-title">Go Live</span>
+                                    </div>
+                                    <field name="go_live" widget="boolean_toggle" nolabel="1"/>
+                                </div>
+                                <!-- Header Section -->
+                                <div class="mk-saas-header">
+                                    <div class="mk-saas-header-left">
+                                        <img t-if="record.image_small.raw_value"
+                                             t-att-src="'/web/image/mk.instance/' + record.id.raw_value + '/image_small/74x74'"
+                                             t-att-alt="record.name.raw_value"
+                                             class="mk-saas-logo"/>
+                                        <div class="mk-saas-title-group">
+                                            <a type="object" name="action_marketplace_open_instance_view" class="mk-saas-store-title">
+                                                <t t-esc="record.name.raw_value"/>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="mk-saas-header-right" style="flex-direction: column; align-items: flex-end;">
+                                        <div class="mk-saas-badges-wrapper">
+                                            <!-- Test Mode badge - shown when environment is sandbox and state is confirmed -->
+                                            <div class="mk-saas-badge mk-saas-badge-test" t-if="record.environment.raw_value == 'sandbox' and record.state.raw_value == 'confirmed'">
+                                                <i class="fa fa-flask mk-saas-badge-icon" title="Test Mode"/>
+                                                <span>Test Mode</span>
+                                            </div>
+                                            <!-- Connected badge - shown when environment is production and state is confirmed -->
+                                            <div class="mk-saas-badge mk-saas-badge-connected" t-if="record.environment.raw_value == 'production' and record.state.raw_value == 'confirmed'">
+                                                <i class="fa fa-check-circle mk-saas-badge-icon" title="Connected"/>
+                                                <span>Connected</span>
+                                            </div>
+                                            <div class="mk-saas-badge mk-saas-badge-draft" t-if="record.state.raw_value == 'draft'">Draft</div>
+                                            <div class="mk-saas-badge mk-saas-badge-error" t-if="record.state.raw_value == 'error'">Error</div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-4 mt8 text-end">
-                                    <a name="%(base_marketplace.action_marketplace_log_kanban)d"
-                                       type="action">
-                                        <i class="fa fa-history fa-lg"/>
-                                        Logs
-                                    </a>
+
+                                <!-- Stats Panel -->
+                                <div class="mk-saas-stats-panel">
+                                    <div class="mk-saas-stats-grid">
+                                        <!-- Top Row: 4 stat boxes -->
+                                        <a name="%(base_marketplace.action_marketplace_customer_kanban)d" type="action" class="mk-saas-stat-box mk-saas-stat-customers">
+                                            <div class="mk-saas-stat-icon-circle">
+                                                <i class="fa fa-users mk-saas-stat-icon" title="Customers"/>
+                                            </div>
+                                            <div class="mk-saas-stat-content">
+                                                <div class="mk-saas-stat-value" t-esc="record.mk_customer_count.raw_value"/>
+                                                <div class="mk-saas-stat-label">Customers</div>
+                                            </div>
+                                        </a>
+
+                                        <a name="%(base_marketplace.action_marketplace_listing_kanban)d" type="action" class="mk-saas-stat-box mk-saas-stat-listings">
+                                            <div class="mk-saas-stat-icon-circle">
+                                                <i class="fa fa-product-hunt mk-saas-stat-icon" title="Listings"/>
+                                            </div>
+                                            <div class="mk-saas-stat-content">
+                                                <div class="mk-saas-stat-value" t-esc="record.mk_listing_count.raw_value"/>
+                                                <div class="mk-saas-stat-label">Listings</div>
+                                            </div>
+                                        </a>
+
+                                        <a name="%(base_marketplace.action_marketplace_orders_kanban)d" type="action" class="mk-saas-stat-box mk-saas-stat-orders">
+                                            <div class="mk-saas-stat-icon-circle">
+                                                <i class="fa fa-shopping-cart mk-saas-stat-icon" title="Orders"/>
+                                            </div>
+                                            <div class="mk-saas-stat-content">
+                                                <div class="mk-saas-stat-value" t-esc="record.mk_order_count.raw_value"/>
+                                                <div class="mk-saas-stat-label">Orders</div>
+                                            </div>
+                                        </a>
+
+                                        <a name="%(base_marketplace.action_marketplace_invoice_kanban)d" type="action" class="mk-saas-stat-box mk-saas-stat-invoices">
+                                            <div class="mk-saas-stat-icon-circle">
+                                                <i class="fa fa-file-text-o mk-saas-stat-icon" title="Invoices"/>
+                                            </div>
+                                            <div class="mk-saas-stat-content">
+                                                <div class="mk-saas-stat-value" t-esc="record.mk_invoice_count.raw_value"/>
+                                                <div class="mk-saas-stat-label">Invoices</div>
+                                            </div>
+                                        </a>
+
+                                        <!-- Bottom Row: 3 stat boxes -->
+                                        <a name="%(base_marketplace.action_marketplace_shipment_kanban)d" type="action" class="mk-saas-stat-box mk-saas-stat-shipments">
+                                            <div class="mk-saas-stat-icon-circle">
+                                                <i class="fa fa-truck mk-saas-stat-icon" title="Shipments"/>
+                                            </div>
+                                            <div class="mk-saas-stat-content">
+                                                <div class="mk-saas-stat-value" t-esc="record.mk_shipment_count.raw_value"/>
+                                                <div class="mk-saas-stat-label">Shipments</div>
+                                            </div>
+                                        </a>
+
+                                        <a name="%(base_marketplace.action_marketplace_queue_job_kanban)d" type="action" class="mk-saas-stat-box mk-saas-stat-queues">
+                                            <div class="mk-saas-stat-icon-circle">
+                                                <i class="fa fa-tasks mk-saas-stat-icon" title="Queues"/>
+                                            </div>
+                                            <div class="mk-saas-stat-content">
+                                                <div class="mk-saas-stat-value" t-esc="record.mk_queue_count.raw_value"/>
+                                                <div class="mk-saas-stat-label">Queues</div>
+                                            </div>
+                                        </a>
+
+                                        <!-- Integration Health - replaces Weekly Sales -->
+                                        <div class="mk-saas-stat-box mk-saas-stat-health mk-saas-stat-wide" t-att-class="record.sync_failed_count.raw_value == 0 ? 'mk-saas-stat-healthy' : (record.sync_failed_count.raw_value &lt;= 5 ? 'mk-saas-stat-warning' : 'mk-saas-stat-unhealthy')">
+                                            <div class="mk-saas-health-content">
+                                                <div class="mk-saas-health-left">
+                                                    <i class="fa fa-heartbeat mk-saas-health-icon" title="Healthy" t-if="record.sync_failed_count.raw_value == 0"/>
+                                                    <i class="fa fa-exclamation-triangle mk-saas-health-icon mk-saas-health-warning" title="Warning" t-if="record.sync_failed_count.raw_value &gt; 0 and record.sync_failed_count.raw_value &lt;= 5"/>
+                                                    <i class="fa fa-exclamation-circle mk-saas-health-icon mk-saas-health-unhealthy" title="Unhealthy" t-if="record.sync_failed_count.raw_value &gt; 5"/>
+                                                    <div class="mk-saas-health-text">
+                                                        <div class="mk-saas-health-label">Integration Health</div>
+                                                        <div class="mk-saas-health-status-text" t-if="record.sync_failed_count.raw_value == 0">Healthy</div>
+                                                        <div class="mk-saas-health-status-text mk-saas-health-warning" t-if="record.sync_failed_count.raw_value &gt; 0 and record.sync_failed_count.raw_value &lt;= 5">Warning</div>
+                                                        <div class="mk-saas-health-status-text mk-saas-health-unhealthy" t-if="record.sync_failed_count.raw_value &gt; 5">Unhealthy</div>
+                                                    </div>
+                                                </div>
+                                                <div class="mk-saas-health-right">
+                                                    <div class="mk-saas-health-indicator mk-saas-health-healthy" t-if="record.sync_failed_count.raw_value == 0">
+                                                        <i class="fa fa-check" title="Success"/>
+                                                    </div>
+                                                    <div class="mk-saas-health-indicator mk-saas-health-warning" t-if="record.sync_failed_count.raw_value &gt; 0 and record.sync_failed_count.raw_value &lt;= 5">
+                                                        <i class="fa fa-exclamation" title="Warning"/>
+                                                    </div>
+                                                    <div class="mk-saas-health-indicator mk-saas-health-unhealthy" t-if="record.sync_failed_count.raw_value &gt; 5">
+                                                        <i class="fa fa-times" title="Failed"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Action Buttons -->
+                                    <div class="mk-saas-actions-row">
+                                        <button type="object" name="get_marketplace_operation_wizard" class="btn mk-saas-btn mk-saas-btn-primary"
+                                                t-att-style="record.is_neutralized.raw_value and !record.go_live.raw_value ? 'pointer-events:none; opacity:0.5; cursor:not-allowed;' : ''"
+                                                t-att-disabled="record.is_neutralized.raw_value and !record.go_live.raw_value">
+                                            <i class="fa fa-exchange mk-saas-btn-icon"/>
+                                            Operations
+                                        </button>
+                                        <button type="object" name="redirect_to_general_dashboard" class="btn mk-saas-btn mk-saas-btn-secondary" groups="base_marketplace.group_base_marketplace_manager">
+                                            <i class="fa fa-area-chart mk-saas-btn-icon"/>
+                                            Dashboard
+                                        </button>
+                                        <button type="object" name="redirect_to_sales_report" class="btn mk-saas-btn mk-saas-btn-secondary" groups="base_marketplace.group_base_marketplace_manager">
+                                            <i class="fa fa-line-chart mk-saas-btn-icon"/>
+                                            Reports
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Activity Section -->
+                                <div class="mk-saas-activity-section">
+                                    <div class="mk-saas-activity-header">
+                                        <h4 class="mk-saas-activity-title">Weekly Activity Trend</h4>
+                                        <a name="%(base_marketplace.action_marketplace_log_kanban)d" type="action" class="mk-saas-view-logs">
+                                            <i class="fa fa-clock-o mk-saas-view-logs-icon"/>
+                                            View Logs
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <!-- Graph Section -->
+                                <div class="mk-saas-graph-section">
+                                    <div t-if="record.is_sample_data.raw_value">
+                                        <span class="badge badge-warning text-uppercase o_sample_data_label">Sample data</span>
+                                    </div>
+                                    <field name="kanban_dashboard_graph" widget="dashboard_graph" graph_type="bar"/>
+                                </div>
+
+                                <!-- Attention Needed Alert -->
+                                <div class="mk-saas-alert" t-if="record.sync_failed_count.raw_value &gt; 0">
+                                    <div class="mk-saas-alert-left">
+                                        <i class="fa fa-exclamation-triangle mk-saas-alert-icon" title="Attention Needed"/>
+                                        <div class="mk-saas-alert-content">
+                                            <span class="mk-saas-alert-title">Attention Needed</span>
+                                            <span class="mk-saas-alert-message">
+                                                <t t-if="record.failed_orders_count.raw_value &gt; 0">
+                                                    <t t-esc="record.failed_orders_count.raw_value"/> orders failed to import
+                                                </t>
+                                                <t t-if="record.failed_orders_count.raw_value &gt; 0 and record.failed_products_count.raw_value &gt; 0">
+                                                    •
+                                                </t>
+                                                <t t-if="record.failed_products_count.raw_value &gt; 0">
+                                                    <t t-esc="record.failed_products_count.raw_value"/> products failed to sync
+                                                </t>
+                                                <t t-if="record.sync_failed_count.raw_value &gt; 0 and record.failed_orders_count.raw_value == 0 and record.failed_products_count.raw_value == 0">
+                                                    <t t-esc="record.sync_failed_count.raw_value"/> queues have failed items
+                                                </t>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="mk-saas-alert-right">
+                                        <a type="object" name="action_view_failed_queue_lines" class="mk-saas-alert-action">
+                                            View All
+                                            <i class="fa fa-chevron-right mk-saas-alert-arrow"/>
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <!-- Footer -->
+                                <div class="mk-saas-footer">
+                                    <div class="mk-saas-footer-left">
+                                        <span class="mk-saas-sync-dot"></span>
+                                        <span class="mk-saas-sync-label">Last Sync:</span>
+                                        <span class="mk-saas-sync-time" t-esc="record.last_sync_display.raw_value or 'Never'"/>
+                                    </div>
                                 </div>
                             </div>
-                            <br/>
-                        </t>
-
-                        <t t-name="CardContent">
-                            <div name="card_content" class="row mt-auto">
-                                <a name="%(base_marketplace.action_marketplace_customer_kanban)d" type="action" class="d-flex flex-column align-items-center col-2">
-                                    <span class="fa fa-2x fa-users" title="Customers"/>
-                                    <span class="text-muted text-truncate mw-100" title="Customers">Customers</span>
-                                </a>
-                                <a name="%(base_marketplace.action_marketplace_listing_kanban)d" type="action" class="d-flex flex-column align-items-center col-2">
-                                    <span class="fa fa-2x fa-product-hunt" title="Listings"/>
-                                    <span class="text-muted text-truncate mw-100" title="Listings">Listings</span>
-                                </a>
-                                <a name="%(base_marketplace.action_marketplace_orders_kanban)d" type="action" class="d-flex flex-column align-items-center col-2">
-                                    <span class="fa fa-2x fa-usd" title="Orders"/>
-                                    <span class="text-muted text-truncate mw-100" title="Orders">Orders</span>
-                                </a>
-                                <a name="%(base_marketplace.action_marketplace_invoice_kanban)d" type="action" class="d-flex flex-column align-items-center col-2">
-                                    <span class="fa fa-2x fa-pencil-square-o" title="Invoices"/>
-                                    <span class="text-muted text-truncate mw-100" title="Invoices">Invoices</span>
-                                </a>
-                                <a name="%(base_marketplace.action_marketplace_shipment_kanban)d" type="action" class="d-flex flex-column align-items-center col-2">
-                                    <span class="fa fa-2x fa-truck" title="Shipments"/>
-                                    <span class="text-muted text-truncate mw-100" title="Shipments">Shipments</span>
-                                </a>
-                                <a name="%(base_marketplace.action_marketplace_queue_job_kanban)d" type="action" class="d-flex flex-column align-items-center col-2">
-                                    <span class="fa fa-2x fa-tasks" title="Queue"/>
-                                    <span class="text-muted text-truncate mw-100" title="Queue">Queue</span>
-                                </a>
-                            </div>
-                        </t>
-
-                        <t t-name="MarketplaceBodyGraph">
-                            <div t-if="record.is_sample_data.raw_value">
-                                <span class="badge badge-warning text-uppercase o_sample_data_label">Sample data</span>
-                            </div>
-                            <field name="kanban_dashboard_graph" graph_type="bar" widget="dashboard_graph"/>
                         </t>
                     </templates>
                 </kanban>

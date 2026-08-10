@@ -1,57 +1,1950 @@
-.o_marketplace_kanban .o_kanban_renderer {
+// ============================================================
+// MARKETPLACE INSTANCE SAAS KANBAN CARD
+// Pixel-perfect modern SaaS design for Odoo 19
+// ============================================================
 
-  .o_kanban_record {
-    border-radius: 10px;
+// ============================================================
+// REMOVE DEFAULT ODOO KANBAN STYLING
+// ============================================================
+.o_marketplace_kanban {
+  &.o_kanban_renderer,
+  .o_kanban_renderer {
+    background: transparent !important;
 
-    &:not(.o_kanban_ghost) {
-      min-height: 150px;
+    .o_kanban_records {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 32px 0 0 0;  // Only gap on bottom, no horizontal gap
+      align-content: flex-start;
+      justify-content: flex-start;
+      padding: 32px;
+      background: transparent !important;
     }
 
-    @include media-breakpoint-up(sm) {
-      button.oe_kanban_action {
-        margin-bottom: 5px;
-      }
-    }
+    .o_kanban_record {
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      border-radius: 0 !important;
+      cursor: default !important;
+      padding: 0 !important;
+      margin: 0 !important;
 
-    .o_dashboard_star {
-      font-size: 12px;
+      // Override Bootstrap flex classes
+      flex-grow: 0 !important;
+      flex-shrink: 0 !important;
 
-      &.fa-star-o {
-        color: $o-main-color-muted;
+      &:not(.o_kanban_ghost) {
+        min-height: auto;
+        // Calculate width for 3 cards per row
+        width: calc(100% / 3) !important;
+        flex: 0 0 calc(100% / 3) !important;
+        max-width: calc(100% / 3) !important;
 
-        &:hover {
-          color: gold;
+        // Add spacing between cards, but not on last one
+        &:not(:nth-child(3n)) {
+          margin-right: 32px;
+        }
+
+        // Reset margin on every 3rd item
+        &:nth-child(3n) {
+          margin-right: 0;
         }
       }
 
-      &.fa-star {
-        color: gold;
+      &.o_kanban_ghost {
+        display: none !important;
       }
     }
 
-    .o_dashboard_graph {
-      margin-bottom: -$o-horizontal-padding/2;
-      height:120px;
+    article.o_kanban_record {
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      padding: 10px !important;
+      margin: 0 !important;
+      border-radius: 0 !important;
+
+      // Override Bootstrap flex-grow to prevent cards from expanding
+      flex-grow: 0 !important;
+      flex-shrink: 0 !important;
+
+      &[role="link"] {
+        cursor: default !important;
+      }
+
+      &:hover {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        transform: none !important;
+      }
+
+      &[class*="o_kanban_color_"] {
+        background: transparent !important;
+        border: none !important;
+      }
+
+      &::before,
+      &::after {
+        display: none !important;
+      }
     }
 
-    .o_field_widget.o_field_kanban_vat_activity {
-      display: block;
+    // Prevent card from being clickable
+    .o_kanban_record {
+      pointer-events: none !important;
+
+      .mk-saas-card,
+      .mk-saas-card * {
+        pointer-events: auto !important;
+      }
+    }
+
+    // Remove default color bar
+    .o_kanban_color_border {
+      display: none !important;
+    }
+  }
+}
+
+// ============================================================
+// SAAS CARD MAIN CONTAINER
+// ============================================================
+.mk-saas-card {
+  width: 100%;
+  min-height: 600px;
+  // Gradient is applied via inline JS - no override
+  border-radius: 22px;
+  box-shadow: 0 4px 20px rgba(31, 35, 53, 0.08), 0 1px 3px rgba(31, 35, 53, 0.05);
+  padding: 24px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 1;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 8px 30px rgba(31, 35, 53, 0.12), 0 2px 6px rgba(31, 35, 53, 0.08);
+    transform: translateY(-2px);
+  }
+}
+
+// Elevated "Go Live" banner at the top of the card — sandbox (amber) / live (green)
+.mk-saas-golive-banner {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: calc((100% - 120px) / 1.6);
+  margin: -24px auto 14px;
+  padding: 6px 12px;
+  border-radius: 0 0 16px 16px;
+  border: 1px solid transparent;
+  box-shadow: none;
+
+  .mk-gl-icon {
+    flex: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-size: 14px;
+  }
+
+  .mk-gl-text {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .mk-gl-title {
+    display: block;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+    line-height: 1.1;
+    white-space: nowrap;
+  }
+
+  .mk-gl-sub {
+    display: block;
+    font-size: 9px;
+    font-weight: 500;
+    margin-top: 1px;
+  }
+
+  .o_field_boolean_toggle {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    transform: scale(1.1);
+  }
+
+  .o-checkbox.form-check {
+    min-height: 0;
+    margin: 0;
+  }
+
+  &.is-sandbox {
+    background: #FFF6EC;
+    border-color: #FAD9AE;
+
+    .mk-gl-icon { background: #FCEBD2; color: #E07C12; }
+    .mk-gl-title { color: #C9690A; }
+    .mk-gl-sub { color: #B08A5E; }
+  }
+
+  &.is-live {
+    background: #E9F8F0;
+    border-color: #C2E9D4;
+
+    .mk-gl-icon { background: #D3F0DF; color: #11935A; }
+    .mk-gl-title { color: #0F8A52; }
+    .mk-gl-sub { color: #5E9B7C; }
+  }
+}
+
+// Dark theme variant for the Go Live banner
+@if $o-webclient-color-scheme == 'dark' {
+  .mk-saas-golive-banner {
+    box-shadow: none;
+
+    &.is-sandbox {
+      background: rgba(224, 124, 18, 0.14);
+      border-color: rgba(224, 124, 18, 0.34);
+      .mk-gl-icon { background: rgba(224, 124, 18, 0.22); color: #F6A23C; }
+      .mk-gl-title { color: #F6A23C; }
+      .mk-gl-sub { color: #C79B6E; }
+    }
+
+    &.is-live {
+      background: rgba(22, 163, 74, 0.16);
+      border-color: rgba(22, 163, 74, 0.34);
+      .mk-gl-icon { background: rgba(22, 163, 74, 0.24); color: #4ADE80; }
+      .mk-gl-title { color: #4ADE80; }
+      .mk-gl-sub { color: #84B79C; }
+    }
+  }
+}
+
+// Form header: compact Go Live chip next to Test Connection (sits in the statusbar row)
+.mk-saas-golive-banner.mk-gl-chip {
+  display: inline-flex;
+  width: auto;
+  min-width: 0;
+  margin: 0;
+  padding: 2px 10px 2px 6px;
+  border-radius: 999px;
+  gap: 6px;
+  align-self: center;
+
+  .mk-gl-icon {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    font-size: 11px;
+  }
+
+  .mk-gl-title {
+    font-size: 12px;
+  }
+
+  .o_field_boolean_toggle {
+    transform: scale(0.9);
+  }
+}
+
+// ============================================================
+// HEADER SECTION
+// ============================================================
+.mk-saas-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 18px;
+}
+
+.mk-saas-header-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.mk-saas-header-right {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.mk-saas-badges-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mk-saas-logo {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.mk-saas-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.mk-saas-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  align-self: flex-start;
+  flex-shrink: 0;
+
+  &.mk-saas-badge-test {
+    height: 24px;
+    padding: 0 10px;
+    gap: 5px;
+    background: #FFF4E5;
+    border: 1px solid #F5D7A1;
+    color: #F59E0B;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    box-shadow: none;
+
+    .mk-saas-badge-icon {
+      font-size: 14px;
+      width: 14px;
+      height: 14px;
+    }
+
+    &:hover {
+      background: #FFECD5;
+      border-color: #F0C487;
     }
   }
 
-  &.o_kanban_ungrouped {
-    @include media-breakpoint-down(lg) {
-      --KanbanRecord-width: 100vw;
-    }
-    @include media-breakpoint-up(lg) {
-      --KanbanRecord-width: 30vw;
+  &.mk-saas-badge-connected {
+    height: 24px;
+    padding: 0 10px;
+    gap: 5px;
+    background: #E6F7EF;
+    border: 1px solid #CDEEDD;
+    color: #1F9D5A;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.2px;
+    box-shadow: none;
+
+    .mk-saas-badge-icon {
+      font-size: 14px;
+      width: 14px;
+      height: 14px;
     }
 
-    &:has(> .o_kanban_record:nth-child(12)) {
-      // 3 cards per row for large screens if there are more than 5 cards (+ 6 ghost cards)
-      @include media-breakpoint-up(xxl, $o-extra-grid-breakpoints) {
-        --KanbanRecord-width: 35vw;
+    &:hover {
+      background: #DDF5E9;
+      border-color: #BFE7D2;
+    }
+  }
+
+  &.mk-saas-badge-marketplace {
+    height: 26px;
+    padding: 0 10px;
+    background: #F3F4F6;
+    border: 1px solid #E5E7EB;
+    color: #6B7280;
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 0.2px;
+    box-shadow: none;
+    text-transform: capitalize;
+  }
+
+  &.mk-saas-badge-failed-queues {
+    height: 24px;
+    padding: 0 10px;
+    gap: 5px;
+    background: #FDECEC;
+    border: 1px solid #F5C2C7;
+    color: #D92D20;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    box-shadow: none;
+    cursor: pointer;
+    text-decoration: none;
+
+    .mk-saas-badge-icon {
+      font-size: 14px;
+      width: 14px;
+      height: 14px;
+    }
+
+    &:hover {
+      background: #FADDDD;
+      border-color: #F0B0B6;
+    }
+  }
+
+  &.mk-saas-badge-golive {
+    display: flex;
+    width: 100%;
+    align-self: stretch;
+    justify-content: space-between;
+    margin: 6px 0;
+    padding: 5px 7px 5px 12px;
+    gap: 8px;
+    border-radius: 999px;
+    background: #EEF0F6;
+    border: 1px solid #DFE2EC;
+    color: #8A90A3;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    box-shadow: none;
+    transition: all 0.2s ease;
+
+    .mk-saas-badge-icon {
+      font-size: 13px;
+      color: #9AA0B5;
+    }
+
+    > span {
+      color: #8A90A3;
+      line-height: 1;
+    }
+
+    // Live (ON) — green gradient pill with soft glow, driven by the toggle state
+    &:has(.o_field_boolean_toggle input:checked) {
+      background: linear-gradient(135deg, #E6F9EF, #D6F4E4);
+      border: 1px solid #B6E6CD;
+      color: #138A4F;
+
+      .mk-saas-badge-icon { color: #1F9D5A; }
+      > span { color: #138A4F; }
+    }
+
+    // Keep the "Go Live" label and the toggle on one centered line (same in form + kanban)
+    .o_field_boolean_toggle {
+      display: inline-flex;
+      align-items: center;
+      width: auto;
+      margin: 0;
+      padding: 0;
+    }
+
+    .o-checkbox.form-check {
+      min-height: 0;
+      margin: 0;
+    }
+  }
+
+  &.mk-saas-badge-draft {
+    background: #FFF4E5;
+    color: #FF9800;
+  }
+
+  &.mk-saas-badge-error {
+    background: #FEE2E2;
+    color: #DC2626;
+  }
+}
+
+// When the Go Live pill sits in a form statusbar, let the button group span the bar
+// so the pill's `ms-auto` can push it to the right edge. Scoped via :has() — only
+// affects statusbars that actually contain the Go Live pill, never other forms.
+.o_form_statusbar:has(.mk-saas-badge-golive) .o_statusbar_buttons {
+  flex: 1 1 auto;
+}
+
+.mk-saas-store-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #202535;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-decoration: none;
+  display: block;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: #6257E7;
+  }
+}
+
+.mk-saas-store-subtitle {
+  font-size: 11px;
+  font-weight: 500;
+  color: #7F8799;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// ============================================================
+// STATS PANEL
+// ============================================================
+.mk-saas-stats-panel {
+  border-radius: 16px;
+  padding: 14px;
+}
+
+.mk-saas-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
+
+  .mk-saas-stat-wide {
+    grid-column: span 2;
+    width: 100%;
+  }
+}
+
+.mk-saas-stat-box {
+  background: #F7F8FC;
+  border: 1px solid rgba(223, 225, 237, 0.6);
+  border-radius: 12px;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  min-height: 50px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  text-decoration: none;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(31, 35, 53, 0.08);
+    border-color: rgba(199, 201, 219, 0.8);
+  }
+}
+
+.mk-saas-stat-icon-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.mk-saas-stat-icon {
+  font-size: 14px;
+}
+
+.mk-saas-stat-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  align-items: flex-start;
+  text-align: left;
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+}
+
+.mk-saas-stat-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1F2433;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+.mk-saas-stat-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: #6F7890;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+.mk-saas-stat-customers .mk-saas-stat-icon-circle {
+  background: #EEF0FF;
+}
+
+.mk-saas-stat-customers .mk-saas-stat-icon {
+  color: #6B6EF2;
+}
+
+.mk-saas-stat-listings .mk-saas-stat-icon-circle {
+  background: #E9F6EF;
+}
+
+.mk-saas-stat-listings .mk-saas-stat-icon {
+  color: #38A56C;
+}
+
+.mk-saas-stat-orders .mk-saas-stat-icon-circle {
+  background: #FFF2E3;
+}
+
+.mk-saas-stat-orders .mk-saas-stat-icon {
+  color: #EA9830;
+}
+
+.mk-saas-stat-invoices .mk-saas-stat-icon-circle {
+  background: #E8F4FD;
+}
+
+.mk-saas-stat-invoices .mk-saas-stat-icon {
+  color: #4A9AD9;
+}
+
+.mk-saas-stat-shipments .mk-saas-stat-icon-circle {
+  background: #EEE9FF;
+}
+
+.mk-saas-stat-shipments .mk-saas-stat-icon {
+  color: #7C63E8;
+}
+
+.mk-saas-stat-queues .mk-saas-stat-icon-circle {
+  background: #E6F6F7;
+}
+
+.mk-saas-stat-queues .mk-saas-stat-icon {
+  color: #4BA9B8;
+}
+
+.mk-saas-stat-sales .mk-saas-stat-icon-circle {
+  background: #FFF4E8;
+}
+
+.mk-saas-stat-sales .mk-saas-stat-icon {
+  color: #E7A23A;
+}
+
+// ============================================================
+// INTEGRATION HEALTH STAT BOX
+// ============================================================
+.mk-saas-stat-health {
+  // Healthy state (default)
+  background: #F0FAF4;
+  border: 1px solid #D1EBD4;
+
+  &.mk-saas-stat-healthy {
+    background: #F0FAF4;
+    border-color: #D1EBD4;
+  }
+
+  &.mk-saas-stat-warning {
+    background: #FFF7ED;
+    border-color: #FED7AA;
+  }
+
+  &.mk-saas-stat-unhealthy {
+    background: #FEF2F2;
+    border-color: #FECACA;
+  }
+
+  // Override default stat box cursor - this is informational
+  cursor: default;
+
+  &:hover {
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+.mk-saas-health-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+}
+
+.mk-saas-health-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.mk-saas-health-icon {
+  font-size: 16px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #16A34A;
+  background: #D1EBD4;
+  flex-shrink: 0;
+}
+
+// Warning state icon
+.mk-saas-stat-health.mk-saas-stat-warning .mk-saas-health-icon {
+  color: #D97706;
+  background: #FED7AA;
+}
+
+// Unhealthy state icon
+.mk-saas-stat-health.mk-saas-stat-unhealthy .mk-saas-health-icon {
+  color: #DC2626;
+  background: #FECACA;
+}
+
+.mk-saas-health-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mk-saas-health-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: #6F7890;
+}
+
+.mk-saas-health-status-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: #16A34A;
+
+  &.mk-saas-health-warning {
+    color: #D97706;
+  }
+
+  &.mk-saas-health-unhealthy {
+    color: #DC2626;
+  }
+}
+
+.mk-saas-health-right {
+  flex-shrink: 0;
+}
+
+.mk-saas-health-indicator {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  font-size: 13px;
+
+  &.mk-saas-health-healthy {
+    background: #16A34A;
+  }
+
+  &.mk-saas-health-warning {
+    background: #D97706;
+  }
+
+  &.mk-saas-health-unhealthy {
+    background: #DC2626;
+  }
+}
+
+// ============================================================
+// ATTENTION NEEDED ALERT
+// ============================================================
+.mk-saas-alert {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: #FFF6E5;
+  border: 1px solid #F5D7A1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14px;
+  margin-bottom: 0;
+  box-shadow: none;
+}
+
+.mk-saas-alert-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.mk-saas-alert-icon {
+  font-size: 14px;
+  width: 14px;
+  height: 14px;
+  color: #D97706;
+  flex-shrink: 0;
+}
+
+.mk-saas-alert-content {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.mk-saas-alert-title {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #B45309;
+  white-space: nowrap;
+}
+
+.mk-saas-alert-message {
+  font-size: 12px;
+  font-weight: 500;
+  color: #6F7890;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mk-saas-alert-right {
+  flex-shrink: 0;
+}
+
+.mk-saas-alert-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #5B5BD6;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+
+  &:hover {
+    color: #4B4BC6;
+  }
+}
+
+.mk-saas-alert-arrow {
+  font-size: 10px;
+}
+
+// ============================================================
+// ACTION BUTTONS ROW
+// ============================================================
+.mk-saas-actions-row {
+  display: flex;
+  gap: 10px;
+}
+
+.mk-saas-btn {
+  flex: 1;
+  height: 44px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  .mk-saas-btn-icon {
+    font-size: 12px;
+  }
+}
+
+.mk-saas-btn-primary {
+  background: linear-gradient(180deg, #6B59EC 0%, #5E4BDF 100%);
+  color: white;
+
+  // Keep the label/icon white when the button is read-only (Go Live off),
+  // otherwise the browser's default disabled styling greys out the text.
+  &:disabled,
+  &[disabled] {
+    color: white;
+
+    .mk-saas-btn-icon {
+      color: white;
+    }
+  }
+
+  &:hover {
+    background: linear-gradient(180deg, #7B69FC 0%, #6E5BEF 100%);
+    box-shadow: 0 4px 12px rgba(101, 84, 232, 0.3);
+    color: white;
+
+    .mk-saas-btn-icon {
+      color: white;
+    }
+  }
+
+  .mk-saas-btn-icon {
+    color: white;
+  }
+}
+
+.mk-saas-btn-secondary {
+  background: #FFFFFF;
+  border: 1px solid #DDE2F0;
+  color: #2F3550;
+
+  &:hover {
+    background: #FAFBFF;
+    border-color: #C5CDF0;
+  }
+
+  .mk-saas-btn-icon {
+    color: #5F5AE8;
+  }
+}
+
+.mk-saas-btn-icon {
+  font-size: 14px;
+}
+
+// ============================================================
+// ACTIVITY SECTION
+// ============================================================
+.mk-saas-activity-section {
+  margin-top: 18px;
+}
+
+.mk-saas-activity-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mk-saas-activity-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1E2435;
+  margin: 0;
+}
+
+.mk-saas-view-logs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #6257E7;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  white-space: nowrap;
+
+  &:hover {
+    color: #524AD3;
+  }
+}
+
+.mk-saas-view-logs-icon {
+  font-size: 12px;
+}
+
+// ============================================================
+// GRAPH SECTION
+// ============================================================
+.mk-saas-graph-section {
+  margin-top: 12px;
+  padding: 12px;
+  background: transparent;
+  border-radius: 12px;
+  min-height: 120px;
+
+  .o_sample_data_label {
+    font-size: 10px;
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+}
+
+// ============================================================
+// DARK MODE — toggled via .mk-dark class added by JS (isDarkMode detection)
+// ============================================================
+.mk-saas-card.mk-dark {
+  .mk-saas-stat-box {
+    background: rgba(255, 255, 255, 0.09) !important;
+    border: 1px solid rgba(255, 255, 255, 0.13) !important;
+  }
+
+  .mk-saas-stat-health {
+    background: rgba(22, 163, 74, 0.15) !important;
+    border: 1px solid rgba(22, 163, 74, 0.30) !important;
+    &.mk-saas-stat-healthy {
+      background: rgba(22, 163, 74, 0.15) !important;
+      border-color: rgba(22, 163, 74, 0.30) !important;
+    }
+    &.mk-saas-stat-warning {
+      background: rgba(217, 119, 6, 0.15) !important;
+      border-color: rgba(217, 119, 6, 0.30) !important;
+      .mk-saas-health-icon {
+        background: rgba(217, 119, 6, 0.20) !important;
+        color: #FB923C !important;
       }
     }
+    &.mk-saas-stat-unhealthy {
+      background: rgba(220, 38, 38, 0.15) !important;
+      border-color: rgba(220, 38, 38, 0.30) !important;
+      .mk-saas-health-icon {
+        background: rgba(220, 38, 38, 0.20) !important;
+        color: #F87171 !important;
+      }
+    }
+  }
+
+  .mk-saas-health-icon {
+    background: rgba(22, 163, 74, 0.20) !important;
+    color: #4ADE80 !important;
+  }
+
+  .mk-saas-health-label {
+    color: #8A9BB5 !important;
+  }
+
+  .mk-saas-health-status-text {
+    color: #4ADE80 !important;
+    &.mk-saas-health-warning { color: #FB923C !important; }
+    &.mk-saas-health-unhealthy { color: #F87171 !important; }
+  }
+
+  .mk-saas-badge-connected {
+    background: rgba(22, 163, 74, 0.18) !important;
+    border-color: rgba(22, 163, 74, 0.30) !important;
+    color: #4ADE80 !important;
+  }
+
+  .mk-saas-badge-test {
+    background: rgba(245, 158, 11, 0.18) !important;
+    border-color: rgba(245, 158, 11, 0.30) !important;
+  }
+
+  .mk-saas-badge-marketplace {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(255, 255, 255, 0.12) !important;
+    color: #8A9BB5 !important;
+  }
+
+  .mk-saas-badge-golive {
+    background: #2B2B40 !important;
+    border: 1px solid #3A3A55 !important;
+    color: #8086A0 !important;
+
+    .mk-saas-badge-icon { color: #8086A0 !important; }
+    > span { color: #8086A0 !important; }
+
+    &:has(.o_field_boolean_toggle input:checked) {
+      background: linear-gradient(135deg, rgba(31, 157, 90, 0.22), rgba(31, 157, 90, 0.12)) !important;
+      border: 1px solid rgba(53, 221, 135, 0.40) !important;
+      color: #46E08A !important;
+
+      .mk-saas-badge-icon { color: #46E08A !important; }
+      > span { color: #46E08A !important; }
+    }
+  }
+
+  .mk-saas-alert {
+    background: rgba(217, 119, 6, 0.12) !important;
+    border-color: rgba(217, 119, 6, 0.28) !important;
+  }
+
+  .mk-saas-alert-title {
+    color: #FB923C !important;
+  }
+
+  .mk-saas-alert-message {
+    color: #8A9BB5 !important;
+  }
+
+  .mk-saas-alert-action {
+    color: #818CF8 !important;
+    &:hover { color: #A5B4FC !important; }
+  }
+}
+
+// Go Live badge dark mode for contexts outside the kanban card (e.g. form header).
+// Tied to Odoo's theme (recompiled dark bundle), not the OS, so light mode stays unaffected.
+@if $o-webclient-color-scheme == 'dark' {
+  .mk-saas-badge.mk-saas-badge-golive {
+    background: #2B2B40;
+    border: 1px solid #3A3A55;
+    color: #8086A0;
+
+    .mk-saas-badge-icon { color: #8086A0; }
+    > span { color: #8086A0; }
+
+    &:has(.o_field_boolean_toggle input:checked) {
+      background: linear-gradient(135deg, rgba(31, 157, 90, 0.22), rgba(31, 157, 90, 0.12));
+      border: 1px solid rgba(53, 221, 135, 0.40);
+      color: #46E08A;
+
+      .mk-saas-badge-icon { color: #46E08A; }
+      > span { color: #46E08A; }
+    }
+  }
+}
+
+// ============================================================
+// FOOTER
+// ============================================================
+.mk-saas-footer {
+  margin-top: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mk-saas-footer-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mk-saas-sync-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #28C76F;
+  flex-shrink: 0;
+}
+
+.mk-saas-sync-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: #9AA3B3;
+}
+
+.mk-saas-sync-time {
+  font-size: 11px;
+  font-weight: 500;
+  color: #20A35A;
+}
+
+.mk-saas-view-details {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6257E7;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  white-space: nowrap;
+
+  &:hover {
+    color: #524AD3;
+  }
+}
+
+.mk-saas-view-details-arrow {
+  font-size: 10px;
+}
+
+// ============================================================
+// RESPONSIVE ADJUSTMENTS
+// ============================================================
+
+// Large desktop (1200px+) - 3 cards per row
+@media (min-width: 1200px) {
+  .o_marketplace_kanban {
+    .o_kanban_renderer {
+      .o_kanban_records {
+        gap: 32px 0 0 0;
+        padding: 32px;
+      }
+
+      .o_kanban_record {
+        flex-grow: 0 !important;
+        flex-shrink: 0 !important;
+      }
+
+      .o_kanban_record:not(.o_kanban_ghost) {
+        width: calc(100% / 3) !important;
+        flex: 0 0 calc(100% / 3) !important;
+        max-width: calc(100% / 3) !important;
+
+        &:not(:nth-child(3n)) {
+          margin-right: 32px;
+        }
+
+        &:nth-child(3n) {
+          margin-right: 0;
+        }
+      }
+    }
+  }
+}
+
+// Tablet (768px - 1199px) - 2 cards per row
+@media (min-width: 768px) and (max-width: 1199px) {
+  .o_marketplace_kanban {
+    .o_kanban_renderer {
+      .o_kanban_records {
+        gap: 24px 0 0 0;
+        padding: 24px;
+      }
+
+      .o_kanban_record {
+        flex-grow: 0 !important;
+        flex-shrink: 0 !important;
+      }
+
+      .o_kanban_record:not(.o_kanban_ghost) {
+        width: calc(100% / 2) !important;
+        flex: 0 0 calc(100% / 2) !important;
+        max-width: calc(100% / 2) !important;
+
+        &:not(:nth-child(2n)) {
+          margin-right: 24px;
+        }
+
+        &:nth-child(2n) {
+          margin-right: 0;
+        }
+      }
+    }
+  }
+
+  // Tablet stats panel - adjust padding
+  .mk-saas-stats-panel {
+    padding: 10px;
+    overflow: hidden;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  // Tablet stats grid - responsive 3-column layout
+  .mk-saas-stats-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 6px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-bottom: 12px;
+    box-sizing: border-box;
+
+    .mk-saas-stat-wide {
+      grid-column: span 3 !important;
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+  }
+
+  // Tablet stat boxes - compact sizing
+  .mk-saas-stat-box {
+    padding: 8px 8px !important;
+    min-height: 50px !important;
+    height: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+
+  // Tablet stat box icon - smaller
+  .mk-saas-stat-icon-circle {
+    width: 28px !important;
+    height: 28px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .mk-saas-stat-icon {
+    font-size: 12px !important;
+  }
+
+  // Tablet stat content - proper vertical layout
+  .mk-saas-stat-content {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1px !important;
+    align-items: flex-start !important;
+    min-width: 0 !important;
+    max-width: calc(100% - 40px) !important;
+    text-align: left !important;
+    width: auto !important;
+    flex: 1 !important;
+    overflow: hidden !important;
+  }
+
+  .mk-saas-stat-value {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    font-size: 15px !important;
+    line-height: 1.1 !important;
+  }
+
+  .mk-saas-stat-label {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    font-size: 9px !important;
+    line-height: 1.2 !important;
+  }
+
+  // Integration Health on tablet
+  .mk-saas-stat-health {
+    padding: 8px 10px !important;
+    min-height: 50px !important;
+    height: auto !important;
+    overflow: hidden !important;
+  }
+
+  .mk-saas-health-content {
+    gap: 6px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .mk-saas-health-left {
+    gap: 8px !important;
+    min-width: 0 !important;
+    flex: 1 !important;
+    overflow: hidden !important;
+  }
+
+  .mk-saas-health-text {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1px !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+  }
+
+  .mk-saas-health-label {
+    font-size: 9px !important;
+    white-space: nowrap !important;
+  }
+
+  .mk-saas-health-status-text {
+    font-size: 13px !important;
+    white-space: nowrap !important;
+  }
+
+  .mk-saas-health-icon {
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 13px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .mk-saas-health-indicator {
+    width: 24px !important;
+    height: 24px !important;
+    font-size: 11px !important;
+    flex-shrink: 0 !important;
+  }
+
+  // Tablet actions
+  .mk-saas-actions-row {
+    gap: 6px;
+  }
+
+  .mk-saas-btn {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  .mk-saas-btn-icon {
+    font-size: 12px;
+  }
+
+  // Keep graph visible on tablet - just adjust size
+  .mk-saas-graph-section {
+    margin-top: 12px !important;
+    padding: 10px !important;
+    min-height: 80px !important;
+    max-height: 120px !important;
+  }
+
+  // Hide activity section on tablet
+  .mk-saas-activity-section {
+    display: none;
+  }
+
+  // Tablet footer - remove extra space
+  .mk-saas-footer {
+    margin-top: 0 !important;
+    padding: 6px 12px !important;
+  }
+
+  .mk-saas-sync-label {
+    font-size: 10px;
+  }
+
+  .mk-saas-sync-time {
+    font-size: 10px;
+  }
+
+  // Tablet stats panel - reduce bottom padding and margin
+  .mk-saas-stats-panel {
+    padding-bottom: 6px !important;
+    margin-bottom: 0 !important;
+  }
+
+  // Tablet stats grid - reduce bottom margin
+  .mk-saas-stats-grid {
+    margin-bottom: 6px !important;
+  }
+
+  // Tablet actions - remove all margins
+  .mk-saas-actions-row {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  // Tablet alert - remove top margin to fill gap from hidden sections
+  .mk-saas-alert {
+    margin-top: 6px !important;
+    margin-bottom: 6px !important;
+    padding: 6px 12px !important;
+  }
+
+  .mk-saas-alert-title {
+    font-size: 12px;
+  }
+
+  .mk-saas-alert-message {
+    font-size: 11px;
+  }
+
+  .mk-saas-alert-action {
+    font-size: 11px;
+    padding: 5px 10px;
+  }
+
+  // Remove any extra spacing from hidden elements
+  .mk-saas-graph-section,
+  .mk-saas-activity-section {
+    display: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    height: 0 !important;
+    min-height: 0 !important;
+  }
+}
+
+// Medium desktop (1200px - 1599px) - 3 cards per row but with compact stats
+@media (min-width: 1200px) and (max-width: 1599px) {
+  .mk-saas-stats-panel {
+    padding: 10px 12px !important;
+    overflow: hidden !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .mk-saas-stats-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 6px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-bottom: 12px !important;
+    box-sizing: border-box !important;
+
+    .mk-saas-stat-wide {
+      grid-column: span 3 !important;
+      width: 100% !important;
+    }
+  }
+
+  .mk-saas-stat-box {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+  }
+
+  .mk-saas-stat-icon-circle {
+    width: 30px !important;
+    height: 30px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .mk-saas-stat-icon {
+    font-size: 13px !important;
+  }
+
+  .mk-saas-stat-content {
+    display: flex !important;
+    flex-direction: column !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    flex: 1 !important;
+  }
+
+  .mk-saas-stat-value {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: 100% !important;
+    font-size: 16px !important;
+  }
+
+  .mk-saas-stat-label {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: 100% !important;
+    font-size: 10px !important;
+  }
+
+  .mk-saas-stat-health {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+  }
+
+  .mk-saas-health-content {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .mk-saas-health-left {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    flex: 1 !important;
+    overflow: hidden !important;
+  }
+
+  .mk-saas-health-text {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+  }
+
+  .mk-saas-health-icon {
+    width: 30px !important;
+    height: 30px !important;
+    font-size: 14px !important;
+  }
+
+  .mk-saas-health-indicator {
+    width: 26px !important;
+    height: 26px !important;
+  }
+}
+
+
+// Mobile (< 768px) - 1 card per row, full width
+// Optimized for touch with clean, minimal design
+@media (max-width: 767px) {
+  .o_marketplace_kanban {
+    .o_kanban_renderer {
+      .o_kanban_records {
+        gap: 16px 0 0 0;
+        padding: 12px;
+      }
+
+      .o_kanban_record {
+        flex-grow: 0 !important;
+        flex-shrink: 0 !important;
+      }
+
+      .o_kanban_record:not(.o_kanban_ghost) {
+        width: 100% !important;
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+        margin-right: 0 !important;
+      }
+    }
+  }
+
+  .mk-saas-card {
+    min-height: auto;
+  }
+
+  // ============================================================
+  // MOBILE HEADER - Compact identity + status
+  // ============================================================
+  .mk-saas-header {
+    flex-direction: row;
+    gap: 10px;
+    padding: 12px 14px;
+  }
+
+  .mk-saas-header-left {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .mk-saas-logo {
+    width: 42px;
+    height: 42px;
+  }
+
+  .mk-saas-store-title {
+    font-size: 15px;
+  }
+
+  .mk-saas-badges-wrapper {
+    flex-shrink: 0;
+  }
+
+  .mk-saas-badge {
+    font-size: 11px;
+    padding: 0 8px;
+    height: 22px;
+  }
+
+  // ============================================================
+  // MOBILE STATS - Show only key metrics
+  // ============================================================
+  .mk-saas-stats-panel {
+    padding: 10px 14px 14px;
+  }
+
+  .mk-saas-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 12px;
+
+    .mk-saas-stat-wide {
+      grid-column: span 2;
+      width: 100%;
+    }
+  }
+
+  // Show only key stats on mobile
+  // Hide: Invoices, Shipments, Customers (less critical)
+  .mk-saas-stat-invoices,
+  .mk-saas-stat-shipments,
+  .mk-saas-stat-customers {
+    display: none;
+  }
+
+  // Orders - most important metric (HIGH PRIORITY)
+  .mk-saas-stat-orders {
+    order: 0;
+  }
+
+  // Listings - secondary metric (MEDIUM PRIORITY)
+  .mk-saas-stat-listings {
+    order: 1;
+  }
+
+  // Queues - show if user needs it (LOW PRIORITY - can be hidden)
+  .mk-saas-stat-queues {
+    order: 2;
+  }
+
+  // Integration Health - 1 column, appears next to Queues
+  .mk-saas-stat-health {
+    order: 3 !important; // Show after Queues, in same row
+    grid-column: span 1 !important; // Spans 1 column to fit with Queues
+  }
+
+  // Make all stat boxes consistent height and alignment
+  .mk-saas-stat-box {
+    height: 54px; // Fixed height for consistency
+    padding: 10px 12px;
+    border-radius: 12px;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  // Regular stat boxes (with icon + value + label)
+  .mk-saas-stat-icon-circle {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+  }
+
+  .mk-saas-stat-content {
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1;
+    gap: 2px;
+    align-items: flex-start;
+    min-width: 0;
+    text-align: left;
+    width: 100%;
+  }
+
+  .mk-saas-stat-value {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #1F2433;
+    white-space: nowrap !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+  }
+
+  .mk-saas-stat-label {
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1.3;
+    color: #8891A6;
+    text-transform: none;
+    letter-spacing: 0;
+    white-space: nowrap !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+  }
+
+  // Integration Health box - match regular box height
+  .mk-saas-stat-health {
+    height: 54px;
+    padding: 8px 12px;
+
+    .mk-saas-health-content {
+      height: 100%;
+      gap: 10px;
+    }
+
+    .mk-saas-health-left {
+      gap: 10px;
+    }
+
+    .mk-saas-health-icon {
+      width: 34px;
+      height: 34px;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+
+    .mk-saas-health-label {
+      font-size: 9px;
+      line-height: 1.1;
+    }
+
+    .mk-saas-health-status-text {
+      font-size: 14px;
+      line-height: 1.2;
+    }
+
+    .mk-saas-health-indicator {
+      width: 28px;
+      height: 28px;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+  }
+
+  // ============================================================
+  // MOBILE ACTIONS - Primary action full-width
+  // ============================================================
+  .mk-saas-actions-row {
+    flex-direction: column;
+    gap: 8px;
+    padding: 0 14px 14px;
+  }
+
+  // Primary action - full width, prominent
+  .mk-saas-btn-primary {
+    width: 100%;
+    justify-content: center;
+    padding: 12px 16px;
+    min-height: 48px; // Touch-friendly
+  }
+
+  // Secondary actions - more compact
+  .mk-saas-btn-secondary {
+    display: none; // Hide secondary buttons on mobile
+  }
+
+  // ============================================================
+  // MOBILE GRAPH - Hide on mobile (too complex)
+  // ============================================================
+  .mk-saas-graph-section {
+    display: none;
+  }
+
+  // ============================================================
+  // MOBILE ACTIVITY - Hide completely on mobile
+  // ============================================================
+  .mk-saas-activity-section {
+    display: none;
+  }
+
+  // ============================================================
+  // MOBILE ALERT - Full width, aligned with card padding
+  // ============================================================
+  .mk-saas-alert {
+    margin: 0 0 12px 0;
+    padding: 12px 14px;
+    border-radius: 12px;
+    width: calc(100% - 28px); // Account for card padding
+    margin-left: 14px;
+    margin-right: 14px;
+    box-sizing: border-box;
+  }
+
+  .mk-saas-alert-title {
+    font-size: 13px;
+  }
+
+  .mk-saas-alert-message {
+    font-size: 12px;
+  }
+
+  .mk-saas-alert-action {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+
+  // ============================================================
+  // MOBILE FOOTER - Compact, less prominent
+  // ============================================================
+  .mk-saas-footer {
+    padding: 10px 14px;
+    margin-top: 0;
+  }
+
+  .mk-saas-sync-label {
+    font-size: 11px;
+  }
+
+  .mk-saas-sync-time {
+    font-size: 11px;
+  }
+}
+
+// Small mobile (< 480px) - Extra compact
+@media (max-width: 479px) {
+  .o_marketplace_kanban {
+    .o_kanban_renderer {
+      .o_kanban_records {
+        gap: 12px 0 0 0;
+        padding: 10px;
+      }
+    }
+  }
+
+  .mk-saas-header {
+    padding: 10px 12px;
+  }
+
+  .mk-saas-logo {
+    width: 38px;
+    height: 38px;
+  }
+
+  .mk-saas-store-title {
+    font-size: 14px;
+  }
+
+  .mk-saas-stats-panel {
+    padding: 8px 12px 12px;
+  }
+
+  .mk-saas-stats-grid {
+    gap: 8px;
+  }
+
+  .mk-saas-stat-box {
+    padding: 8px 10px;
+    height: 50px; // Fixed height for consistency
+  }
+
+  .mk-saas-stat-icon-circle {
+    width: 34px;
+    height: 34px;
+  }
+
+  .mk-saas-stat-value {
+    font-size: 17px;
+  }
+
+  .mk-saas-stat-label {
+    font-size: 10px;
+  }
+
+  // Integration Health - slightly smaller on very small screens
+  .mk-saas-stat-health {
+    height: 50px;
+    padding: 6px 10px;
+
+    .mk-saas-health-icon {
+      width: 32px;
+      height: 32px;
+      font-size: 14px;
+    }
+
+    .mk-saas-health-label {
+      font-size: 8px;
+    }
+
+    .mk-saas-health-status-text {
+      font-size: 13px;
+    }
+
+    .mk-saas-health-indicator {
+      width: 26px;
+      height: 26px;
+    }
+  }
+
+  // Hide footer on very small screens (save space)
+  .mk-saas-footer {
+    display: none;
+  }
+
+  // Even more compact activity section
+  .mk-saas-activity-section {
+    padding: 8px 12px;
+  }
+
+  .mk-saas-activity-title {
+    font-size: 12px;
+  }
+
+  // Smaller alert
+  .mk-saas-alert {
+    margin: 0 12px 10px;
+    padding: 10px 12px;
+  }
+
+  .mk-saas-alert-title {
+    font-size: 12px;
+  }
+
+  .mk-saas-alert-message {
+    font-size: 11px;
   }
 }

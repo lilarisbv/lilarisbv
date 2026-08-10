@@ -200,19 +200,19 @@ class MkListingItem(models.Model):
 
             if len(listing_instance) == 1:
                 if len(set(listing_items.mapped('is_listed'))) > 1:
-                    raise MarketplaceException("Please ensure the selected items are already listed. Only listed items can be updated.", "Operation not allowed!")
+                    raise MarketplaceException(_("Please ensure the selected items are already listed. Only listed items can be updated."), _("Operation not allowed!"))
                 if listing_items[0].is_listed:
                     method_name = '%s_open_update_listing_item_view' % listing_instance.marketplace
                     if not hasattr(self, method_name):
-                        raise MarketplaceException(f"This operation is not supported for the {listing_instance.marketplace}.", "Operation not allowed!")
+                        raise MarketplaceException(_("This operation is not supported for the %s.") % listing_instance.marketplace, _("Operation not allowed!"))
                     return getattr(self, method_name)()
                 else:
-                    raise MarketplaceException("Please ensure the selected items are already listed. Only listed items can be updated.")
+                    raise MarketplaceException(_("Please ensure the selected items are already listed. Only listed items can be updated."))
 
         if listing_items and listing_items[0].is_listed:
             action = self.sudo().env.ref('base_marketplace.action_update_listing_item_to_marketplace').read()[0]
         else:
-            raise MarketplaceException("Please ensure the selected items are already listed. Only listed items can be updated.", "Operation not allowed!")
+            raise MarketplaceException(_("Please ensure the selected items are already listed. Only listed items can be updated."), _("Operation not allowed!"))
         context = self.env.context.copy()
         action['context'] = context
         return action

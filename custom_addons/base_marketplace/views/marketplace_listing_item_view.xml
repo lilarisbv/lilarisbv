@@ -29,7 +29,7 @@
                             </group>
                             <group>
                                 <field name="mk_instance_id" readonly="1"/>
-                                <field name="marketplace" invisible="1"/>
+                                <field name="marketplace" invisible="1"/><!-- always invisible: technical field required by view logic -->
                                 <field name="is_listed" readonly="1"/>
                                 <field name="mk_id" readonly="1"/>
                             </group>
@@ -87,7 +87,7 @@
                     <field name="default_code"/>
                     <field name="sale_price" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                     <button name="action_change_listing_item_price" type="object" icon="fa-money" title="Change Sale Price" aria-label="Change Sale Price" class="float-right"/>
-                    <field name="currency_id" column_invisible="True"/>
+                    <field name="currency_id" column_invisible="True"/><!-- always invisible: technical field required by view logic -->
                     <field name="mk_id"/>
                     <field name="mk_listing_id"/>
                     <field name="is_listed"/>

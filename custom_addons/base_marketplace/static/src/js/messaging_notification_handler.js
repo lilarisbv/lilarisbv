@@ -9,7 +9,6 @@ export const marketplaceNotificationService = {
         bus_service.subscribe("marketplace_notification", ({message, sticky, title, type, message_is_html}) => {
             notificationService.add(message_is_html ? markup(message) : message, {sticky, title, type});
         });
-        bus_service.start();
     },
 };
 

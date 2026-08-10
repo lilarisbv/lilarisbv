@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="ir_cron_pull_ticket_stages" model="ir.cron">
+            <field name="name">Ticket Support: Pull Stages from Central</field>
+            <field name="model_id" ref="model_customer_ticket"/>
+            <field name="state">code</field>
+            <field name="code">model.cron_pull_stage_updates()</field>
+            <field name="interval_number">3</field>
+            <field name="interval_type">hours</field>
+            <field name="active">True</field>
+        </record>
+    </data>
+</odoo>

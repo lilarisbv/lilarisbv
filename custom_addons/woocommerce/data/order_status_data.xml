@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Order Status in woo -->
+        <record id="pending_status" model="woo.order.status">
+            <field name="name">Pending Payment</field>
+            <field name="status">pending</field>
+        </record>
+
+        <record id="processing_status" model="woo.order.status">
+            <field name="name">Processing</field>
+            <field name="status">processing</field>
+        </record>
+
+        <record id="onhold_status" model="woo.order.status">
+            <field name="name">On Hold</field>
+            <field name="status">on-hold</field>
+        </record>
+
+        <record id="completed_status" model="woo.order.status">
+            <field name="name">Completed</field>
+            <field name="status">completed</field>
+        </record>
+
+        <record id="cancelled_status" model="woo.order.status">
+            <field name="name">Cancelled</field>
+            <field name="status">cancelled</field>
+        </record>
+
+        <record id="refunded_status" model="woo.order.status">
+            <field name="name">Refunded</field>
+            <field name="status">refunded</field>
+        </record>
+    </data>
+</odoo>

@@ -1,20 +1,21 @@
-import json
-import babel
-import random
 import base64
 import datetime
-from lxml import etree
-from odoo.tools import date_utils
-from odoo.tools import html_escape
-from odoo.tools import float_round
-from datetime import date, timedelta
-from odoo import models, fields, api, _
-from babel.dates import get_quarter_names
-from odoo.tools.misc import format_date, get_lang
-from dateutil.relativedelta import relativedelta
-from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
-from odoo.addons.base_marketplace.models.exceptions import MarketplaceException
+import json
+import logging
+import random
+from datetime import date, datetime, timedelta
+
+import babel
 from babel.dates import format_datetime, format_date as babel_format_date
+from dateutil.relativedelta import relativedelta
+from lxml import etree
+from odoo.exceptions import RedirectWarning
+from odoo.http import request
+from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, date_utils, float_round, html_escape
+from odoo.tools.misc import format_date, get_lang
+
+from odoo import models, fields, api, _
+from odoo.addons.base_marketplace.models.exceptions import MarketplaceException
 
 
 class MkInstance(models.Model):
@@ -45,15 +46,76 @@ class MkInstance(models.Model):
 
     def _get_mk_kanban_counts(self):
         for mk_instance_id in self:
+            instance_id = mk_instance_id._origin.id  # real DB id only; False (never a NewId) on a new record
             mk_instance_id.mk_listing_count = len(mk_instance_id.mk_listing_ids)
-            mk_instance_id.mk_order_count = self.env['sale.order'].search_count([('mk_instance_id', '=', mk_instance_id.id)])
+            mk_instance_id.mk_order_count = self.env['sale.order'].search_count([('mk_instance_id', '=', instance_id)]) if instance_id else 0
             mk_instance_id.mk_queue_count = len(mk_instance_id.mk_queue_ids.filtered(lambda x: x.state != 'processed'))
+            mk_instance_id.mk_invoice_count = len(mk_instance_id.mk_invoice_ids)
+            mk_instance_id.mk_shipment_count = len(mk_instance_id.mk_shipment_ids)
+            mk_instance_id.mk_customer_count = len(mk_instance_id.mk_customer_ids)
+
+    def _compute_sync_status_counts(self):
+        """Compute sync status counts based on queue jobs with failed lines"""
+        for instance in self:
+            # Count queue jobs that have failed items
+            queue_jobs = instance.mk_queue_ids
+            failed_queues = queue_jobs.filtered(lambda x: x.failed_count > 0 or x.state in ['failed', 'partial_processed'])
+            instance.sync_failed_count = len(failed_queues)
+
+            # Sum up actual failed counts from queue jobs by type
+            instance.failed_orders_count = sum(failed_queues.filtered(lambda x: x.type == 'order').mapped('failed_count'))
+            instance.failed_products_count = sum(failed_queues.filtered(lambda x: x.type == 'product').mapped('failed_count'))
+
+    def action_view_failed_queues(self):
+        """Open failed and partially processed queues for this instance"""
+        self.ensure_one()
+        return {
+            'name': _('Failed Queues'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'mk.queue.job',
+            'view_mode': 'list,form',
+            'domain': [('mk_instance_id', '=', self.id), ('state', 'in', ['failed', 'partial_processed'])],
+        }
+
+    def action_view_failed_queue_lines(self):
+        """Open failed queue job lines for this instance"""
+        self.ensure_one()
+        # Get all queue jobs for this instance
+        queue_jobs = self.env['mk.queue.job'].search([
+            ('mk_instance_id', '=', self.id),
+            ('state', 'in', ['failed', 'partial_processed'])
+        ])
+        # Get failed queue lines from these queue jobs
+        return {
+            'name': _('Failed Queue Lines'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'mk.queue.job.line',
+            'view_mode': 'list,form',
+            'domain': [('queue_id', 'in', queue_jobs.ids), ('state', '=', 'failed')],
+        }
 
     def _kanban_dashboard_graph(self):
         for mk_instance_id in self:
             chart_data = mk_instance_id.get_bar_graph_datas()
             mk_instance_id.kanban_dashboard_graph = json.dumps(chart_data)
             mk_instance_id.is_sample_data = chart_data[0].get('is_sample_data', False)
+
+    def _compute_last_sync_display(self):
+        for instance in self:
+            last_sync = instance.last_order_sync_date or instance.last_listing_import_date or instance.last_stock_update_date or instance.last_customer_import_date or instance.last_listing_price_update_date or instance.last_stock_update_date or instance.last_stock_import_date
+            if last_sync:
+                now = fields.Datetime.now()
+                diff = now - last_sync
+                if diff.days > 0:
+                    instance.last_sync_display = f"{diff.days} days ago"
+                elif diff.seconds >= 3600:
+                    hours = diff.seconds // 3600
+                    instance.last_sync_display = f"{hours} hour{'s' if hours > 1 else ''} ago"
+                else:
+                    minutes = diff.seconds // 60
+                    instance.last_sync_display = f"{minutes} minute{'s' if minutes != 1 else ''} ago"
+            else:
+                instance.last_sync_display = "Never"
 
     def _get_discount_product(self):
         # Hook type method that will get default discount according to marketplace type.
@@ -158,15 +220,24 @@ class MkInstance(models.Model):
     mk_order_ids = fields.One2many('sale.order', 'mk_instance_id', string="Orders")
     mk_order_count = fields.Integer("Order Count", compute='_get_mk_kanban_counts')
     mk_invoice_ids = fields.One2many('account.move', 'mk_instance_id', string="Invoices")
+    mk_invoice_count = fields.Integer("Invoice Count", compute='_get_mk_kanban_counts')
     mk_shipment_ids = fields.One2many('stock.picking', 'mk_instance_id', string="Shipments")
+    mk_shipment_count = fields.Integer("Shipment Count", compute='_get_mk_kanban_counts')
     mk_queue_ids = fields.One2many('mk.queue.job', 'mk_instance_id', string="Queue Job")
     mk_queue_count = fields.Integer("Queue Count", compute='_get_mk_kanban_counts')
     mk_customer_ids = fields.Many2many("res.partner", "mk_instance_res_partner_rel", "partner_id", "marketplace_id", string="Customers")
+    mk_customer_count = fields.Integer("Customer Count", compute='_get_mk_kanban_counts')
+
+    # Sync status counts for failed queues badge
+    sync_failed_count = fields.Integer(compute='_compute_sync_status_counts', string='Failed Sync Count')
+    failed_orders_count = fields.Integer(compute='_compute_sync_status_counts', string='Failed Orders Count')
+    failed_products_count = fields.Integer(compute='_compute_sync_status_counts', string='Failed Products Count')
 
     mk_log_ids = fields.One2many('mk.log', 'mk_instance_id', string="Logs")
 
     # Kanban bar graph
     kanban_dashboard_graph = fields.Text(compute='_kanban_dashboard_graph')
+    last_sync_display = fields.Char(compute='_compute_last_sync_display', string='Last Sync Display')
 
     # Activity
     mk_activity_type_id = fields.Many2one('mail.activity.type', string='Activity', domain="[('res_model', '=', False)]")
@@ -175,26 +246,138 @@ class MkInstance(models.Model):
     activity_user_ids = fields.Many2many('res.users', string='Responsible')
 
     is_sample_data = fields.Boolean("Is Sample Data", compute='_kanban_dashboard_graph')
+    environment = fields.Selection(string="Environment", selection=[('production', "Production"), ('sandbox', "Sandbox")], default='production', copy=False,
+                                   help="Select the environment for the eBay API connection: use Sandbox for testing and Production for live operations.")
+
+    automatic_jobs_note = fields.Html(compute='_compute_automatic_jobs_note', sanitize=False)
+    go_live = fields.Boolean(string="Go Live?", help="When enabled, you can perform import/export operations.", default=False)
+    is_neutralized = fields.Boolean(string="Is Neutralized", compute='_compute_is_neutralized')
+
+    def _compute_is_neutralized(self):
+        """
+        Task: T7423 - Compute whether the current database is neutralized, used to gate
+            marketplace API import/export operations behind the Go Live flag.
+        """
+        # Derive from Odoo's database-level neutralization flag (set by core on every neutralized database) so newly created instances are also detected, not only the rows that existed when the neutralize SQL ran.
+        is_neutralized = bool(self.env['ir.config_parameter'].sudo().get_param('database.is_neutralized'))
+        for mk_instance_id in self:
+            mk_instance_id.is_neutralized = is_neutralized
+
+    def redirect_instance_for_go_live(self, mk_instance_id):
+        """
+        Task: T7423 - Restrict import/export operations on a neutralized database when Go Live is
+            disabled. Depending on the calling context it redirects the user to the instance form
+            view to enable Go Live, logs a warning, or raises an exception.
+        Args:
+            mk_instance_id (record): Recordset of the mk.instance whose Go Live is disabled.
+        Returns:
+            bool: False during module install/upgrade and cron runs, so the caller skips the
+                API request without interrupting the flow.
+        Raises:
+            MarketplaceException: On background paths (webhook, real-time sync, threads) where
+                there is no interactive request to render a redirect.
+            RedirectWarning: On an interactive UI request, to open the instance form and let the
+                user enable Go Live.
+        """
+        # During module install/upgrade/migration the registry is mid-load and there is no
+        # interactive request to redirect. Return False (like the cron path) so the caller
+        # still blocks the API operation, but WITHOUT raising/stashing a redirect - otherwise
+        # the upgrade aborts or the triggering web request gets a stale Go Live popup
+        # (see ir.http._dispatch).
+        if not self.env.registry.ready:
+            return False
+        mk_instance_form_view_id = self.env.ref('base_marketplace.marketplace_instance_form_view').id
+        is_cron = self.env.context.get('cron_id') or self.env.context.get('ir_cron_progress_id')
+        error_msg = _(f'You can not perform import/export operations on the instance {mk_instance_id.name}, Please enable Go Live form Instance > Go Live.')
+        if is_cron:
+            # During cron processing just log a warning and skip the API request
+            # silently (no popup/exception), so the scheduled job keeps running.
+            _mk_logger = logging.getLogger(f"Teqstars:[{mk_instance_id.marketplace}]{mk_instance_id.name}")
+            _mk_logger.warning(error_msg)
+            return False
+        # Only an interactive UI request can render the redirect button. Background
+        # paths (webhook, real-time sync, threads) raise a plain MarketplaceException
+        # so the log carries only the message, not the redirect action payload.
+        if not request:
+            raise MarketplaceException(error_msg)
+        action_data = {
+            'view_mode': 'form',
+            'name': _(f'{mk_instance_id.marketplace}'),
+            'res_model': 'mk.instance',
+            'type': 'ir.actions.act_window',
+            'domain': [('id', '=', mk_instance_id.id)],
+            'views': [[mk_instance_form_view_id, 'form']],
+            'res_id': mk_instance_id.id
+        }
+        # Stash the redirect payload on the request so `ir.http._dispatch` can force
+        # the redirect popup even when a connector's `except Exception` swallows this
+        # RedirectWarning. Only set here, inside redirect_instance_for_go_live, so no
+        # other flow can trigger the forced redirect. See ir_http.py.
+        request.mk_go_live_redirect = (error_msg, action_data, _("Open Instance"))
+        raise RedirectWarning(error_msg, action_data, "Open Instance")
+
+    @api.depends('marketplace')
+    def _compute_automatic_jobs_note(self):
+        for rec in self:
+            rec.automatic_jobs_note = rec._get_automatic_jobs_note()
+
+    def _get_automatic_jobs_note(self):
+        """Dispatch to per-marketplace `_get_<marketplace>_automatic_jobs_note`.
+        Each connector defines its own method to display a note on the
+        Automatic Jobs tab. If the method is not defined, no note renders."""
+        self.ensure_one()
+        method = '_get_%s_automatic_jobs_note' % self.marketplace
+        if hasattr(self, method):
+            return getattr(self, method)() or ''
+        return ''
 
     def get_all_marketplace(self):
         marketplace_list = [marketplace[0] for marketplace in self.env['mk.instance'].fields_get()['marketplace']['selection'] if marketplace]
         return marketplace_list and marketplace_list or []
 
-    @api.onchange('marketplace')
-    def _onchange_marketplace(self):
+    def _get_marketplace_connector_default_values(self):
+        """Badge color, logo image, delivery/discount products from marketplace hooks (shared logic).
+
+        Used by :meth:`_onchange_marketplace` and after programmatic :meth:`create` (onchange does not run server-side).
+        """
+        self.ensure_one()
+        if not self.marketplace:
+            return {}
         default_code, image = "#7C7BAD", False
-        # Hook type method that will get default kanban badge color according to marketplace type.
         if hasattr(self, '%s_mk_kanban_badge_color' % self.marketplace):
             default_code = getattr(self, '%s_mk_kanban_badge_color' % self.marketplace)()
-        self.kanban_badge_color = default_code
         if hasattr(self, '%s_mk_kanban_image' % self.marketplace):
             image_path = getattr(self, '%s_mk_kanban_image' % self.marketplace)()
             image = base64.b64encode(open(image_path, 'rb').read())
+        vals = {
+            'kanban_badge_color': default_code,
+            'image': image,
+            'environment': 'production',
+        }
         if not self.delivery_product_id and hasattr(self, '_get_%s_delivery_product' % self.marketplace):
-            self.delivery_product_id = getattr(self, '_get_%s_delivery_product' % self.marketplace)()
+            delivery = getattr(self, '_get_%s_delivery_product' % self.marketplace)()
+            if delivery:
+                vals['delivery_product_id'] = delivery.id
         if not self.discount_product_id and hasattr(self, '_get_%s_discount_product' % self.marketplace):
-            self.discount_product_id = getattr(self, '_get_%s_discount_product' % self.marketplace)()
-        self.image = image
+            discount = getattr(self, '_get_%s_discount_product' % self.marketplace)()
+            if discount:
+                vals['discount_product_id'] = discount.id
+        return vals
+
+    @api.onchange('marketplace')
+    def _onchange_marketplace(self):
+        vals = self._get_marketplace_connector_default_values()
+        for fname, fval in vals.items():
+            self[fname] = fval
+
+    def _apply_marketplace_defaults_after_create(self):
+        """Replicate :meth:`_onchange_marketplace` when the record was created without client onchange."""
+        for rec in self:
+            if not rec.marketplace:
+                continue
+            vals = rec._get_marketplace_connector_default_values()
+            if vals:
+                rec.write(vals)
 
     def _update_default_products_in_instance(self):
         if not self.delivery_product_id and hasattr(self, '_get_%s_delivery_product' % self.marketplace):
@@ -204,9 +387,11 @@ class MkInstance(models.Model):
 
     @api.model_create_multi
     def create(self, vals):
+        # Normalize kanban_badge_color
         res = super(MkInstance, self).create(vals)
         self.env['ir.cron'].setup_schedule_actions(res)
         res._update_default_products_in_instance()
+        res._apply_marketplace_defaults_after_create()
         return res
 
     def write(self, vals):
@@ -218,7 +403,8 @@ class MkInstance(models.Model):
     @api.depends('name', 'marketplace')
     def _compute_display_name(self):
         for record in self:
-            record.display_name = "[{}] {}".format(dict(record._fields['marketplace'].selection).get(record.marketplace), record.name or '')
+            # Task: T7493 - Converted strings to f-strings.
+            record.display_name = f"[{dict(record._fields['marketplace'].selection).get(record.marketplace)}] {record.name or ''}"
 
     def confirm_connection(self):
         """
@@ -310,22 +496,27 @@ class MkInstance(models.Model):
 
     def is_order_create_notification_message(self, count, marketplace):
         # Dynamic method for get notification title and message
-        title = _('{marketplace} Orders Import'.format(marketplace=marketplace))
-        message = {'error': '{count} {marketplace} order(s) facing issue for {instance} Instance'.format(count=count, marketplace=marketplace, instance=self.name), 'success': _(
-            '{count} {marketplace} order(s) imported successfully for {instance} Instance.'.format(count=count, marketplace=marketplace, instance=self.name))}
+        # Task: T7493 - Converted strings to f-strings.
+        title = _(f"{marketplace} Orders Import")
+        message = {
+            'error': f'{count} {marketplace} order(s) facing issue for {self.name} Instance',
+            'success': _(f'{count} {marketplace} order(s) imported successfully for {self.name} Instance.')}
         return title, message
 
     def is_product_import_notification_message(self, count, marketplace):
         # Dynamic method for get notification title and message
-        title = _('{marketplace} Product Import'.format(marketplace=marketplace))
+        # Task: T7493 - Converted strings to f-strings.
+        title = _(f'{marketplace} Product Import')
         queue_id = self.env.context.get('queue_id', False)
         if queue_id:
-            queue_link = '<a href="/web#id={}&model=mk.queue.job&view_type=form">{}</a>'.format(queue_id.id, html_escape(queue_id.name))
-            message = {'error': _('{count} {marketplace} product(s) encountered failures during the processing of <b>{queue}</b> for {instance} Instance'.format(count=count, marketplace=marketplace, instance=self.name, queue=queue_link)),
-                       'success': _('{count} {marketplace} product(s) imported successfully from <b>{queue}</b> for {instance} Instance.'.format(count=count, marketplace=marketplace, instance=self.name, queue=queue_link))}
+            queue_link = f'<a href="/web#id={queue_id.id}&model=mk.queue.job&view_type=form">{html_escape(queue_id.name)}</a>'
+            message = {
+                'error': _(f'{count} {marketplace} product(s) encountered failures during the processing of <b>{queue_link}</b> for {self.name} Instance'),
+                'success': _(f'{count} {marketplace} product(s) imported successfully from <b>{queue_link}</b> for {self.name} Instance.')}
             return title, message
-        message = {'error': _('{count} {marketplace} product(s) encountered failures during the processing for {instance} Instance'.format(count=count, marketplace=marketplace, instance=self.name)),
-                   'success': _('{count} {marketplace} product(s) imported successfully for {instance} Instance.'.format(count=count, marketplace=marketplace, instance=self.name))}
+        message = {
+            'error': _(f'{count} {marketplace} product(s) encountered failures during the processing for {self.name} Instance'),
+            'success': _(f'{count} {marketplace} product(s) imported successfully for {self.name} Instance.')}
         return title, message
 
     def get_smart_notification_message(self, notify_field, count, marketplace):
@@ -370,7 +561,8 @@ class MkInstance(models.Model):
                                      'update_existing_product': self.env.context.get('update_existing_product'),
                                      'update_product_price': self.env.context.get('update_product_price')})
         if self.env.context.get('active_model', '') == 'mk.instance':
-            message = '{} Queue <b><a href="/web#id={}&model=mk.queue.job&view_type=form">{}</a></b> created successfully.'.format(type.title(), queue_id.id, html_escape(queue_id.name))
+            # Task: T7493 - Converted strings to f-strings.
+            message = f'{type.title()} Queue <b><a href="/web#id={queue_id.id}&model=mk.queue.job&view_type=form">{html_escape(queue_id.name)}</a></b> created successfully.'
             self.env['bus.bus']._sendone(self.env.user.partner_id, 'marketplace_notification', {'title': 'Queue Created', 'message_is_html': True, 'message': message, 'sticky': False, 'type': 'info'})
         return queue_id
 
@@ -514,7 +706,8 @@ class MkInstance(models.Model):
 
     def redirect_to_sales_report(self):
         action = self.env['sale.report'].redirect_to_mk_sale_report()
-        action['display_name'] = _("{} Sales Analysis".format(self.name))
+        # Task: T7493 - Converted strings to f-strings.
+        action['display_name'] = _(f"{self.name} Sales Analysis")
         action['domain'] = [('mk_instance_id', '=', self.id)]
         return action
 
@@ -525,28 +718,47 @@ class MkInstance(models.Model):
         return margin
 
     def _get_top_10_performing_products(self, dashboard_data_list, sales_domain):
-        report_product_lines = self.env['sale.report'].read_group(domain=sales_domain + [('product_type', '!=', 'service')],
-                                                                  fields=['product_tmpl_id', 'product_uom_qty', 'price_total'],
-                                                                  groupby=['product_tmpl_id'], orderby='price_total desc', limit=10)
+        """
+        Task: T7497 - Replaced deprecated read_group with _read_group for Odoo 19 compatibility.
+        """
+        report_product_lines = self.env['sale.report']._read_group(domain=sales_domain + [('product_type', '!=', 'service')],
+            groupby=['product_tmpl_id'], aggregates=['product_uom_qty:sum', 'price_total:sum',], limit=10,)
 
-        for product_line in report_product_lines:
-            product_tmpl_id = self.env['product.template'].browse(product_line['product_tmpl_id'][0])
-            dashboard_data_list['best_sellers'].append({'id': product_tmpl_id.id,
-                                                        'name': product_tmpl_id.name,
-                                                        'qty': product_line['product_uom_qty'],
-                                                        'sales': product_line['price_total']})
+        best_sellers = dashboard_data_list.setdefault('best_sellers', [])
+
+        for product_tmpl, qty, sales in report_product_lines:
+            if not product_tmpl:
+                continue
+
+            best_sellers.append({
+                'id': product_tmpl.id,
+                'name': product_tmpl.name,
+                'qty': qty,
+                'sales': sales,
+            })
+
         return dashboard_data_list
 
     def _get_top_10_customers(self, total_orders, dashboard_data_list, sales_domain):
-        report_customer_lines = self.env['sale.report'].read_group(domain=sales_domain + [('partner_id', '!=', False)],
-            fields=['product_uom_qty', 'price_total'],
-            groupby=['partner_id'], orderby='price_total desc', limit=10)
-        for customer_line in report_customer_lines:
-            order_count = self.env['sale.order'].search_count([('partner_id', '=', customer_line['partner_id'][0]), ('id', 'in', total_orders.ids)])
-            dashboard_data_list['top_customers'].append({'id': customer_line['partner_id'][0],
-                                                         'name': customer_line['partner_id'][1],
-                                                         'count': order_count,
-                                                         'sales': customer_line['price_total']})
+        """
+        Task: T7497 - Replaced deprecated read_group with _read_group for Odoo 19 compatibility.
+        """
+        report_customer_lines = self.env['sale.report']._read_group(domain=sales_domain + [('partner_id', '!=', False)],
+                                                                    groupby=['partner_id'], aggregates=['price_total:sum', 'product_uom_qty:sum'], limit=10, )
+
+        for partner, qty, sales in report_customer_lines:
+            if not partner:
+                continue
+
+            # SAME logic as before (no optimization)
+            order_count = self.env['sale.order'].search_count([('partner_id', '=', partner.id), ('id', 'in', total_orders.ids)])
+
+            dashboard_data_list['top_customers'].append({
+                'id': partner.id,
+                'name': partner.name,
+                'count': order_count,
+                'sales': qty,
+            })
 
     def _get_data_for_instance_wise_selling(self, is_general_dashboard, dashboard_data_list, sales_domain, date_from, date_to):
         mk_type_dict = {}
@@ -570,32 +782,65 @@ class MkInstance(models.Model):
             dashboard_data_list['bar_graph'] = {'series': bar_data, 'categories': bar_categories}
 
             # Marketplace Type wise selling
-            mk_type_data = self.env['sale.report'].read_group(domain=sales_domain,
-                fields=['marketplace_type', 'price_total'],
-                groupby=['marketplace_type'], orderby='price_total desc', limit=5)
+            raw_data = self.env['sale.report']._read_group(domain=sales_domain,
+                groupby=['marketplace_type'], aggregates=['price_total:sum',],limit=5,)
+            mk_type_data = []
+            for marketplace_type, price_total in raw_data:
+                if not marketplace_type:
+                    continue
+
+                mk_type_data.append({
+                    'marketplace_type': marketplace_type,
+                    'price_total': price_total,
+                })
             [mk_type_dict.update({dict(self._fields['marketplace'].selection).get(mk_type_line['marketplace_type']): mk_type_line['price_total']}) for mk_type_line in mk_type_data]
             dashboard_data_list['mk_revenue_pieChart'] = {'series': list(mk_type_dict.values()), 'labels': list(mk_type_dict.keys())}
         return dashboard_data_list
 
     def _fetch_country_sales_data_for_dashboard(self, dashboard_data_list, sales_domain):
-        country_lines = self.env['sale.report'].read_group(domain=sales_domain, fields=['country_id', 'price_total'], groupby=['country_id'], orderby='price_total desc', limit=5)
+        """
+        Task: T7497 - Replaced deprecated read_group with _read_group for Odoo 19 compatibility.
+        """
+        raw_data = self.env['sale.report']._read_group(domain=sales_domain, groupby=['country_id'], aggregates=['price_total:sum'], limit=5, )
+        country_lines = []
+        for country, price_total in raw_data:
+            if not country:
+                continue
+            country_lines.append({'country_id': (country.id, country.name), 'price_total': price_total})
         country_dict = {country_line['country_id'][1]: country_line['price_total'] for country_line in country_lines if country_line.get('country_id')}
         dashboard_data_list['country_graph'] = {'series': list(country_dict.values()), 'labels': list(country_dict.keys())}
         return dashboard_data_list
 
     def _get_top_5_performing_category_for_dashboard(self, dashboard_data_list, sales_domain):
-        category_lines = self.env['sale.report'].read_group(domain=sales_domain, fields=['categ_id', 'price_total'], groupby=['categ_id'], orderby='price_total desc', limit=5)
+        """
+        Task: T7497 - Replaced deprecated read_group with _read_group for Odoo 19 compatibility.
+        """
+        raw_data = self.env['sale.report']._read_group(domain=sales_domain, groupby=['categ_id'], aggregates=['price_total:sum'], limit=5)
+        category_lines = []
+        for categ, price_total in raw_data:
+            if categ:
+                category_lines.append({
+                    'categ_id': (categ.id, categ.name),
+                    'price_total': price_total,
+                })
+            else:
+                category_lines.append({
+                    'categ_id': False,
+                    'price_total': price_total,
+                })
         category_dict = {category_line.get('categ_id', False) and category_line['categ_id'][1] or 'None': category_line['price_total'] for category_line in category_lines}
         dashboard_data_list['category_graph'] = {'series': list(category_dict.values()), 'labels': list(category_dict.keys())}
         return dashboard_data_list
 
-    def _fetch_tiles_summary_for_dashboard(self, is_general_dashboard, sales_domain, total_orders, dashboard_data_list, date_from, date_to):
-        total_sales = self.env['sale.report'].read_group(domain=sales_domain, fields=['price_total'], groupby=['mk_instance_id'])
-        total_sales = total_sales[0].get('price_total') if total_sales else 0
-        if not is_general_dashboard:
-            to_ship_domain = [('mk_instance_id', 'in', self.ids)]
-        else:
-            to_ship_domain = [('mk_instance_id', '!=', False), ('mk_instance_id.state', '=', 'confirmed')]
+    def _fetch_tiles_summary_for_dashboard(self, sales_domain, total_orders, dashboard_data_list, date_from, date_to):
+        # Task T6494 - Fix the total sales amount in general dashboard
+        # Task: T7497 - Replaced deprecated read_group with _read_group for Odoo 19 compatibility.
+        total_sales_groups = self.env['sale.report']._read_group(domain=sales_domain, groupby=['mk_instance_id'], aggregates=['price_total:sum'])
+        total_sales = sum(price_total for instance, price_total in total_sales_groups)
+        total_sales = round(total_sales, 2)
+
+        # Task T6494 - Fix the pending shipments count for general dashboard
+        to_ship_domain = [('mk_instance_id', 'in', self.ids)]
 
         to_ship_count = self.env['stock.picking'].search_count(to_ship_domain + [('state', 'not in', ['cancel', 'done']), ('create_date', '>=', date_from), ('create_date', '<=', date_to)])
         dashboard_data_list['summary']['total_orders'] = len(total_orders)
@@ -620,13 +865,16 @@ class MkInstance(models.Model):
         return previous_start_date, previous_end_date
 
     def _fetch_kpi_tiles_summary_for_dashboard(self, is_general_dashboard, dashboard_data_list, dates_ranges, interval):
+        """
+        Task: T7497 - Replaced deprecated read_group with _read_group for Odoo 19 compatibility.
+        """
         date_from, date_to = self.get_previous_date_range(dates_ranges.get('date_from'), dates_ranges.get('date_to'), interval)
-        total_orders = self.env['sale.order'].search([('date_order', '>=', date_from), ('date_order', '<=', date_to), ('state', 'in', ['sale']),
-                                                      ('mk_instance_id', 'in', self.ids)], order="date_order")
+        total_orders = self.env['sale.order'].search([('date_order', '>=', date_from), ('date_order', '<=', date_to), ('state', 'in', ['sale']), ('mk_instance_id', 'in', self.ids)], order="date_order")
+
         sales_domain = [('state', 'in', ['sale', 'done']), ('order_reference', 'in', [f'sale.order,{order.id}' for order in total_orders]), ('date', '>=', date_from), ('date', '<=', date_to)]
         if not is_general_dashboard:
-            total_sales = self.env['sale.report'].read_group(domain=sales_domain, fields=['price_total'], groupby=['mk_instance_id'])
-            total_sales = total_sales[0].get('price_total') if total_sales else 0
+            raw_data = self.env['sale.report']._read_group(domain=sales_domain, groupby=['mk_instance_id'], aggregates=['price_total:sum'])
+            total_sales = raw_data[0][1] if raw_data else 0
             to_ship_domain = [('mk_instance_id', 'in', self.ids)]
         else:
             total_sales = total_orders.mapped('amount_total')
@@ -670,7 +918,7 @@ class MkInstance(models.Model):
         self._get_top_5_performing_category_for_dashboard(dashboard_data_list, sales_domain)
 
         # Tiles Summery
-        self._fetch_tiles_summary_for_dashboard(is_general_dashboard, sales_domain, total_orders, dashboard_data_list, date_from, date_to)
+        self._fetch_tiles_summary_for_dashboard(sales_domain, total_orders, dashboard_data_list, date_from, date_to)
 
         # KPI for Tiles Summery
         if not dates_ranges:
@@ -679,23 +927,36 @@ class MkInstance(models.Model):
         return dashboard_data_list
 
     def _compute_sale_graph(self, date_from, date_to, sales_domain, previous=False):
+        """
+        Task: T7497 - Replaced deprecated read_group with _read_group for Odoo 19 compatibility.
+        """
         days_between = (date_to - date_from).days
         date_list = [(date_from + timedelta(days=x)) for x in range(0, days_between + 1)]
 
-        daily_sales = self.env['sale.report'].read_group(domain=sales_domain, fields=['date', 'price_subtotal'], groupby=['date:day'])
+        daily_sales = self.env['sale.report']._read_group(domain=sales_domain, groupby=['date:day'], aggregates=['price_subtotal:sum'])
 
-        daily_sales_dict = {p['date:day']: p['price_subtotal'] for p in daily_sales}
+        lang = self.env.context.get('lang', 'en_US') or 'en_US'
+        daily_sales_dict = {}
+
+        for date_val, amount in daily_sales:
+            if not date_val:
+                continue
+
+            formatted_date = babel.dates.format_date(date_val, format='dd MMM yyyy', locale=lang)
+            daily_sales_dict[formatted_date] = amount
 
         sales_graph = [{
             '0': fields.Date.to_string(d) if not previous else fields.Date.to_string(d + timedelta(days=days_between)),
-            '1': daily_sales_dict.get(babel.dates.format_date(d, format='dd MMM yyyy', locale=self.env.context.get('lang') or 'en_US'), 0)
-        } for d in date_list]
+            '1': daily_sales_dict.get(babel.dates.format_date(d, format='dd MMM yyyy', locale=lang), 0)} for d in date_list]
+
         date_range = [item.get('0') for item in sales_graph]
         sale_amount = [item.get('1') for item in sales_graph]
+
         if len(date_range) == 1:
             next_date = fields.Date.to_string(fields.Date.from_string(date_range[0]) + timedelta(1))
             date_range = date_range + [next_date]
             sale_amount = sale_amount + [0.0]
+
         return [date_range, sale_amount]
 
     @api.model
@@ -727,11 +988,13 @@ class MkInstance(models.Model):
         if self.pricelist_id:
             instance_currency_id = self.pricelist_id.currency_id
             if instance_currency_id != currency_id:
-                raise MarketplaceException(_("Pricelist's currency and currency get from Marketplace is not same. Marketplace Currency: {}".format(currency_id.name)))
+                # Task: T7493 - Converted strings to f-strings.
+                raise MarketplaceException(_(f"Pricelist's currency and currency get from Marketplace is not same. Marketplace Currency: {currency_id.name}"))
         return True
 
     def create_pricelist(self, currency_id):
-        pricelist_vals = {'name': "{}: {}".format(self.marketplace.title(), self.name),
+        # Task: T7493 - Converted strings to f-strings.
+        pricelist_vals = {'name': f"{self.marketplace.title()}: {self.name}",
                           'currency_id': currency_id.id,
                           'company_id': self.company_id.id}
         pricelist_id = self.env['product.pricelist'].create(pricelist_vals)
@@ -745,11 +1008,11 @@ class MkInstance(models.Model):
             if currency_id:
                 currency_id.write({'active': True})
         if not self.check_instance_pricelist(currency_id):
-            raise MarketplaceException(_("Set Pricelist currency {} is not match with {} Store Currency {}".format(self.pricelist_id.currency_id.name, self.marketplace.title(), currency_name)))
+            raise MarketplaceException(_("Set Pricelist currency %s is not match with %s Store Currency %s") % (self.pricelist_id.currency_id.name, self.marketplace.title(), currency_name))
         if not self.pricelist_id:
             pricelist_id = self.create_pricelist(currency_id)
             if not pricelist_id:
-                raise MarketplaceException(_("Please set pricelist manually with currency: {}".format(currency_id.name)))
+                raise MarketplaceException(_("Please set pricelist manually with currency: %s") % currency_id.name)
             self.pricelist_id = pricelist_id.id
         return True
 
@@ -824,6 +1087,8 @@ class MkInstance(models.Model):
         for marketplace, field_list in need_to_hide_instance_fields_list.items():
             for field in field_list:
                 for node in doc.xpath("//div[@name='%s']" % field):
+                    self._set_invisibility(node, marketplace)
+                for node in doc.xpath("//label[@for='%s']" % field):
                     self._set_invisibility(node, marketplace)
 
     def _set_invisibility(self, node, marketplace):
@@ -1102,6 +1367,347 @@ class MkInstance(models.Model):
         if period_type == 'year':
             return self._get_dates_period(*date_utils.get_fiscal_year(date_to), mode, period_type='year')
         return None
+
+    def action_open_onboarding(self):
+        self.ensure_one()
+        if self.state != 'draft':
+            raise MarketplaceException(_("Setup Wizard is only available while the instance is in draft state."))
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'marketplace_onboarding',
+            'name': _('Marketplace Setup'),
+            'target': 'current',
+            'context': dict(self.env.context, active_id=self.id),
+        }
+
+    @api.model
+    def action_open_setup_wizard_header(self):
+        """Open Setup Wizard from the kanban control panel (next to the search bar). No draft instance required."""
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'marketplace_onboarding',
+            'name': _('Marketplace Setup'),
+            'target': 'current',
+            'context': dict(self.env.context, active_id=False, open_wizard_picker=True),
+        }
+
+    @api.model
+    def _get_marketplace_connector_module_name(self, marketplace_key):
+        """Technical name of the Odoo module for this connector (defaults to the selection key).
+
+        Override when the module name differs from the marketplace value (for example ``bol`` uses module ``bol``).
+        """
+        return marketplace_key
+
+    @api.model
+    def _marketplace_shown_in_onboarding_picker(self, marketplace_key, module_name):
+        """Setup Wizard picker: only marketplaces that define a hook and return True are listed.
+
+        If a connector defines ``<marketplace_key>_shown_in_onboarding_picker`` on ``mk.instance`` and it returns
+        True, the tile is shown. If the method is missing, the marketplace is not shown.
+        """
+        method_name = '%s_shown_in_onboarding_picker' % marketplace_key
+        if hasattr(self, method_name):
+            return bool(getattr(self, method_name)())
+        return False
+
+    @api.model
+    def _connector_icon_picker_fallback_url(self):
+        """Placeholder when no connector module is selected (Odoo web static)."""
+        return '/web/static/img/placeholder.png'
+
+    @api.model
+    def _connector_icon_url(self, module_name):
+        """Browser URL for the picker tile image (served by :meth:`~odoo.addons.base_marketplace.controllers.main.MarketplaceOnboardingPicker.marketplace_picker_icon`)."""
+        fallback = self._connector_icon_picker_fallback_url()
+        if not module_name or not self._is_module_installed(module_name):
+            return fallback
+        return '/base_marketplace/picker_icon/%s' % module_name
+
+    @api.model
+    def get_installed_marketplace_connectors(self):
+        """Installed connector apps with display name and optional icon URL (static/description/icon.png)."""
+        selection = self.env['mk.instance'].fields_get()['marketplace'].get('selection') or []
+        seen = set()
+        out = []
+        for item in selection:
+            if not item or not item[0]:
+                continue
+            key, label = item[0], item[1]
+            if key in seen:
+                continue
+            module_name = self._get_marketplace_connector_module_name(key)
+            if not self._is_module_installed(module_name):
+                continue
+            if not self._marketplace_shown_in_onboarding_picker(key, module_name):
+                continue
+            seen.add(key)
+            out.append({
+                'key': key,
+                'name': label,
+                'module': module_name,
+                'icon_url': self._connector_icon_url(module_name),
+            })
+        return out
+
+    @api.model
+    def ensure_onboarding_instance_for_marketplace(self, marketplace_key, active_id=None):
+        """Create or bind a draft instance for onboarding.
+
+        * **Setup Wizard (kanban header)** opens with no ``active_id``: always **creates a new**
+          draft row for the chosen marketplace (never reuses another draft).
+        * **Open from a draft instance form** (``active_id`` set): resume that record if the
+          marketplace matches, or bind a placeholder draft that has no marketplace yet.
+        """
+        selection_list = self.env['mk.instance'].fields_get()['marketplace'].get('selection') or []
+        labels = {k: v for k, v in selection_list if k}
+        if marketplace_key not in labels:
+            raise MarketplaceException(_("Invalid marketplace."))
+        module_name = self._get_marketplace_connector_module_name(marketplace_key)
+        if not self._is_module_installed(module_name):
+            raise MarketplaceException(_("This marketplace connector is not installed."))
+        mk_instance_obj = self.env['mk.instance']
+        if active_id:
+            rec = mk_instance_obj.browse(int(active_id)).exists()
+            if rec and rec.state == 'draft':
+                if rec.marketplace == marketplace_key:
+                    return rec.id
+                if not rec.marketplace:
+                    vals = {'marketplace': marketplace_key}
+                    if not rec.name:
+                        vals['name'] = _('New %s') % labels[marketplace_key]
+                    rec.write(vals)
+                    return rec.id
+        name = _('New %s') % labels[marketplace_key]
+        return mk_instance_obj.create({'name': name, 'marketplace': marketplace_key}).id
+
+    @api.model
+    def get_onboarding_wizard_state(self, active_id=None):
+        """Decide picker vs steps: single connector skips picker; multiple shows grid unless draft has marketplace."""
+        active_id = active_id and int(active_id) or None
+        connectors = self.get_installed_marketplace_connectors()
+        if not connectors:
+            return {'error': _('No marketplace connector modules are installed which support quick onboarding.')}
+        keys = {c['key'] for c in connectors}
+        # Expose the neutralized-database flag so onboarding can force the user to enable
+        # Go Live before continuing (see the Go Live gate in the onboarding wizard).
+        is_neutralized = bool(self.env['ir.config_parameter'].sudo().get_param('database.is_neutralized'))
+        # If there's only one connector, skip picker but don't create instance yet
+        if len(connectors) == 1 and not active_id:
+            return {'connectors': connectors, 'skip_picker': True, 'instance_id': False, 'is_neutralized': is_neutralized}
+        if active_id:
+            rec = self.env['mk.instance'].browse(active_id).exists()
+            if rec and rec.state == 'draft' and rec.marketplace and rec.marketplace in keys:
+                return {'connectors': connectors, 'skip_picker': True, 'instance_id': rec.id, 'is_neutralized': is_neutralized}
+        return {'connectors': connectors, 'skip_picker': False, 'instance_id': active_id or False, 'is_neutralized': is_neutralized}
+
+    def get_onboarding_data(self):
+        self.ensure_one()
+        marketplace = self.marketplace
+        steps = []
+        if hasattr(self, '%s_get_onboarding_steps' % marketplace):
+            steps = getattr(self, '%s_get_onboarding_steps' % marketplace)()
+        values = {}
+        if hasattr(self, '%s_get_onboarding_values' % marketplace):
+            values = getattr(self, '%s_get_onboarding_values' % marketplace)()
+        # If no steps are registered, indicate this via a flag so frontend can handle appropriately
+        return {
+            'steps': steps,
+            'values': values,
+            'marketplace': marketplace,
+            'total_steps': len(steps),
+            'has_onboarding': bool(steps),
+        }
+
+    @api.model
+    def get_onboarding_data_for_marketplace(self, marketplace_key):
+        """Get onboarding steps and default values for a marketplace without an instance.
+        This allows the onboarding wizard to show steps before creating a draft instance.
+        """
+        steps = []
+        if hasattr(self, '%s_get_onboarding_steps' % marketplace_key):
+            steps = getattr(self, '%s_get_onboarding_steps' % marketplace_key)()
+        values = {}
+        if hasattr(self, '%s_get_onboarding_values' % marketplace_key):
+            values = getattr(self, '%s_get_onboarding_values' % marketplace_key)()
+        return {
+            'steps': steps,
+            'values': values,
+            'marketplace': marketplace_key,
+            'total_steps': len(steps),
+            'has_onboarding': bool(steps),
+        }
+
+    def validate_onboarding_step(self, step, data=None):
+        self.ensure_one()
+        data = data or {}
+        marketplace = self.marketplace
+        method_name = '%s_validate_onboarding_step_%s' % (marketplace, int(step))
+        # Step validation can test the marketplace connection/permissions (an API call), which
+        # is part of onboarding setup; bypass the Go Live gate so it runs on a neutralized
+        # database (the onboarding panel already forces Go Live before advancing).
+        record = self.with_context(skip_instance_go_live=True)
+        if hasattr(record, method_name):
+            return getattr(record, method_name)(data)
+        return {'valid': True}
+
+    @api.model
+    def validate_onboarding_step_data(self, marketplace_key, step, data=None):
+        """Validate onboarding step without requiring an instance record.
+        This allows validation to work before creating a draft instance.
+        """
+        data = data or {}
+        method_name = '%s_validate_onboarding_step_%s' % (marketplace_key, int(step))
+        # Create a temporary instance to call the validation method
+        # We use a new() record which doesn't have an ID. Step validation can test the
+        # marketplace connection/permissions (an API call), which is part of onboarding setup;
+        # bypass the Go Live gate so it runs on a neutralized database (the onboarding panel
+        # already forces Go Live before advancing).
+        instance = self.with_context(skip_instance_go_live=True).new({'marketplace': marketplace_key})
+        if hasattr(instance, method_name):
+            return getattr(instance, method_name)(data)
+        return {'valid': True}
+
+    def save_onboarding_data(self, values):
+        self.ensure_one()
+        values = values or {}
+        marketplace = self.marketplace
+        extra = {}
+        if hasattr(self, '%s_save_onboarding_data' % marketplace):
+            connector_result = getattr(self, '%s_save_onboarding_data' % marketplace)(values)
+            if isinstance(connector_result, dict):
+                extra = connector_result
+        return {'success': True, **extra}
+
+    @api.model
+    def save_onboarding_create_instance(self, marketplace_key, values):
+        """Create and save a new instance from onboarding data.
+        This is called when user clicks Save button - instance is only created here.
+        """
+        values = values or {}
+        selection_list = self.fields_get()['marketplace'].get('selection') or []
+        labels = {k: v for k, v in selection_list if k}
+        if marketplace_key not in labels:
+            raise MarketplaceException(_("Invalid marketplace."))
+        module_name = self._get_marketplace_connector_module_name(marketplace_key)
+        if not self._is_module_installed(module_name):
+            raise MarketplaceException(_("This marketplace connector is not installed."))
+
+        # Prepare instance values from form data
+        instance_vals = {
+            'name': values.get('name') or _('New %s') % labels[marketplace_key],
+            'marketplace': marketplace_key,
+            # On a neutralized database onboarding forces the user to enable Go Live
+            # before finishing, so persist that choice on the new instance.
+            'go_live': bool(values.get('go_live')),
+        }
+
+        # Create the instance first
+        mk_instance_id = self.create(instance_vals)
+
+        # Now call the standard save method with all data. Onboarding confirms the
+        # instance (test connection, fetch scopes, register webhooks) which hits the
+        # marketplace API; bypass the Go Live gate here so a brand-new instance can be
+        # set up even on a neutralized database. The Go Live gate still protects the
+        # ongoing import/export operations.
+        result = mk_instance_id.with_context(skip_instance_go_live=True).save_onboarding_data(values)
+        result['instance_id'] = mk_instance_id.id
+        return result
+
+    def _mk_onboarding_tax_account_domain(self, company):
+        """Match instance form intent: usable accounts for this company (incl. branches) and tax-safe types."""
+        if not company:
+            return [('id', '=', False)]
+        cid = company.id
+        return [
+            '&',
+            '|',
+            ('company_ids', 'parent_of', cid),
+            ('company_ids', 'child_of', cid),
+            ('account_type', 'not in', ('asset_receivable', 'liability_payable', 'off_balance')),
+        ]
+
+    def get_onboarding_tax_account_options(self):
+        """RPC for onboarding dropdowns: same scope as Configuration tax account fields, with correct company context."""
+        company = self.company_id or self.env.company
+        if not company:
+            return []
+        account_obj = self.env['account.account'].with_company(company).sudo()
+        domain = self._mk_onboarding_tax_account_domain(company)
+        recs = account_obj.search_read(domain, ['id', 'display_name'], order='id')
+        return [{'id': r['id'], 'name': r['display_name'] or ''} for r in recs]
+
+    @api.model
+    def get_onboarding_tax_account_options_default_company(self):
+        """Get tax account options for the default company without an instance.
+        Used during onboarding before instance creation.
+        """
+        company = self.env.company
+        if not company:
+            return []
+        account_obj = self.env['account.account'].with_company(company).sudo()
+        domain = self._mk_onboarding_tax_account_domain(company)
+        recs = account_obj.search_read(domain, ['id', 'display_name'], order='id')
+        return [{'id': r['id'], 'name': r['display_name'] or ''} for r in recs]
+
+    @api.model
+    def cleanup_onboarding_draft(self, instance_ids):
+        """Safely delete draft instances created during onboarding that were never completed.
+
+        This is called when a user cancels the onboarding wizard without saving.
+        Only draft instances that have no meaningful data (no connection details set)
+        are deleted to avoid accidental data loss.
+
+        Args:
+            instance_ids: List of instance IDs to check and potentially delete
+
+        Returns:
+            bool: True if cleanup was attempted
+        """
+        for instance in self.browse(instance_ids):
+            if instance.state != 'draft':
+                continue
+            # Check if instance has any meaningful data set
+            # Common connector fields that indicate the user started configuration
+            has_data = False
+            # Check for common URL/API fields that various connectors use
+            # TODO: Find alternative way to manage below fields.
+            for field in ['shop_url', 'api_url', 'seller_id', 'merchant_id',
+                         'api_token', 'password', 'access_token', 'api_key',
+                         'consumer_key', 'store_url', 'seller_url']:
+                if field in instance and instance[field]:
+                    has_data = True
+                    break
+            # Also check if name was changed from default "New <Marketplace>" pattern
+            if not has_data and instance.name:
+                default_name = _('New %s') % dict(instance._fields['marketplace'].selection).get(instance.marketplace, instance.marketplace)
+                if instance.name != default_name:
+                    has_data = True
+            # Only delete if it's truly empty (user never entered any data)
+            if not has_data:
+                try:
+                    instance.unlink()
+                except Exception:
+                    # If deletion fails for any reason (e.g., constraints), just skip
+                    pass
+        return True
+
+    @api.model
+    def unlink_onboarding_draft(self, instance_ids):
+        """Delete draft instances that were created during onboarding but canceled by user.
+
+        This is simpler than cleanup_onboarding_draft - it just deletes draft instances
+        without checking for data. The frontend ensures this is only called for instances
+        that were created during the current onboarding session and never saved.
+
+        Args:
+            instance_ids: List of draft instance IDs to delete
+
+        Returns:
+            bool: True if successful
+        """
+        self.browse(instance_ids).filtered(lambda i: i.state == 'draft').unlink()
+        return True
 
     def _is_module_installed(self, module_name):
         """

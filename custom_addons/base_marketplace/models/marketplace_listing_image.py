@@ -48,7 +48,8 @@ class ListingImage(models.Model):
         except:
             self.image = False
             warning = {}
-            title = _("Warning for : {}".format(self.mk_listing_id.name))
+            # Task: T7493 - Converted strings to f-strings.
+            title = _(f"Warning for : {self.mk_listing_id.name}")
             warning['title'] = title
             warning['message'] = message
             return {'warning': warning}
@@ -70,8 +71,8 @@ class ListingImage(models.Model):
                 imgext = '.svg'
 
             safe_name = urllib.parse.quote(record.name).replace('/', '-')
-            url = base_url + '/marketplace/product/image/{}/{}/{}'.format(self.env.cr.dbname, base64.urlsafe_b64encode(str(record.id).encode("utf-8")).decode("utf-8"),
-                                                                          safe_name + imgext)
+            # Task: T7493 - Converted strings to f-strings.
+            url = f"{base_url}/marketplace/product/image/{self.env.cr.dbname}/{base64.urlsafe_b64encode(str(record.id).encode('utf-8')).decode('utf-8')}/{safe_name + imgext}"
             if record.mk_listing_item_ids and not record.mk_listing_id:
                 record.write({'mk_listing_id': record.mk_listing_item_ids.mapped('mk_listing_id') and record.mk_listing_item_ids.mapped('mk_listing_id')[0].id or False})
             record.write({'url': url})

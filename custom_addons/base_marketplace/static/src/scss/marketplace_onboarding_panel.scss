@@ -1,0 +1,901 @@
+// ============================================================================
+// Marketplace Quick Onboarding Panel
+// Panel DOM created in JS (simple_panel_handler.js); all styling lives here.
+// ============================================================================
+
+// Force panel to occupy full row inside the kanban renderer flex container.
+#marketplace_onboarding_panel {
+    margin: 0 0 16px 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    // Full WIDTH comes from width:100% above — do NOT use flex-basis:100% here.
+    // If the panel ever lands in a column-flex parent (e.g. .o_content),
+    // flex-basis:100% resolves against HEIGHT and stretches it to full page.
+    // flex:0 0 auto + align-self:flex-start + height:auto keep it sized to its
+    // content (a banner) no matter which axis the parent flexes on.
+    flex: 0 0 auto !important;
+    align-self: flex-start !important;
+    height: auto !important;
+    box-sizing: border-box !important;
+    order: -1;
+}
+
+// ----------------------------------------------------------------------------
+// Panel
+// ----------------------------------------------------------------------------
+.o_marketplace_quick_onboarding_panel {
+    position: relative;
+    display: block;
+    box-sizing: border-box;
+    padding: 24px;
+    border-radius: 16px;
+    background: linear-gradient(270deg, #E2EEFD, #E0E7FF, #DDEBFD);
+    background-size: 400% 400%;
+    box-shadow: 0 4px 20px rgba(124, 139, 247, 0.15);
+    overflow: visible;
+    z-index: 100;
+    animation: panelSlideIn 0.6s ease-out, gradientMove 15s ease infinite;
+
+    // Close (collapse) button
+    .o_mk_onboarding_close {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.9);
+        border: 2px solid rgba(124, 58, 237, 0.3);
+        z-index: 10;
+        transition: all 0.2s ease;
+
+        &:hover {
+            background-color: #fff;
+            transform: scale(1.05);
+        }
+
+        i {
+            font-size: 14px;
+            color: #4A5568;
+        }
+    }
+
+    // ------------------------------------------------------------------------
+    // Layout grid
+    // Default: text | steps | circles
+    // <1700px : text | circles
+    // <1200px : text only
+    // ------------------------------------------------------------------------
+    .o_mk_onboarding_content {
+        display: grid;
+        grid-template-columns: minmax(0, auto) minmax(0, 1fr) 320px;
+        gap: 24px;
+        align-items: center;
+    }
+
+    // ---- Left section --------------------------------------------------
+    .o_mk_onboarding_left_side {
+        display: flex;
+        gap: 20px;
+        align-items: flex-start;
+        min-width: 0;
+    }
+
+    .o_mk_onboarding_icon {
+        flex-shrink: 0;
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #7C3AED 0%, #1F7AE0 100%);
+        background-size: 200% 200%;
+        border-radius: 10px;
+        color: white;
+        font-size: 20px;
+        box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+        animation: pulse 2s ease-in-out infinite, gradientMove 3s ease infinite;
+
+        i {
+            animation: iconPulse 1.5s ease-in-out infinite;
+        }
+    }
+
+    .o_mk_onboarding_text_content {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .o_mk_onboarding_label {
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        color: #7C3AED;
+        text-transform: uppercase;
+        margin-bottom: 4px;
+    }
+
+    .o_mk_onboarding_title {
+        font-size: 24px;
+        font-weight: 700;
+        color: #1A1A2E;
+        margin: 0 0 8px 0;
+        line-height: 1.3;
+    }
+
+    .o_mk_onboarding_description {
+        font-size: 14px;
+        color: #2D3748;
+        line-height: 1.5;
+        margin: 0 0 8px 0;
+        opacity: 0.95;
+    }
+
+    .o_mk_onboarding_support {
+        font-size: 13px;
+        color: #4A5568;
+        line-height: 1.4;
+        margin: 0 0 16px 0;
+        font-style: italic;
+        opacity: 0.9;
+    }
+
+    .o_mk_onboarding_actions {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .o_mk_onboarding_primary_btn {
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(135deg, #3d3a80 0%, #2a2860 100%) !important;
+        border: none !important;
+        outline: none !important;
+        color: #ffffff !important;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 14px;
+        box-shadow: 0 2px 8px rgba(20, 18, 50, 0.6) !important;
+        cursor: pointer;
+        transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+        white-space: nowrap;
+
+        i {
+            margin-right: 6px;
+        }
+
+        &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        &:hover::before {
+            left: 100%;
+        }
+
+        &:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, #4a4790 0%, #353270 100%) !important;
+            box-shadow: 0 4px 14px rgba(20, 18, 50, 0.7) !important;
+            color: #ffffff !important;
+        }
+
+        &:focus,
+        &:focus-visible {
+            outline: none !important;
+            box-shadow: 0 2px 8px rgba(20, 18, 50, 0.6) !important;
+        }
+    }
+
+    .o_mk_onboarding_secondary_btn {
+        color: #7c7bad;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 14px;
+        padding: 8px 16px;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+
+        &:hover {
+            background-color: rgba(124, 123, 173, 0.1);
+            color: #5a5a8a;
+        }
+    }
+
+    // ---- Steps section -------------------------------------------------
+    .o_mk_onboarding_steps_section {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-width: 0;
+        padding: 0 20px;
+        outline: none !important;
+        box-shadow: none !important;
+        border: none !important;
+        background: transparent !important;
+    }
+
+    .o_mk_onboarding_steps_container {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        justify-content: center;
+        width: 100%;
+        outline: none !important;
+        box-shadow: none !important;
+        border: none !important;
+        background: transparent !important;
+    }
+
+    .o_mk_onboarding_step_item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        flex: 0 0 auto;
+        text-align: center;
+        outline: none !important;
+        box-shadow: none !important;
+        border: none !important;
+    }
+
+    .o_mk_onboarding_step_number {
+        flex-shrink: 0;
+        width: 28px;
+        height: 28px;
+        border-radius: 50% !important;
+        background: #F3F4F6;
+        border: 2px solid #C4C7FC !important;
+        outline: none !important;
+        box-shadow: none !important;
+        color: #272AF2;
+        font-size: 12px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+    }
+
+    .o_mk_onboarding_step_title {
+        font-size: 13px;
+        font-weight: 600;
+        color: #1A1A2E;
+        line-height: 1.3;
+    }
+
+    .o_mk_onboarding_step_description {
+        font-size: 11px;
+        color: #2D3748;
+        line-height: 1.3;
+        max-width: 100px;
+    }
+
+    .o_mk_onboarding_step_arrow {
+        flex-shrink: 0;
+        color: #9CA3AF;
+        font-size: 28px;
+        font-weight: 300;
+        display: flex;
+        align-items: center;
+        padding-top: 8px;
+    }
+
+    // ---- Right section: marketplace circles ---------------------------
+    .o_mk_onboarding_right {
+        flex-shrink: 0;
+        width: 320px;
+        height: 180px;
+        position: relative;
+        margin-left: auto;
+    }
+
+    .o_mk_onboarding_visual,
+    .o_mk_onboarding_circles {
+        position: relative;
+        width: 100%;
+        height: 100%;
+    }
+
+    .o_mk_circle {
+        position: absolute;
+        border-radius: 50%;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.2) 100%);
+        background-size: 200% 200%;
+        border: 3px solid rgba(255, 255, 255, 0.6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: default;
+        transition: all 0.3s ease;
+        animation: float 3s ease-in-out infinite;
+
+        img {
+            object-fit: contain;
+            animation: iconPulse 2.5s ease-in-out infinite;
+        }
+
+        &:hover {
+            transform: translateY(-5px) scale(1.08);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.38) 0%, rgba(255, 255, 255, 0.28) 100%);
+        }
+
+        // Stagger floating
+        &:nth-child(1) { animation-delay: 0s; }
+        &:nth-child(2) { animation-delay: 0.4s; }
+        &:nth-child(3) { animation-delay: 0.8s; }
+        &:nth-child(4) { animation-delay: 1.2s; }
+        &:nth-child(5) { animation-delay: 1.6s; }
+        &:nth-child(6) { animation-delay: 2s; }
+        &:nth-child(7) { animation-delay: 2.4s; }
+        &:nth-child(8) { animation-delay: 2.8s; }
+        &:nth-child(9) { animation-delay: 3.2s; }
+    }
+
+    .o_mk_circle_clickable {
+        cursor: pointer;
+
+        &::after {
+            content: '🔗';
+            position: absolute;
+            bottom: -5px;
+            right: -5px;
+            font-size: 10px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        &:hover::after {
+            opacity: 1;
+        }
+
+        &:hover {
+            transform: translateY(-8px) scale(1.15);
+            box-shadow: 0 8px 20px rgba(255, 255, 255, 0.5);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.3) 100%);
+        }
+    }
+
+    // ------------------------------------------------------------------------
+    // Responsive breakpoints
+    // ------------------------------------------------------------------------
+
+    // Below 1700px: hide steps; keep text + circles
+    @media (max-width: 1699px) {
+        .o_mk_onboarding_content {
+            grid-template-columns: minmax(0, 1fr) 320px;
+        }
+        .o_mk_onboarding_steps_section {
+            display: none;
+        }
+    }
+
+    // Below 1200px: hide circles too; text only
+    @media (max-width: 1199px) {
+        .o_mk_onboarding_content {
+            grid-template-columns: 1fr;
+        }
+        .o_mk_onboarding_right {
+            display: none;
+        }
+    }
+
+    // Tablet ≤991px: tighten and center text
+    @media (max-width: 991px) {
+        padding: 20px;
+
+        .o_mk_onboarding_left_side {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .o_mk_onboarding_text_content {
+            text-align: center;
+        }
+
+        .o_mk_onboarding_actions {
+            justify-content: center;
+        }
+
+        .o_mk_onboarding_title {
+            font-size: 20px;
+        }
+
+        .o_mk_onboarding_description {
+            font-size: 13px;
+        }
+    }
+
+    // Mobile ≤767px: hide entirely (defence-in-depth; JS already skips creation)
+    @media (max-width: 767px) {
+        display: none !important;
+    }
+}
+
+// ----------------------------------------------------------------------------
+// Dark mode — toggled via the `o_mk_onboarding_dark` class added by JS
+// (isOdooDarkMode detection), so it follows Odoo's System/Light/Dark theme
+// instead of the OS `prefers-color-scheme` setting.
+// ----------------------------------------------------------------------------
+.o_marketplace_quick_onboarding_panel.o_mk_onboarding_dark {
+    background: linear-gradient(270deg, #1a1f35, #1e2240, #1a1f35) !important;
+    background-size: 400% 400% !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+
+    .o_mk_onboarding_title            { color: #E8ECF4 !important; }
+    .o_mk_onboarding_description      { color: #A0ACBE !important; }
+    .o_mk_onboarding_support          { color: #8A9BB5 !important; }
+    .o_mk_onboarding_label            { color: #A09CF7 !important; }
+    .o_mk_onboarding_step_title       { color: #C8D0E0 !important; }
+    .o_mk_onboarding_step_description { color: #8A9BB5 !important; }
+    .o_mk_onboarding_step_arrow       { color: #5A6480 !important; }
+    .o_mk_onboarding_secondary_btn    { color: #A09CF7 !important; }
+
+    .o_mk_onboarding_step_number {
+        background: rgba(255, 255, 255, 0.10) !important;
+        border: 2px solid rgba(140, 140, 220, 0.40) !important;
+        color: #C8D0F0 !important;
+    }
+
+    .o_mk_circle {
+        background: rgba(28, 35, 60, 0.80) !important;
+        border-color: rgba(255, 255, 255, 0.15) !important;
+    }
+
+    .o_mk_onboarding_close {
+        background-color: rgba(255, 255, 255, 0.08) !important;
+        border-color: rgba(255, 255, 255, 0.15) !important;
+
+        i { color: #C8D0E0 !important; }
+    }
+}
+
+// ----------------------------------------------------------------------------
+// Floating expand button (shown when panel collapsed)
+// ----------------------------------------------------------------------------
+.o_mk_floating_expand_btn {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #7C3AED 0%, #1F7AE0 100%);
+    box-shadow: 0 4px 20px rgba(124, 58, 237, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 9999;
+    transition: all 0.3s ease;
+    animation: floatBounce 2s ease-in-out infinite;
+
+    i {
+        color: white;
+        font-size: 24px;
+        animation: iconSpin 3s ease-in-out infinite;
+    }
+
+    .o_mk_floating_tooltip {
+        position: absolute;
+        bottom: 70px;
+        right: 0;
+        background: #1A1A2E;
+        color: white;
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-size: 12px;
+        white-space: nowrap;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+    }
+
+    &:hover {
+        transform: scale(1.1) rotate(5deg);
+
+        .o_mk_floating_tooltip {
+            opacity: 1;
+        }
+    }
+
+    @media (max-width: 767px) {
+        display: none !important;
+    }
+}
+
+// ----------------------------------------------------------------------------
+// Animations
+// ----------------------------------------------------------------------------
+@keyframes panelSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.05); }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-10px); }
+}
+
+@keyframes iconPulse {
+    0%, 100% { opacity: 0.8; transform: scale(1); }
+    50%      { opacity: 1;   transform: scale(1.1); }
+}
+
+@keyframes gradientMove {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes floatBounce {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-10px); }
+}
+
+@keyframes iconSpin {
+    0%, 100% { transform: rotate(0deg); }
+    25%      { transform: rotate(-10deg); }
+    75%      { transform: rotate(10deg); }
+}
+
+// ============================================================================
+// Scrollable Instance Boxes Section
+// ============================================================================
+
+.o_marketplace_quick_onboarding_panel {
+    .o_mk_onboarding_instances_section {
+        margin-top: 24px;
+        border-top: 1px solid rgba(124, 123, 173, 0.15);
+        padding-top: 20px;
+
+        .o_mk_onboarding_instances_header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+
+            .o_mk_onboarding_instances_title {
+                font-size: 14px;
+                font-weight: 600;
+                color: #7c7bad;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+
+                i {
+                    font-size: 14px;
+                }
+            }
+
+            .o_mk_onboarding_instances_count {
+                background: rgba(124, 123, 173, 0.15);
+                color: #7c7bad;
+                font-size: 12px;
+                font-weight: 600;
+                padding: 4px 10px;
+                border-radius: 12px;
+            }
+        }
+
+        .o_mk_onboarding_instances_scroll {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding-bottom: 8px;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+
+            &::-webkit-scrollbar {
+                height: 6px;
+            }
+
+            &::-webkit-scrollbar-track {
+                background: rgba(124, 123, 173, 0.08);
+                border-radius: 3px;
+            }
+
+            &::-webkit-scrollbar-thumb {
+                background: rgba(124, 123, 173, 0.3);
+                border-radius: 3px;
+
+                &:hover {
+                    background: rgba(124, 123, 173, 0.5);
+                }
+            }
+
+            scrollbar-width: thin;
+            scrollbar-color: rgba(124, 123, 173, 0.3) rgba(124, 123, 173, 0.08);
+        }
+
+        .o_mk_onboarding_instance_box {
+            flex-shrink: 0;
+            width: 280px;
+            background: white;
+            border-radius: 10px;
+            border: 1px solid rgba(124, 123, 173, 0.2);
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+
+            &:hover {
+                border-color: rgba(124, 123, 173, 0.4);
+                box-shadow: 0 4px 16px rgba(124, 123, 173, 0.15);
+                transform: translateY(-2px);
+
+                .o_mk_instance_box_overlay {
+                    opacity: 1;
+                }
+
+                .o_mk_instance_arrow {
+                    color: #7c7bad;
+                    transform: translateX(3px);
+                    transition: all 0.2s ease;
+                }
+            }
+
+            .o_mk_instance_box_overlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: linear-gradient(135deg, rgba(124, 123, 173, 0.05) 0%, rgba(124, 123, 173, 0.02) 100%);
+                opacity: 0;
+                transition: opacity 0.2s ease;
+                pointer-events: none;
+                border-radius: 10px;
+            }
+
+            .o_mk_instance_header {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-bottom: 12px;
+                position: relative;
+                z-index: 1;
+
+                .o_mk_instance_logo {
+                    width: 48px;
+                    height: 48px;
+                    border-radius: 10px;
+                    background: linear-gradient(135deg, rgba(124, 123, 173, 0.15) 0%, rgba(124, 123, 173, 0.08) 100%);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    flex-shrink: 0;
+                    overflow: hidden;
+
+                    img {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                    }
+                }
+
+                .o_mk_instance_info {
+                    flex: 1;
+                    min-width: 0;
+
+                    .o_mk_instance_name {
+                        font-size: 14px;
+                        font-weight: 600;
+                        color: #212529;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                    }
+
+                    .o_mk_instance_marketplace {
+                        font-size: 12px;
+                        color: #6c757d;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                    }
+                }
+            }
+
+            .o_mk_instance_stats {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+                position: relative;
+                z-index: 1;
+
+                .o_mk_instance_stat {
+                    text-align: center;
+                    padding: 8px 4px;
+                    background: rgba(124, 123, 173, 0.05);
+                    border-radius: 6px;
+
+                    .o_mk_instance_stat_value {
+                        font-size: 14px;
+                        font-weight: 600;
+                        color: #7c7bad;
+                    }
+
+                    .o_mk_instance_stat_label {
+                        font-size: 10px;
+                        color: #6c757d;
+                        text-transform: uppercase;
+                        letter-spacing: 0.5px;
+                    }
+                }
+            }
+
+            .o_mk_instance_status {
+                margin-top: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                position: relative;
+                z-index: 1;
+
+                .o_mk_instance_badge {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 4px;
+                    padding: 4px 10px;
+                    border-radius: 12px;
+                    font-size: 11px;
+                    font-weight: 500;
+
+                    &.o_mk_instance_badge_connected {
+                        background: rgba(40, 167, 69, 0.12);
+                        color: #28a745;
+
+                        i { color: #28a745; }
+                    }
+
+                    &.o_mk_instance_badge_draft {
+                        background: rgba(255, 193, 7, 0.12);
+                        color: #ffc107;
+
+                        i { color: #ffc107; }
+                    }
+
+                    &.o_mk_instance_badge_error {
+                        background: rgba(220, 53, 69, 0.12);
+                        color: #dc3545;
+
+                        i { color: #dc3545; }
+                    }
+                }
+
+                .o_mk_instance_arrow {
+                    color: #adb5bd;
+                    font-size: 12px;
+                    transition: all 0.2s ease;
+                }
+            }
+
+            .o_mk_instance_sync {
+                margin-top: 8px;
+                padding-top: 8px;
+                border-top: 1px solid rgba(0, 0, 0, 0.05);
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                font-size: 11px;
+                color: #6c757d;
+                position: relative;
+                z-index: 1;
+
+                .o_mk_sync_dot {
+                    width: 6px;
+                    height: 6px;
+                    border-radius: 50%;
+                }
+            }
+        }
+
+        .o_mk_onboarding_instances_empty {
+            width: 100%;
+            padding: 32px;
+            text-align: center;
+            color: #6c757d;
+
+            i {
+                font-size: 32px;
+                color: rgba(124, 123, 173, 0.3);
+                margin-bottom: 12px;
+            }
+
+            div {
+                font-size: 13px;
+            }
+        }
+
+        .o_mk_onboarding_scroll_indicator {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 8px;
+
+            span {
+                font-size: 11px;
+                color: #adb5bd;
+                font-style: italic;
+
+                i {
+                    margin-right: 4px;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .o_marketplace_quick_onboarding_panel {
+        .o_mk_onboarding_instances_section {
+            .o_mk_onboarding_instance_box {
+                width: 260px;
+                padding: 12px;
+
+                .o_mk_instance_stats {
+                    gap: 6px;
+
+                    .o_mk_instance_stat {
+                        padding: 6px 3px;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .o_marketplace_quick_onboarding_panel {
+        .o_mk_onboarding_instances_section {
+            .o_mk_onboarding_instance_box {
+                width: 240px;
+                padding: 10px;
+
+                .o_mk_instance_header {
+                    gap: 8px;
+
+                    .o_mk_instance_logo {
+                        width: 40px;
+                        height: 40px;
+                    }
+                }
+            }
+        }
+    }
+}

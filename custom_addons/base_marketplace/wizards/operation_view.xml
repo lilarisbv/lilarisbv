@@ -24,7 +24,7 @@
                 <form>
                     <group>
                         <field name="mk_instance_id" required="1" options='{"no_open": True, "no_create": True}'/>
-                        <field name="marketplace" invisible="1"/>
+                        <field name="marketplace" invisible="1"/><!-- always invisible: technical field required by view logic -->
                     </group>
                     <group>
                         <group>
@@ -57,7 +57,7 @@
                 <form>
                     <group>
                         <field name="mk_instance_id" required="1" options='{"no_open": True, "no_create": True}'/>
-                        <field name="marketplace" invisible="1"/>
+                        <field name="marketplace" invisible="1"/><!-- always invisible: technical field required by view logic -->
                     </group>
                     <group>
                         <group>
@@ -151,7 +151,7 @@
                 <form>
                     <group>
                         <field name="mk_instance_id" required="1" options='{"no_open": True, "no_create": True}'/>
-                        <field name="marketplace" invisible="1"/>
+                        <field name="marketplace" invisible="1"/><!-- always invisible: technical field required by view logic -->
                     </group>
                     <group name="marketplace_options">
                     </group>

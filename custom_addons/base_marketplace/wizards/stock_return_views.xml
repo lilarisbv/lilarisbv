@@ -5,14 +5,14 @@
         <field name="model">stock.return.picking</field>
         <field name="arch" type="xml">
             <form>
-                <field name="company_id" invisible="1"/>
+                <field name="company_id" invisible="1"/><!-- always invisible: technical field required by view logic -->
                 <field name="product_return_moves">
                     <list editable="bottom" create="1" decoration-warning="not move_id">
-                        <field name="move_quantity" column_invisible="1"/>
+                        <field name="move_quantity" column_invisible="1"/><!-- always invisible: technical field required by view logic -->
                         <field name="product_id" force_save="1"/>
                         <field name="quantity" decoration-danger="move_quantity &lt; quantity"/>
                         <field name="uom_id" groups="uom.group_uom"/>
-                        <field name="move_id" column_invisible="True"/>
+                        <field name="move_id" column_invisible="True"/><!-- always invisible: technical field required by view logic -->
                     </list>
                 </field>
                 <footer>

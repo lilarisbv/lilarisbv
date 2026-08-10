@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+        <record id="woocommerce_mk_listing_item_form_view" model="ir.ui.view">
+            <field name="name">woocommerce.mk.listing.item.form.view</field>
+            <field name="model">mk.listing.item</field>
+            <field name="inherit_id" ref="base_marketplace.mk_listing_item_form_view"/>
+            <field name="arch" type="xml">
+                <page name="product_images" position="after">
+                    <page string="WooCommerce"  invisible="marketplace != 'woocommerce'">
+                        <group name="woocommerce_first">
+                            <group name="woocommerce_tax" string="Taxes">
+                                <field name="woo_tax_status" required="1"/>
+                                <field name="woo_tax_class"/>
+                            </group>
+                            <group>
+                                <field name="woo_manage_stock"/>
+                            </group>
+                        </group>
+                    </page>
+                </page>
+            </field>
+        </record>
+    </data>
+</odoo>

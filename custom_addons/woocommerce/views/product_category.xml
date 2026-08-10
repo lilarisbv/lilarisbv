@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+        <record id="woocommerce_product_category_form_view" model="ir.ui.view">
+            <field name="name">woocommerce_product_category_form_view</field>
+            <field name="model">woo.product.category.ts</field>
+            <field name="arch" type="xml">
+                <form class="oe_form_configuration" string="WooCommerce Product Category">
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                        </div>
+                        <field name="image_1920" widget="image" class="oe_avatar" options="{'preview_image': 'image_128'}"/>
+                        <div class="oe_title">
+                            <label for="name" string="Category name" class="oe_edit_only"/>
+                            <h1>
+                                <field name="name" placeholder="e.g. Lamps"/>
+                            </h1>
+                        </div>
+                        <group name="first" col="2">
+                            <field name="parent_id" class="oe_inline"/>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="slug"/>
+                                <field name="display_type"/>
+                                <field name="mk_instance_id" options="{'no_create': 1, 'no_edit': 1}" required="1"/>
+                            </group>
+                            <group>
+                                <field name="mk_id" readonly="1"/>
+                                <field name="exported_in_woocommerce" readonly="1"/>
+                            </group>
+                        </group>
+                        <separator string="Description"/>
+                        <field name="description" nolabel="1"/>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="woocommerce_product_category_search_view" model="ir.ui.view">
+            <field name="name">woocommerce_product_category_search_view</field>
+            <field name="model">woo.product.category.ts</field>
+            <field name="arch" type="xml">
+                <search string="WooCommerce Product Category">
+                    <field name="name"/>
+                    <field name="mk_id"/>
+                    <separator/>
+
+                    <group>
+                        <filter string="Instance" name="group_by_instance" context="{'group_by': 'mk_instance_id'}"/>
+                        <filter string="Category" name="group_by_category" context="{'group_by': 'parent_id'}"/>
+                    </group>
+
+                    <searchpanel>
+                        <field name="mk_instance_id" icon="fa-shopping-bag"/>
+                    </searchpanel>
+                </search>
+            </field>
+        </record>
+
+        <record id="woocommerce_product_category_tree_view" model="ir.ui.view">
+            <field name="name">woocommerce_product_category_tree_view</field>
+            <field name="model">woo.product.category.ts</field>
+            <field name="arch" type="xml">
+                <list string="WooCommerce Product Category">
+                    <field name="display_name"/>
+                    <field name="mk_id"/>
+                    <field name="parent_id"/>
+                    <field name="exported_in_woocommerce"/>
+                    <field name="mk_instance_id"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="action_woocommerce_product_category" model="ir.actions.act_window">
+            <field name="name">Product Category</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">woo.product.category.ts</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        <record id="action_woocommerce_product_category_instance" model="ir.actions.act_window">
+            <field name="name">Listing</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">woo.product.category.ts</field>
+            <field name="view_mode">list,form</field>
+            <field name="view_id" ref="woocommerce_product_category_tree_view"/>
+            <field name="domain">[('mk_instance_id', '=', active_id)]</field>
+        </record>
+    </data>
+</odoo>

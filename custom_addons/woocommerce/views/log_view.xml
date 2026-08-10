@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="marketplace_log_line_woocommerce_view_tree" model="ir.ui.view">
+            <field name="name">marketplace.log.line.woocommerce.list</field>
+            <field name="model">mk.log.line</field>
+            <field name="inherit_id" ref="base_marketplace.marketplace_log_line_view_tree"/>
+            <field name="arch" type="xml">
+                <field name="state" position="after">
+                    <field name="order_status" column_invisible="1"/>
+                    <field name="woocommerce_payment_gateway_id" column_invisible="1"/>
+                    <button name="do_configure_woocommerce_order_workflow" type="object" icon="fa-cog" title="Conifgure Workflow" aria-label="Configure Workflow" string="Configure Workflow" class="float-end"
+                            invisible="not woocommerce_payment_gateway_id or not order_status"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="marketplace_log_line_woocommerce_view_form" model="ir.ui.view">
+            <field name="name">marketplace.log.line.woocommerce.form</field>
+            <field name="model">mk.log.line</field>
+            <field name="inherit_id" ref="base_marketplace.marketplace_log_line_view_form"/>
+            <field name="arch" type="xml">
+                <header position="inside">
+                    <field name="order_status" invisible="1"/>
+                    <field name="woocommerce_payment_gateway_id" invisible="1"/>
+                    <button name="do_configure_woocommerce_order_workflow" type="object" icon="fa-cog" title="Conifgure Workflow" aria-label="Configure Workflow" string="Configure Workflow" class="oe_highlight"
+                            invisible="not woocommerce_payment_gateway_id or not order_status"/>
+                </header>
+            </field>
+        </record>
+    </data>
+</odoo>	

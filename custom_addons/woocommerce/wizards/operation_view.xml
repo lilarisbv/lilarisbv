@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+
+        <record id="mk_operation_export_woocommerce_listing_to_mk_view" model="ir.ui.view">
+            <field name="name">mk.operation.export.woocommerce.listing.to.mk.form.view</field>
+            <field name="model">mk.operation</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group>
+                            <field name="is_set_price" widget="boolean_toggle"/>
+                            <field name="is_set_quantity" widget="boolean_toggle"/>
+                            <field name="is_set_images" widget="boolean_toggle"/>
+                        </group>
+                        <group>
+                            <field name="publish_in_store"/>
+                        </group>
+                    </group>
+                    <p class="alert alert-warning" role="alert"
+                       style="border-radius: 1em;">
+                        <h3>Information:</h3>
+                        <ul>
+                            <li>
+                                We will create a log to record any issues encountered during the export or update of products/listings to WooCommerce. For example, if a listing contains multiple variants and one of them has a duplicate SKU or other issue, the successful variants will be synchronized, while the problematic ones will be noted in the log(Marketplace > Queues > Logs) for further review.
+                            </li>
+                            <li invisible="not is_set_images">
+                                If there are no images in the Listings then any existing images will be removed this from the wooCommerce Products.
+                            </li>
+                        </ul>
+                    </p>
+                    <footer>
+                        <button string="Export Listing" type="object" class="btn-primary" name="export_listing_to_mk"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="mk_operation_update_woocommerce_listing_to_mk_view" model="ir.ui.view">
+            <field name="name">mk.operation.update.woocommerce.listing.to.mk.form.view</field>
+            <field name="model">mk.operation</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group>
+                            <field name="is_update_product" widget="boolean_toggle"/>
+                            <field name="is_set_price" widget="boolean_toggle"/>
+                            <field name="is_set_quantity" widget="boolean_toggle"/>
+                        </group>
+                        <group>
+                            <field name="is_set_images" widget="boolean_toggle"/>
+                            <field name="publish_in_store"/>
+                        </group>
+                    </group>
+                    <p class="alert alert-warning" role="alert"
+                       style="border-radius: 1em;">
+                        <h3>Information:</h3>
+                        <ul>
+                            <li>
+                                We will create a log to record any issues encountered during the export or update of products/listings to WooCommerce. For example, if a listing contains multiple variants and one of them has a duplicate SKU or other issue, the successful variants will be synchronized, while the problematic ones will be noted in the log(Marketplace > Queues > Logs) for further review.
+                            </li>
+                            <li invisible="not is_set_images">
+                                If there are no images in the Listings then any existing images will be removed this from the wooCommerce Products.
+                            </li>
+                        </ul>
+                    </p>
+                    <footer>
+                        <button string="Update Listing" type="object" class="btn-primary" name="update_listing_to_mk"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="woocommerce_mk_operation_form_view" model="ir.ui.view">
+            <field name="name">mk.operation.woocommerce.form.view</field>
+            <field name="model">mk.operation</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group>
+                            <field name="mk_instance_id" required="1" options='{"no_open": True, "no_create": True}' readonly="1"/>
+                            <field name="marketplace" invisible="1"/>
+                            <field name="woocommerce_operations" widget="radio" options="{'horizontal':True}"/>
+                        </group>
+                        <group></group>
+                    </group>
+
+                    <group>
+                        <group>
+                            <field name="woocommerce_import_operations" invisible="woocommerce_operations != 'import'" widget="radio"/>
+                            <field name="woocommerce_export_operations" invisible="woocommerce_operations != 'export'" widget="radio"/>
+
+                            <!--Fields for import order operations-->
+                            <label for="from_date" string="Date Range" invisible="woocommerce_import_operations != 'import_orders' or woocommerce_operations != 'import'"/>
+                            <div class="o_row" invisible="woocommerce_import_operations != 'import_orders' or woocommerce_operations != 'import'">
+                                <field name="from_date" widget="daterange" nolabel="1" class="oe_inline" options="{'end_date_field': 'to_date'}"/>
+                                <field name="to_date" invisible="1"/>
+                            </div>
+                            <field name="mk_order_id" placeholder="5869502038181, 9869502038181"
+                                   invisible="woocommerce_import_operations != 'import_orders' or woocommerce_operations != 'import'"/>
+
+                            <!--Fields for import listing operations-->
+                            <label for="woocommerce_from_listing_date" string="Date Range"
+                                   invisible="woocommerce_import_operations != 'import_listings' or woocommerce_operations != 'import'"/>
+                            <div class="o_row" invisible="woocommerce_import_operations != 'import_listings' or woocommerce_operations != 'import'">
+                                <field name="woocommerce_from_listing_date" widget="daterange" nolabel="1" class="oe_inline" options="{'end_date_field': 'woocommerce_to_listing_date'}"/>
+                                <field name="woocommerce_to_listing_date" invisible="1"/>
+                            </div>
+                            <field name="mk_listing_id" placeholder="5869502038181, 9869502038181" invisible="woocommerce_import_operations != 'import_listings' or woocommerce_operations != 'import'"/>
+                        </group>
+                        <group>
+                            <field name="update_existing_product" invisible="woocommerce_import_operations != 'import_listings' or woocommerce_operations != 'import'"
+                                   widget="boolean_toggle"/>
+                            <field name="update_product_price"
+                                   invisible="not update_existing_product or woocommerce_import_operations != 'import_listings' or woocommerce_operations != 'import'"
+                                   widget="boolean_toggle"/>
+                            <field name="woo_update_image"
+                                   invisible="not update_existing_product or woocommerce_import_operations != 'import_listings' or woocommerce_operations != 'import'"
+                                   widget="boolean_toggle"/>
+                            <field name="publish_in_store" invisible="woocommerce_export_operations != 'export_listings' or woocommerce_operations != 'export'"/>
+                            <field name="woocommerce_product_status" required="True" invisible="woocommerce_import_operations != 'import_listings' or woocommerce_operations != 'import'"/>
+                        </group>
+                    </group>
+
+                    <!--Information regarding Customer Import-->
+                    <p class="alert alert-warning" role="alert" invisible="woocommerce_import_operations != 'import_customers' or woocommerce_operations != 'import'"
+                       style="border-radius: 1em;">
+                        <h3>Information:</h3>
+                        <ul>
+                            <li>
+                                This will fetch customers data from WooCommerce and create <strong>Customer Queue Jobs</strong> in Odoo. <strong>Marketplace > Queues</strong>.
+                            </li>
+                            <li>
+                                Customer Queue Jobs are processed automatically at certain time interval and Customers will be created in Odoo.
+                            </li>
+                            <li>
+                                Customers will be import after date configured under <strong>Last Customer Imported On</strong> field in the instance.
+                            </li>
+<!--                            <li>-->
+<!--                                If <strong>Last Customer Imported On</strong> date not set in the instance then it will fetch all the customers from WooCommerce.-->
+<!--                            </li>-->
+                        </ul>
+                    </p>
+
+                    <!--Information regarding Order Import-->
+                    <p class="alert alert-warning" role="alert" invisible="woocommerce_import_operations != 'import_orders' or woocommerce_operations != 'import'"
+                       style="border-radius: 1em;">
+                        <h3>Information:</h3>
+                        <ul>
+                            <li>
+                                This will fetch orders data from WooCommerce and create <strong>Order Queue Jobs</strong> in Odoo. <strong>Marketplace > Queues</strong>.
+                            </li>
+                            <li>
+                                Order Queue Jobs are processed automatically at certain time interval and orders will be created in Odoo.
+                            </li>
+                            <li>
+                                The orders corresponding to the dates specified in the <strong>Date Range</strong> fields will be retrieved from WooCommerce.
+                            </li>
+                            <li>
+                                This will import orders that were created after a specific date, as set in the configuration under <strong>Marketplace > Configuration > Instance > Last Order
+                                Imported On.</strong>
+                            </li>
+                            <li>
+                                Orders will be only imported by their fulfillment status. You can configure Fulfillment Status here <strong>Marketplace > Configuration > Instance >
+                                Fulfillment Status </strong> (located under Orders tab).
+                            </li>
+                            <li>
+                                You can import multiple orders by separating the IDs with a comma (','). For example: <strong>5869502038181, 9869502038181, 4586950203818.</strong>
+                            </li>
+                        </ul>
+                    </p>
+
+                    <!--Information regarding Listing Import-->
+                    <p class="alert alert-warning" role="alert" invisible="woocommerce_import_operations != 'import_listings' or woocommerce_operations != 'import'"
+                       style="border-radius: 1em;">
+                        <h3>Information:</h3>
+                        <ul>
+                            <li>
+                                This will fetch listings data from WooCommerce and create <strong>Product Queue Jobs</strong> in Odoo. <strong>Marketplace > Queues</strong>
+                            </li>
+                            <li>
+                                Products Queue Jobs are processed automatically at certain time interval and Listings will be created in Odoo.
+                            </li>
+                            <li>
+                                If you want to update already imported listings then enable <strong>Update Existing Listing?</strong>.
+                            </li>
+                            <li>
+                                If you want to update price enable <strong>Update Price?</strong>. <strong>Note:</strong> Price will be updated in instance's pricelist.
+                            </li>
+                            <li>
+                                 While importing from Woocommerce, it allows updating the image of existing or new listings.
+                            </li>
+                            <li>
+                                You can import multiple records using by giving <strong>comma ' , '</strong> between ids. <strong>Exp. 5869502038181, 9869502038181,
+                                4586950203818</strong>
+                            </li>
+                        </ul>
+                    </p>
+
+                    <p class="alert alert-warning" role="alert" invisible="woocommerce_import_operations != 'import_stock' or woocommerce_operations != 'import'"
+                       style="border-radius: 1em;">
+                        <h3>Information:</h3>
+                        <ul>
+                            <li>
+                                Import Inventory will create <strong> Inventory Adjustment</strong> for each location. You can locate Inventory Adjustment from <strong> Inventory >
+                                Operations > Physical Inventory.</strong>
+                            </li>
+                            <li>
+                                <strong>Validate Inventory Adjustment?</strong> configuration is under Instance setting, the system will automatically apply the
+                                inventory changes. Otherwise, you need to manually process the inventory adjustment.
+                            </li>
+                        </ul>
+                    </p>
+
+                    <p class="alert alert-warning" role="alert" invisible="woocommerce_import_operations != 'import_categories' or woocommerce_operations != 'import'"
+                       style="border-radius: 1em;">
+                        <h3>Information:</h3>
+                        <ul>
+                            <li>
+                                This feature Import WooCommerce Categories to Odoo.
+                            </li>
+<!--                            Commented because we are not creating Odoo categories because woocommerce product have multiple categories-->
+<!--                            <li>-->
+<!--                                If <strong>Update Category in Odoo Products?</strong> configuration is enabled under Instance setting, the system will automatically create/update Odoo category.-->
+<!--                            </li>-->
+                        </ul>
+                    </p>
+
+                    <p class="alert alert-warning" role="alert" invisible="woocommerce_import_operations != 'import_tags' or woocommerce_operations != 'import'"
+                       style="border-radius: 1em;">
+                        <h3>Information:</h3>
+                        <ul>
+                            <li>
+                                This feature Import WooCommerce Tags to Odoo.
+                            </li>
+                        </ul>
+                    </p>
+
+                    <!--Information regarding Update Listing to WooCommerce-->
+                    <p class="alert alert-warning" role="alert" invisible="woocommerce_export_operations != 'update_listings' or woocommerce_operations != 'export'"
+                       style="border-radius: 1em;">
+                        <h3>Information:</h3>
+                        <ul>
+                            <li>
+                                It will update following listings details to the WooCommerce.
+                                <strong>Description, Name, Tags, Product Category, Weight, Weight Unit, Internal Reference, Charge tax on this variant, Track quantity,
+                                    Continue selling when out of stock, Attributes and its Attributes Value.</strong>
+                            </li>
+                        </ul>
+                    </p>
+
+                    <!--Information regarding Update Listing price to WooCommerce-->
+                    <p class="alert alert-warning" role="alert" invisible="woocommerce_export_operations != 'update_prices' or woocommerce_operations != 'export'"
+                       style="border-radius: 1em;">
+                        <h3>Information:</h3>
+                        <ul>
+                            <li>
+                                This will allow the updating of the price of the listings to WooCommerce.
+                            </li>
+                        </ul>
+                    </p>
+
+                    <!--Information regarding Update Listing to WooCommerce-->
+                    <p class="alert alert-warning" role="alert" invisible="woocommerce_export_operations != 'update_stock' or woocommerce_operations != 'export'"
+                       style="border-radius: 1em;">
+                        <h3>Information:</h3>
+                        <ul>
+                            <li>
+                                This feature update inventory to WooCommerce.
+                            </li>
+                            <li>
+                                Stock will be updated based on the date configured under <strong>Last Stock Exported On</strong> field for the instance.
+                            </li>
+                        </ul>
+                    </p>
+
+                    <!--Information regarding Update Images to WooCommerce-->
+                    <p class="alert alert-warning" role="alert" invisible="woocommerce_export_operations != 'update_images' or woocommerce_operations != 'export'"
+                       style="border-radius: 1em;">
+                        <h3>Information:</h3>
+                        <ul>
+                            <li>
+                                This feature update Images to WooCommerce.
+                            </li>
+                        </ul>
+                    </p>
+
+                    <!--Information regarding Update Order status to WooCommerce-->
+                    <p class="alert alert-warning" role="alert" invisible="woocommerce_export_operations != 'update_order_status' or woocommerce_operations != 'export'"
+                       style="border-radius: 1em;">
+                        <h3>Information:</h3>
+                        <ul>
+                            <li>
+                                This feature update Order Status to WooCommerce.</li>
+                            <li>
+                                Only validated Delivery Orders will be going to update in WooCommerce.
+                            </li>
+                        </ul>
+                    </p>
+
+                    <!--Information regarding Export Listing to WooCommerce-->
+                    <p class="alert alert-warning" role="alert" invisible="woocommerce_export_operations != 'export_listings' or woocommerce_operations != 'export'"
+                       style="border-radius: 1em;">
+                        <h3>Information:</h3>
+                        <ul>
+                            <li>
+                                With Export Listings, you can export your listings to WooCommerce, including all information such as pricing, inventory, and images.
+                            </li>
+                            <li>
+                                If you want to publish those listings directly then you can configure <strong>Publish in Store</strong>.
+                            </li>
+                        </ul>
+                    </p>
+                    <footer>
+                        <button string="Process" type="object" class="btn-primary" name="do_woocommerce_operations"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

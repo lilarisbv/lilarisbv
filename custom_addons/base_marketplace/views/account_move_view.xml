@@ -7,8 +7,8 @@
             <field name="inherit_id" ref="account.view_move_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='partner_id']" position="after">
-                    <field name="mk_instance_id" invisible="1"/>
-                    <field name="is_refunded_in_mk" invisible="1"/>
+                    <field name="mk_instance_id" invisible="1"/><!-- always invisible: technical field required by view logic -->
+                    <field name="is_refunded_in_mk" invisible="1"/><!-- always invisible: technical field required by view logic -->
                 </xpath>
             </field>
         </record>

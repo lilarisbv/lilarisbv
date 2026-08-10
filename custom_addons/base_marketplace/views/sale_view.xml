@@ -14,14 +14,15 @@
                         </group>
                         <group name="sub_group2">
                             <field name="mk_order_number" readonly="1"/>
-                            <field name="canceled_in_marketplace" readonly="1" invisible="1"/>
-                            <field name="marketplace" invisible="1"/>
+                            <field name="canceled_in_marketplace" readonly="1" invisible="1"/><!-- always invisible: technical field required by view logic -->
+                            <field name="marketplace" invisible="1"/><!-- always invisible: technical field required by view logic -->
                         </group>
                     </group>
                 </page>
             </xpath>
             <xpath expr="//field[@name='order_line']/list/field[@name='price_subtotal']" position="after">
                 <field name="mk_id" optional="hide"/>
+                <field name="marketplace_discount_amount" optional="hide"/>
             </xpath>
             <div name="button_box" position="inside">
                 <button type="object" name="open_sale_order_in_marketplace" class="oe_stat_button" icon='fa-eye' string="Show in Marketplace" invisible="not mk_id"/>
@@ -50,8 +51,8 @@
                 <header>
                     <button name="%(sale.action_view_sale_advance_payment_inv)d" type="action" string="Create Invoices" class="btn-secondary"/>
                 </header>
-                <field name="message_needaction" column_invisible="True"/>
-                <field name="currency_id" column_invisible="True"/>
+                <field name="message_needaction" column_invisible="True"/><!-- always invisible: technical field required by view logic -->
+                <field name="currency_id" column_invisible="True"/><!-- always invisible: technical field required by view logic -->
                 <field name="name" string="Number" readonly="1" decoration-bf="1"/>
                 <field name="date_order" widget="date" optional="show" readonly="state in ['cancel', 'sale']"/>
                 <field name="commitment_date" optional="hide"/>
@@ -60,7 +61,7 @@
                 <field name="user_id" widget="many2one_avatar_user" optional="show"/>
                 <field name="activity_ids" widget="list_activity" optional="show"/>
                 <field name="team_id" optional="hide"/>
-                <field name="company_id" groups="!base.group_multi_company" column_invisible="True"/>
+                <field name="company_id" groups="!base.group_multi_company" column_invisible="True"/><!-- always invisible: technical field required by view logic -->
                 <field name="company_id" groups="base.group_multi_company" optional="show" readonly="1"/>
                 <field name="amount_untaxed" sum="Total Tax Excluded" widget="monetary" optional="hide"/>
                 <field name="amount_tax" sum="Tax Total" widget="monetary" optional="hide"/>

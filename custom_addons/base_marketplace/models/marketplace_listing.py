@@ -1,4 +1,5 @@
 from lxml import etree
+
 from odoo import models, fields, api, _
 from odoo.addons.base_marketplace.models.exceptions import MarketplaceException
 
@@ -14,7 +15,7 @@ class MkListing(models.Model):
 
     name = fields.Char('Name', required=True)
     product_tmpl_id = fields.Many2one('product.template', 'Product Template', ondelete='cascade')
-    product_category_id = fields.Many2one("product.category", "Product Category")
+    product_category_id = fields.Many2one("product.category", "Marketplace Product Category")
     listing_item_ids = fields.One2many("mk.listing.item", "mk_listing_id", "Listing Items")
     item_count = fields.Integer("Items", compute='_listing_item_count')
     mk_id = fields.Char("Marketplace Identification", copy=False)
@@ -220,13 +221,13 @@ class MkListing(models.Model):
 
         for mk_variant in listing_item_validation_dict.get('variants', []):
             if not mk_variant.get('sku') and not mk_variant.get('barcode'):
-                return [], [], self._format_error_message("SKU and Barcode not set", listing_item_validation_dict)
+                return [], [], self._format_error_message(_("SKU and Barcode not set"), listing_item_validation_dict)
 
             if sync_product_with == 'sku' and not mk_variant.get('sku', False):
-                return [], [], self._format_error_message("SKU not set", listing_item_validation_dict)
+                return [], [], self._format_error_message(_("SKU not set"), listing_item_validation_dict)
 
             elif sync_product_with == 'barcode' and not mk_variant.get('barcode', False):
-                return [], [], self._format_error_message("Barcode not set", listing_item_validation_dict)
+                return [], [], self._format_error_message(_("Barcode not set"), listing_item_validation_dict)
 
             mk_variant.get('sku') and mk_sku_list.append(mk_variant.get('sku'))
             mk_variant.get('barcode') and mk_barcode_list.append(mk_variant.get('barcode'))
@@ -247,23 +248,23 @@ class MkListing(models.Model):
 
         # Check for unique Barcodes (mandatory as Odoo doesn't allow duplicate Barcodes)
         if mk_barcode_list and len(mk_barcode_list) != count_unique_barcode:
-            return False, self._format_error_message("Duplicate Barcode found", listing_item_validation_dict)
+            return False, self._format_error_message(_("Duplicate Barcode found"), listing_item_validation_dict)
 
         # Check for duplicate SKU or Barcode based on sync strategy
         if sync_product_with == 'sku' and len(mk_sku_list) != count_unique_sku:
-            return False, self._format_error_message("Duplicate SKU found", listing_item_validation_dict)
+            return False, self._format_error_message(_("Duplicate SKU found"), listing_item_validation_dict)
 
         if sync_product_with == 'barcode' and len(mk_barcode_list) != count_unique_barcode:
-            return False, self._format_error_message("Duplicate Barcode found", listing_item_validation_dict)
+            return False, self._format_error_message(_("Duplicate Barcode found"), listing_item_validation_dict)
 
         if sync_product_with == 'barcode_or_sku':
             # If both lists are present, ensure at least one has unique values
             if (mk_barcode_list and len(mk_barcode_list) == count_unique_barcode) or (mk_sku_list and len(mk_sku_list) == count_unique_sku):
                 return True, ""
             if len(mk_sku_list) != count_unique_sku:
-                return False, self._format_error_message("Duplicate SKU found", listing_item_validation_dict)
+                return False, self._format_error_message(_("Duplicate SKU found"), listing_item_validation_dict)
             if len(mk_barcode_list) != count_unique_barcode:
-                return False, self._format_error_message("Duplicate Barcode found", listing_item_validation_dict)
+                return False, self._format_error_message(_("Duplicate Barcode found"), listing_item_validation_dict)
 
         return True, ""
 
@@ -274,9 +275,8 @@ class MkListing(models.Model):
         :param listing_item_validation_dict: Dictionary containing product details.
         :return: String -> The formatted error message.
         """
-        return "IMPORT LISTING: {} in Marketplace Product: {} and Marketplace Listing ID: {}".format(
-            error_message, listing_item_validation_dict.get('name'), listing_item_validation_dict.get('id')
-        )
+        # Task: T7493 - Converted strings to f-strings.
+        return f"IMPORT LISTING: {error_message} in Marketplace Product: {listing_item_validation_dict.get('name')} and Marketplace Listing ID: {listing_item_validation_dict.get('id')}"
 
     def check_validation_for_import_product(self, sync_product_with, listing_item_validation_dict, product_tmpl_id, existing_odoo_product, existing_mk_product):
         mk_sku_list = []
@@ -292,10 +292,10 @@ class MkListing(models.Model):
             # Looking for Odoo product having the same barcode to avoid duplication of Odoo product.
             if barcode:
                 if not odoo_product_id and self.env['product.product'].search([('barcode', '=', barcode)]):
-                    return False, f"IMPORT LISTING : ⚠️ DUPLICATE BARCODE DETECTED | Barcode: {barcode} | Marketplace Product: {listing_item_validation_dict.get('name')} | Marketplace ID: {listing_item_validation_dict.get('id')}"
+                    return False, _("IMPORT LISTING : ⚠️ DUPLICATE BARCODE DETECTED | Barcode: %s | Marketplace Product: %s | Marketplace ID: %s") % (barcode, listing_item_validation_dict.get('name'), listing_item_validation_dict.get('id'))
 
                 elif listing_item_id and self.env['product.product'].search([('barcode', '=', barcode), ('id', '!=', listing_item_id.product_id.id)]):
-                    return False, f"IMPORT LISTING : ⚠️ DUPLICATE BARCODE DETECTED | Barcode: {barcode} | Marketplace Product: {listing_item_validation_dict.get('name')} | Marketplace ID: {listing_item_validation_dict.get('id')}"
+                    return False, _("IMPORT LISTING : ⚠️ DUPLICATE BARCODE DETECTED | Barcode: %s | Marketplace Product: %s | Marketplace ID: %s") % (barcode, listing_item_validation_dict.get('name'), listing_item_validation_dict.get('id'))
         return True, ""
 
     def _find_odoo_product_from_marketplace_attribute(self, mk_attribute_dict, product_tmpl_id):
@@ -323,7 +323,7 @@ class MkListing(models.Model):
                 }
                 return client_action
         marketplace_values = dict(self.mk_instance_id._fields['marketplace'].selection)
-        raise MarketplaceException(_(f"Navigation not available for {marketplace_values.get(self.mk_instance_id.marketplace)} marketplace."))
+        raise MarketplaceException(_("Navigation not available for %s marketplace.") % marketplace_values.get(self.mk_instance_id.marketplace))
 
     def marketplace_published(self):
         if hasattr(self, '%s_published' % self.marketplace):
@@ -340,8 +340,8 @@ class MkListing(models.Model):
             if len(listing_instance) == 1:
                 if len(set(listing.mapped('is_listed'))) > 1:
                     raise MarketplaceException(
-                        "Please ensure that the selected listings are intended for either updating or exporting only. Do not mix exported listings and not exported listings.",
-                        "Operation not allowed!")
+                        _("Please ensure that the selected listings are intended for either updating or exporting only. Do not mix exported listings and not exported listings."),
+                        _("Operation not allowed!"))
                 if listing[0].is_listed:
                     if hasattr(self, '%s_open_update_listing_view' % listing_instance.marketplace):
                         return getattr(self, '%s_open_update_listing_view' % listing_instance.marketplace)()
@@ -401,12 +401,47 @@ class MkListing(models.Model):
         return listing_items
 
     def get_mk_listing_item_for_price_update(self, mk_instance_id):
-        if mk_instance_id.last_listing_price_update_date:
-            pricelist_items = mk_instance_id.pricelist_id.item_ids.filtered(lambda x: x.write_date > mk_instance_id.last_listing_price_update_date and x.applied_on == '0_product_variant')
+        """
+        Retrieve marketplace listing items that require a price update for a marketplace instance.
+
+        This method checks the marketplace instance pricelist for items modified since
+        the last listing price update and determines the related product variants whose
+        listing prices need to be synchronized. It supports pricelist rules applied on:
+
+        - Product variants
+        - Product templates
+        - Product categories
+        - Global pricelist rules
+
+        If a global rule is detected, all listed items for the marketplace instance
+        are returned.
+
+        :param mk_instance_id: Marketplace instance record.
+        :return: Recordset of ``mk.listing.item`` requiring price updates.
+        """
+        pricelist = mk_instance_id.pricelist_id
+        last_update = mk_instance_id.last_listing_price_update_date
+        if last_update:
+            changed_items = pricelist.item_ids.filtered(lambda x: x.write_date > last_update)
         else:
-            pricelist_items = mk_instance_id.pricelist_id.item_ids.filtered(lambda x: x.applied_on == '0_product_variant')
-        listing_items = self.get_mk_listing_item_from_product_variants(pricelist_items.mapped('product_id'), mk_instance_id)
-        return listing_items
+            changed_items = pricelist.item_ids
+        if not changed_items:
+            return self.env['mk.listing.item']
+        product_ids = self.env['product.product']
+        all_listed = False
+        for item in changed_items:
+            if item.applied_on == '0_product_variant' and item.product_id:
+                product_ids |= item.product_id
+            elif item.applied_on == '1_product' and item.product_tmpl_id:
+                product_ids |= item.product_tmpl_id.product_variant_ids
+            elif item.applied_on == '2_product_category' and item.categ_id:
+                product_ids |= self.env['product.product'].search([('categ_id', 'child_of', item.categ_id.id)])
+            elif item.applied_on == '3_global':
+                all_listed = True
+                break
+        if all_listed:
+            return self.env['mk.listing.item'].search([('is_listed', '=', True), ('mk_instance_id', '=', mk_instance_id.id)])
+        return self.get_mk_listing_item_from_product_variants(product_ids, mk_instance_id)
 
     def remove_extra_listing_item(self, mk_id_list):
         if mk_id_list:
@@ -418,7 +453,7 @@ class MkListing(models.Model):
                 need_to_remove_id_list = list(need_to_remove_id_set)
                 self.env['mk.listing.item'].search([('mk_id', 'in', need_to_remove_id_list)]).unlink()
                 self.env['mk.log'].create_update_log(mk_instance_id=self.mk_instance_id, mk_log_id=mk_log_id, mk_log_line_dict={'success': [
-                    {'log_message': 'IMPORT LISTING: {} listing item deleted.'.format(need_to_remove_id_list), 'queue_job_line_id': queue_line_id and queue_line_id.id or False}]})
+                    {'log_message': _("IMPORT LISTING: %s listing item deleted.") % (need_to_remove_id_list,), 'queue_job_line_id': queue_line_id and queue_line_id.id or False}]})
         return True
 
     def action_open_listing_view(self):
