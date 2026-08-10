@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 🎯 SİHİRLİ ADIM: Sistemde 1 kerelik boş bir yardım kaydı oluşturuyoruz -->
+    <record id="customer_ticket_help_static_data" model="customer.ticket.help">
+        <field name="name">Help &amp; Guide</field>
+    </record>
+
+    <!-- TAM EKRAN FORM GÖRÜNÜMÜ -->
+    <record id="view_customer_ticket_help_form" model="ir.ui.view">
+        <field name="name">customer.ticket.help.form</field>
+        <field name="model">customer.ticket.help</field>
+        <field name="arch" type="xml">
+            <!-- create, edit ve delete kapatıldı. Tam bir döküman sayfası oldu! -->
+            <form string="Help &amp; Guide" create="0" edit="0" delete="0">
+                <sheet>
+                    <div class="p-3" style="font-size: 0.95rem; line-height: 1.6;">
+
+                        <!-- 1. BÖLÜM: VİDEO REHBERİ -->
+                        <h4 class="text-primary fw-bold mb-3 border-bottom pb-2">
+                            <i class="fa fa-video-camera me-2"/> Video Tutorial
+                        </h4>
+
+                        <div class="row mb-4">
+                            <!-- Sol taraf: Embed Video -->
+                            <div class="col-md-8 text-center bg-light p-2 rounded border shadow-sm">
+                                <iframe width="100%"
+                                        height="400"
+                                        src="https://www.youtube.com/embed/aLxOl75vKP4"
+                                        frameborder="0"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        allowfullscreen="true">
+                                </iframe>
+                            </div>
+                            <!-- Sağ taraf: Video açıklaması veya buton -->
+                            <div class="col-md-4 d-flex flex-column justify-content-center px-4">
+                                <h5>System Training Video</h5>
+                                <p class="text-muted">You can watch our 5-minute training video to learn how to use the ticketing system efficiently.</p>
+<!--                                <a href="https://www.youtube.com/watch?v=nbso3NVz3p8"-->
+<!--                                   target="_blank"-->
+<!--                                   class="btn btn-outline-danger fw-bold py-2 mt-2">-->
+<!--                                    <i class="fa fa-external-link me-2"/> Open in YouTube-->
+<!--                                </a>-->
+                            </div>
+                        </div>
+
+                        <!-- 2. BÖLÜM: GENEL KURALLAR -->
+                        <h4 class="text-primary fw-bold mb-3 mt-5 border-bottom pb-2">
+                            <i class="fa fa-info-circle me-2"/> Important Information
+                        </h4>
+                        <ul class="list-group list-group-flush mb-4">
+                            <li class="list-group-item bg-transparent">• Daily Limit: You can open a maximum of 10 tickets per day.</li>
+                            <li class="list-group-item bg-transparent">• Ticket stages are automatically updated every 3 hours.</li>
+                            <li class="list-group-item bg-transparent">• You can use the "Refresh" button to check the latest status instantly.</li>
+                        </ul>
+
+                        <!-- 3. BÖLÜM: AŞAMA ANLAMLARI -->
+                        <h4 class="text-primary fw-bold mb-3 mt-5 border-bottom pb-2">
+                            <i class="fa fa-map-signs me-2"/>Stage Guide
+                        </h4>
+
+                        <div class="row mt-3">
+                            <div class="col-md-6 border-end">
+                                <ul class="list-unstyled ps-2">
+                                    <li class="mb-3"><b>[Approved]:</b> The request has been approved.</li>
+                                    <li class="mb-3"><b>[Cancelled]:</b> The request has been cancelled.</li>
+                                    <li class="mb-3"><b>[Change Requested]:</b> Changes requested for this ticket.</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6 ps-4">
+                                <ul class="list-unstyled ps-2">
+                                    <li class="mb-2"><b>[New]:</b> Your request has been received.</li>
+                                    <li class="mb-2"><b>[Queued]:</b> Your request has been reviewed and scheduled.</li>
+                                    <li class="mb-2"><b>[In Progress]:</b> Our development team has started working on your request.</li>
+                                    <li class="mb-2"><b>[On Hold]:</b> This ticket is on hold. Awaiting further info/action from your side.</li>
+                                    <li class="mb-2"><b>[Under Review]:</b> We are currently evaluating the feasibility/optimization of this request.</li>
+                                    <li class="mb-2"><b>[Delivered]:</b> Your request has been delivered. Please review the solution and confirm.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

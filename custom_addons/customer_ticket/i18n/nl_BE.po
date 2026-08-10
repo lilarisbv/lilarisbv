@@ -1,0 +1,859 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* customer_ticket
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0-20260528\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-03 11:24+0000\n"
+"PO-Revision-Date: 2026-07-03 13:26+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: nl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.8\n"
+
+#. module: customer_ticket
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_help_form
+msgid "<b>[Approved]:</b> The request has been approved."
+msgstr "<b>[Goedgekeurd]:</b> Het verzoek is goedgekeurd."
+
+#. module: customer_ticket
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_help_form
+msgid "<b>[Cancelled]:</b> The request has been cancelled."
+msgstr "<b>[Geannuleerd]:</b> Het verzoek is geannuleerd."
+
+#. module: customer_ticket
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_help_form
+msgid "<b>[Change Requested]:</b> Changes requested for this ticket."
+msgstr "<b>[Wijziging aangevraagd]:</b> Wijzigingen aangevraagd voor dit ticket."
+
+#. module: customer_ticket
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_help_form
+msgid ""
+"<b>[Delivered]:</b> Your request has been delivered. Please review the solution "
+"and confirm."
+msgstr ""
+"<b>[Geleverd]:</b> Uw verzoek is opgeleverd. Controleer de oplossing en "
+"bevestig deze."
+
+#. module: customer_ticket
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_help_form
+msgid ""
+"<b>[In Progress]:</b> Our development team has started working on your request."
+msgstr ""
+"<b>[In behandeling]:</b> Ons ontwikkelingsteam is begonnen met de verwerking "
+"van uw verzoek."
+
+#. module: customer_ticket
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_help_form
+msgid "<b>[New]:</b> Your request has been received."
+msgstr "<b>[Nieuw]:</b> Uw verzoek is ontvangen."
+
+#. module: customer_ticket
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_help_form
+msgid ""
+"<b>[On Hold]:</b> This ticket is on hold. Awaiting further info/action from "
+"your side."
+msgstr ""
+"<b>[In wacht]:</b> Dit ticket staat in de wacht. In afwachting van verdere "
+"informatie/actie van uw kant."
+
+#. module: customer_ticket
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_help_form
+msgid "<b>[Queued]:</b> Your request has been reviewed and scheduled."
+msgstr "<b>[In wachtrij]:</b> Uw verzoek is beoordeeld en ingepland."
+
+#. module: customer_ticket
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_help_form
+msgid ""
+"<b>[Under Review]:</b> We are currently evaluating the feasibility/optimization "
+"of this request."
+msgstr ""
+"<b>[In beoordeling]:</b>We evalueren momenteel de haalbaarheid/optimalisatievan "
+"dit verzoek."
+
+#. module: customer_ticket
+#: model:mail.template,body_html:customer_ticket.email_template_ticket_delivery
+msgid ""
+"<div style=\"font-family: Arial, sans-serif; font-size: 14px; color: #333333; "
+"max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; padding: 20px; "
+"border-radius: 7px;\">\n"
+"                <h2 style=\"color: #5cb85c; margin-top: 0;\">Solution Delivered!"
+"</h2>\n"
+"                <p>Dear <t t-out=\"object.create_uid.name\"/>,</p>\n"
+"                <p>\n"
+"                Great news! The development/solution for your ticket <strong><t "
+"t-out=\"object.ticket_number\"/> - <t t-out=\"object.name\"/></strong> has been "
+"completed and delivered.\n"
+"                </p>\n"
+"\n"
+"                <div style=\"background-color: #d9edf7; border: 1px solid "
+"#bce8f1; padding: 12px; border-radius: 4px; margin: 15px 0; color: #31708f;\">\n"
+"                    <strong>Delivery Notes:</strong><br/>\n"
+"                    <t t-out=\"object.confirmation_status or 'The solution is "
+"ready for your review.'\"/>\n"
+"                </div>\n"
+"\n"
+"                <p>Please review the deployed solution. If everything works "
+"perfectly, you can approve and close the ticket from your portal.</p>\n"
+"\n"
+"                <div style=\"margin: 25px 0; text-align: center;\">\n"
+"                    <a t-att-href=\"'%s/"
+"web#id=%s&amp;model=customer.ticket&amp;view_type=form' % "
+"(object.env['ir.config_parameter'].sudo().get_param('web.base.url'), object.id)"
+"\" style=\"background-color: #5cb85c; color: white; padding: 10px 20px; text-"
+"decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;"
+"\">\n"
+"                        Review &amp; Approve Solution\n"
+"                    </a>\n"
+"                </div>\n"
+"\n"
+"                <t t-if=\"object.contact_person_calendar_link\">\n"
+"                    <p style=\"margin-top: 20px; font-size: 13px;\">Need a "
+"meeting to review the solution? You can book an appointment with your contact "
+"person directly:</p>\n"
+"                    <div style=\"text-align: center; margin: 15px 0;\">\n"
+"                        <a t-att-href=\"object.contact_person_calendar_link\" "
+"style=\"background-color: #337ab7; color: white; padding: 8px 15px; text-"
+"decoration: none; border-radius: 4px; font-size: 13px; display: inline-block;"
+"\">\n"
+"                            Book a Review Meeting\n"
+"                        </a>\n"
+"                    </div>\n"
+"                </t>\n"
+"            </div>\n"
+"        "
+msgstr ""
+"<div style=\"font-family: Arial, sans-serif; font-size: 14px; color: #333333; "
+"max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; padding: 20px; "
+"border-radius: 7px;\">\n"
+"                <h2 style=\"color: #5cb85c; margin-top: 0;\">Oplossing Geleverd!"
+"</h2>\n"
+"                <p>Beste <t t-out=\"object.create_uid.name\"/>,</p>\n"
+"                <p>\n"
+"                Goed nieuws! De ontwikkeling/oplossing voor uw ticket "
+"<strong><t t-out=\"object.ticket_number\"/> - <t t-out=\"object.name\"/></"
+"strong> is voltooid en opgeleverd.\n"
+"                </p>\n"
+"\n"
+"                <div style=\"background-color: #d9edf7; border: 1px solid "
+"#bce8f1; padding: 12px; border-radius: 4px; margin: 15px 0; color: #31708f;\">\n"
+"                    <strong>Opleveringsnotities:</strong><br/>\n"
+"                    <t t-out=\"object.confirmation_status or 'De oplossing "
+"staat klaar voor uw beoordeling.'\"/>\n"
+"                </div>\n"
+"\n"
+"                <p>Gelieve de geïmplementeerde oplossing te controleren. Als "
+"alles perfect werkt, kunt u het ticket goedkeuren en sluiten via uw portaal.</"
+"p>\n"
+"\n"
+"                <div style=\"margin: 25px 0; text-align: center;\">\n"
+"                    <a t-att-href=\"'%s/"
+"web#id=%s&amp;model=customer.ticket&amp;view_type=form' % "
+"(object.env['ir.config_parameter'].sudo().get_param('web.base.url'), object.id)"
+"\" style=\"background-color: #5cb85c; color: white; padding: 10px 20px; text-"
+"decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;"
+"\">\n"
+"                        Oplossing Beoordelen &amp; Goedkeuren\n"
+"                    </a>\n"
+"                </div>\n"
+"\n"
+"                <t t-if=\"object.contact_person_calendar_link\">\n"
+"                    <p style=\"margin-top: 20px; font-size: 13px;\">Heeft u een "
+"vergadering nodig om de oplossing te bespreken? U kunt rechtstreeks een "
+"afspraak maken met uw contactpersoon:</p>\n"
+"                    <div style=\"text-align: center; margin: 15px 0;\">\n"
+"                        <a t-att-href=\"object.contact_person_calendar_link\" "
+"style=\"background-color: #337ab7; color: white; padding: 8px 15px; text-"
+"decoration: none; border-radius: 4px; font-size: 13px; display: inline-block;"
+"\">\n"
+"                            Boek een Beoordelingsgesprek\n"
+"                        </a>\n"
+"                    </div>\n"
+"                </t>\n"
+"            </div>\n"
+"        "
+
+#. module: customer_ticket
+#: model:mail.template,body_html:customer_ticket.email_template_ticket_on_hold
+msgid ""
+"<div style=\"font-family: Arial, sans-serif; font-size: 14px; color: #333333; "
+"max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; padding: 20px; "
+"border-radius: 7px;\">\n"
+"                <h2 style=\"color: #d9534f; margin-top: 0;\">Ticket On Hold</"
+"h2>\n"
+"                <p>Dear <t t-out=\"object.create_uid.name\"/>,</p>\n"
+"                <p>\n"
+"                    Your ticket <strong><t t-out=\"object.ticket_number\"/> - "
+"<t t-out=\"object.name\"/></strong> has been placed <strong>On Hold</strong> by "
+"our technical team.\n"
+"                </p>\n"
+"\n"
+"                <div style=\"background-color: #fcf8e3; border: 1px solid "
+"#faebcc; padding: 12px; border-radius: 4px; margin: 15px 0; color: #8a6d3b;\">\n"
+"                    <strong>Reason / Message from Team:</strong><br/>\n"
+"                    <t t-out=\"object.confirmation_status or 'Awaiting further "
+"information from your side.'\"/>\n"
+"                </div>\n"
+"\n"
+"                <p>Please review the request and provide the necessary details "
+"so we can resume our work.</p>\n"
+"\n"
+"                <div style=\"margin: 25px 0; text-align: center;\">\n"
+"                    <a t-att-href=\"'%s/"
+"web#id=%s&amp;model=customer.ticket&amp;view_type=form' % "
+"(object.env['ir.config_parameter'].sudo().get_param('web.base.url'), object.id)"
+"\" style=\"background-color: #714B67; color: white; padding: 10px 20px; text-"
+"decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;"
+"\">\n"
+"                        View Ticket Details\n"
+"                    </a>\n"
+"                </div>\n"
+"                <t t-if=\"object.contact_person_calendar_link\">\n"
+"                    <p style=\"margin-top: 20px; font-size: 13px;\">Need a "
+"meeting? You can book an appointment with your contact person directly:</p>\n"
+"                    <div style=\"text-align: center; margin: 15px 0;\">\n"
+"                        <a t-att-href=\"object.contact_person_calendar_link\" "
+"style=\"background-color: #337ab7; color: white; padding: 8px 15px; text-"
+"decoration: none; border-radius: 4px; font-size: 13px; display: inline-block;"
+"\">\n"
+"                            Book a Review Meeting\n"
+"                        </a>\n"
+"                    </div>\n"
+"                </t>\n"
+"            </div>\n"
+"        "
+msgstr ""
+"<div style=\"font-family: Arial, sans-serif; font-size: 14px; color: #333333; "
+"max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; padding: 20px; "
+"border-radius: 7px;\">\n"
+"                <h2 style=\"color: #d9534f; margin-top: 0;\">Ticket In Wacht</"
+"h2>\n"
+"                <p>Beste <t t-out=\"object.create_uid.name\"/>,</p>\n"
+"                <p>\n"
+"                    Uw ticket <strong><t t-out=\"object.ticket_number\"/> - <t "
+"t-out=\"object.name\"/></strong> werd door ons technisch team <strong>In Wacht</"
+"strong> geplaatst.\n"
+"                </p>\n"
+"\n"
+"                <div style=\"background-color: #fcf8e3; border: 1px solid "
+"#faebcc; padding: 12px; border-radius: 4px; margin: 15px 0; color: #8a6d3b;\">\n"
+"                    <strong>Reden / Bericht van het Team:</strong><br/>\n"
+"                    <t t-out=\"object.confirmation_status or 'In afwachting van "
+"verdere informatie van uw kant.'\"/>\n"
+"                </div>\n"
+"\n"
+"                <p>Gelieve de aanvraag te bekijken en de nodige details te "
+"bezorgen, zodat we ons werk kunnen hervatten.</p>\n"
+"\n"
+"                <div style=\"margin: 25px 0; text-align: center;\">\n"
+"                    <a t-att-href=\"'%s/"
+"web#id=%s&amp;model=customer.ticket&amp;view_type=form' % "
+"(object.env['ir.config_parameter'].sudo().get_param('web.base.url'), object.id)"
+"\" style=\"background-color: #714B67; color: white; padding: 10px 20px; text-"
+"decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;"
+"\">\n"
+"                        Bekijk Ticketdetails\n"
+"                    </a>\n"
+"                </div>\n"
+"                <t t-if=\"object.contact_person_calendar_link\">\n"
+"                    <p style=\"margin-top: 20px; font-size: 13px;\">Een "
+"vergadering nodig? U kunt rechtstreeks een afspraak boeken met uw "
+"contactpersoon:</p>\n"
+"                    <div style=\"text-align: center; margin: 15px 0;\">\n"
+"                        <a t-att-href=\"object.contact_person_calendar_link\" "
+"style=\"background-color: #337ab7; color: white; padding: 8px 15px; text-"
+"decoration: none; border-radius: 4px; font-size: 13px; display: inline-block;"
+"\">\n"
+"                            Boek een gesprek\n"
+"                        </a>\n"
+"                    </div>\n"
+"                </t>\n"
+"            </div>\n"
+"        "
+
+#. module: customer_ticket
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_help_form
+msgid "<i class=\"fa fa-info-circle me-2\"/> Important Information"
+msgstr "<i class=\"fa fa-info-circle me-2\"/> Belangrijke Informatie"
+
+#. module: customer_ticket
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_help_form
+msgid "<i class=\"fa fa-map-signs me-2\"/>Stage Guide"
+msgstr "<i class=\"fa fa-map-signs me-2\"/>Fasengids"
+
+#. module: customer_ticket
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_help_form
+msgid "<i class=\"fa fa-video-camera me-2\"/> Video Tutorial"
+msgstr "<i class=\"fa fa-video-camera me-2\"/> Videohandleiding"
+
+#. module: customer_ticket
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__message_needaction
+msgid "Action Needed"
+msgstr "Actie vereist"
+
+#. module: customer_ticket
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket_wizard__action_type
+msgid "Action Type"
+msgstr "Actietype"
+
+#. module: customer_ticket
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__active
+msgid "Active"
+msgstr "Actief"
+
+#. module: customer_ticket
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__activity_ids
+msgid "Activities"
+msgstr "Activiteiten"
+
+#. module: customer_ticket
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Activiteit uitzondering decoratie"
+
+#. module: customer_ticket
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__activity_state
+msgid "Activity State"
+msgstr "Activiteitsstatus"
+
+#. module: customer_ticket
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Activiteitstype icoon"
+
+#. module: customer_ticket
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_form
+msgid "Approve"
+msgstr "Goedkeuren"
+
+#. module: customer_ticket
+#: model:ir.model.fields.selection,name:customer_ticket.selection__customer_ticket__stage__done
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_search
+msgid "Approved"
+msgstr "Goedgekeurd"
+
+#. module: customer_ticket
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_search
+msgid "Archived"
+msgstr "Gearchiveerd"
+
+#. module: customer_ticket
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__attachment_file
+msgid "Attachment / Screenshot"
+msgstr "Bijlage / Screenshot"
+
+#. module: customer_ticket
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__message_attachment_count
+msgid "Attachment Count"
+msgstr "Aantal bijlagen"
+
+#. module: customer_ticket
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_form
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_tree
+msgid "Book Appointment"
+msgstr "Afspraak boeken"
+
+#. module: customer_ticket
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__contact_person_calendar_link
+msgid "Calendar Link"
+msgstr "Agendalink"
+
+#. module: customer_ticket
+#: model:ir.model.fields.selection,name:customer_ticket.selection__customer_ticket_wizard__action_type__cancel
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_form
+msgid "Cancel"
+msgstr "Annuleren"
+
+#. module: customer_ticket
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_search
+msgid "Canceled"
+msgstr "Geannuleerd"
+
+#. module: customer_ticket
+#: model:ir.model.fields.selection,name:customer_ticket.selection__customer_ticket__stage__cancel
+msgid "Cancelled"
+msgstr "Geannuleerd"
+
+#. module: customer_ticket
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__central_task_id
+msgid "Central Task ID"
+msgstr "Centraal taak-ID"
+
+#. module: customer_ticket
+#: model:ir.model.fields.selection,name:customer_ticket.selection__customer_ticket__stage__change
+msgid "Change Requested"
+msgstr "Wijziging aangevraagd"
+
+#. module: customer_ticket
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__contact_person_email
+msgid "Contact Email"
+msgstr "Contact e-mail"
+
+#. module: customer_ticket
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__contact_person_name
+msgid "Contact Person"
+msgstr "Contactpersoon"
+
+#. module: customer_ticket
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__create_uid
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket_help__create_uid
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket_wizard__create_uid
+msgid "Created by"
+msgstr "Angemaakt door"
+
+#. module: customer_ticket
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__create_date
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket_help__create_date
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket_wizard__create_date
+msgid "Created on"
+msgstr "Angemaakt op"
+
+#. module: customer_ticket
+#: model:ir.model,name:customer_ticket.model_customer_ticket
+msgid "Customer Ticket"
+msgstr "Klantenticket"
+
+#. module: customer_ticket
+#: model:ir.model,name:customer_ticket.model_customer_ticket_help
+msgid "Customer Ticket Help Guide"
+msgstr "Handleiding voor klantentickets"
+
+#. module: customer_ticket
+#: model:mail.template,name:customer_ticket.email_template_ticket_delivery
+msgid "Customer Ticket: Delivery Notification"
+msgstr "Klantenticket: Opleveringsnotificatie"
+
+#. module: customer_ticket
+#: model:mail.template,name:customer_ticket.email_template_ticket_on_hold
+msgid "Customer Ticket: On Hold Notification"
+msgstr "Klantenticket: In wacht notificatie"
+
+#. module: customer_ticket
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_search
+msgid "Date"
+msgstr "Datum"
+
+#. module: customer_ticket
+#: model:ir.model.fields.selection,name:customer_ticket.selection__customer_ticket__stage__delivery
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_search
+msgid "Delivered"
+msgstr "Geleverd"
+
+#. module: customer_ticket
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__description
+msgid "Description"
+msgstr "Omschrijving"
+
+#. module: customer_ticket
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_form
+msgid "Description and Documents"
+msgstr "Omschrijving en documenten"
+
+#. module: customer_ticket
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket_wizard__reason
+msgid "Details / Reason"
+msgstr "Details / Reden"
+
+#. module: customer_ticket
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_wizard_form
+msgid "Discard"
+msgstr "Annuleren"
+
+#. module: customer_ticket
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__display_name
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket_help__display_name
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket_wizard__display_name
+msgid "Display Name"
+msgstr "Weergavenaam"
+
+#. module: customer_ticket
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_form
+msgid "E-mail:"
+msgstr ""
+
+#. module: customer_ticket
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_form
+msgid "Ekran Görüntüsü / Dosya"
+msgstr "Screenshot / Bestand"
+
+#. module: customer_ticket
+#. odoo-python
+#: code:addons/customer_ticket/models/ticket.py:0
+msgid "File size too large! Screenshots must be a maximum of 2MB."
+msgstr "Bestandsgrootte te groot! Screenshots mogen maximaal 2MB groot zijn."
+
+#. module: customer_ticket
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__attachment_filename
+msgid "Filename"
+msgstr "Bestandsnaam"
+
+#. module: customer_ticket
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__message_follower_ids
+msgid "Followers"
+msgstr "Volgers"
+
+#. module: customer_ticket
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Volgers (Partners)"
+
+#. module: customer_ticket
+#: model:ir.model.fields,help:customer_ticket.field_customer_ticket__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Font Awesome icoon bv. fa-tasks"
+
+#. module: customer_ticket
+#: model_terms:web_tour.tour,rainbow_man_message:customer_ticket.help_tour
+msgid "Great! You've reached to the help guide."
+msgstr "Geweldig! U hebt de handleiding bereikt."
+
+#. module: customer_ticket
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__has_message
+msgid "Has Message"
+msgstr "Heeft bericht"
+
+#. module: customer_ticket
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_tree
+msgid "Help"
+msgstr "Hulp"
+
+#. module: customer_ticket
+#. odoo-python
+#: code:addons/customer_ticket/models/help.py:0
+#: model:customer.ticket.help,name:customer_ticket.customer_ticket_help_static_data
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_help_form
+msgid "Help & Guide"
+msgstr "Hulp & Handleiding"
+
+#. module: customer_ticket
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__id
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket_help__id
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket_wizard__id
+msgid "ID"
+msgstr ""
+
+#. module: customer_ticket
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__activity_exception_icon
+msgid "Icon"
+msgstr "Icoon"
+
+#. module: customer_ticket
+#: model:ir.model.fields,help:customer_ticket.field_customer_ticket__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr ""
+
+#. module: customer_ticket
+#: model:ir.model.fields,help:customer_ticket.field_customer_ticket__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: customer_ticket
+#: model:ir.model.fields,help:customer_ticket.field_customer_ticket__message_has_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: customer_ticket
+#: model:ir.model.fields.selection,name:customer_ticket.selection__customer_ticket__stage__process
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_search
+msgid "In Progress"
+msgstr "In behandeling"
+
+#. module: customer_ticket
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket_wizard__instruction
+msgid "Instruction"
+msgstr "Instructie"
+
+#. module: customer_ticket
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__message_is_follower
+msgid "Is Follower"
+msgstr "Is volger"
+
+#. module: customer_ticket
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__write_uid
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket_help__write_uid
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket_wizard__write_uid
+msgid "Last Updated by"
+msgstr "Laatst bijgewerkt door"
+
+#. module: customer_ticket
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__write_date
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket_help__write_date
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket_wizard__write_date
+msgid "Last Updated on"
+msgstr "Laatst bijgewerkt op"
+
+#. module: customer_ticket
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__message_has_error
+msgid "Message Delivery error"
+msgstr "Fout bij aflevering bericht"
+
+#. module: customer_ticket
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__message_ids
+msgid "Messages"
+msgstr "Berichten"
+
+#. module: customer_ticket
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "Mijn activiteitsdeadline"
+
+#. module: customer_ticket
+#: model:ir.actions.act_window,name:customer_ticket.action_customer_ticket
+#: model:ir.ui.menu,name:customer_ticket.menu_customer_ticket
+msgid "My Tickets"
+msgstr "Mijn tickets"
+
+#. module: customer_ticket
+#: model:ir.ui.menu,name:customer_ticket.menu_customer_ticket_root
+msgid "Nametech Support"
+msgstr ""
+
+#. module: customer_ticket
+#. odoo-javascript
+#: code:addons/customer_ticket/static/src/js/ticket_tour.js:0
+msgid ""
+"Need help? Click here to view the system guide and watch the training video!"
+msgstr ""
+"Hulp nodig? Klik hier om de systeemhandleiding te bekijken en de trainingsvideo "
+"te bekijken!"
+
+#. module: customer_ticket
+#: model:ir.model.fields.selection,name:customer_ticket.selection__customer_ticket__stage__draft
+msgid "New"
+msgstr "Nieuw"
+
+#. module: customer_ticket
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr ""
+
+#. module: customer_ticket
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__activity_summary
+msgid "Next Activity Summary"
+msgstr ""
+
+#. module: customer_ticket
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__activity_type_id
+msgid "Next Activity Type"
+msgstr ""
+
+#. module: customer_ticket
+#. odoo-python
+#: code:addons/customer_ticket/models/ticket.py:0
+msgid "No appointment link could be found for your company representative!"
+msgstr ""
+
+#. module: customer_ticket
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: customer_ticket
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: customer_ticket
+#: model:ir.model.fields,help:customer_ticket.field_customer_ticket__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr ""
+
+#. module: customer_ticket
+#: model:ir.model.fields,help:customer_ticket.field_customer_ticket__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: customer_ticket
+#: model:ir.model.fields.selection,name:customer_ticket.selection__customer_ticket__stage__on_hold
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_search
+msgid "On Hold"
+msgstr "In wacht"
+
+#. module: customer_ticket
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_search
+msgid "Open Tickets"
+msgstr "Open tickets"
+
+#. module: customer_ticket
+#. odoo-python
+#: code:addons/customer_ticket/wizard/ticket_wizard.py:0
+msgid "Please briefly explain the reason for cancellation below:"
+msgstr "Gelieve hieronder kort de reden voor annulering toe te lichten:"
+
+#. module: customer_ticket
+#. odoo-python
+#: code:addons/customer_ticket/wizard/ticket_wizard.py:0
+msgid "Please enter your request details below:"
+msgstr "Vul hieronder de details van uw aanvraag in:"
+
+#. module: customer_ticket
+#: model:ir.model.fields.selection,name:customer_ticket.selection__customer_ticket__stage__queue
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_search
+msgid "Queued"
+msgstr "In wachtrij"
+
+#. module: customer_ticket
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_tree
+msgid "Refresh"
+msgstr "Vernieuwen"
+
+#. module: customer_ticket
+#: model:ir.model.fields.selection,name:customer_ticket.selection__customer_ticket_wizard__action_type__change
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_form
+msgid "Request Change"
+msgstr "Wijziging aanvragen"
+
+#. module: customer_ticket
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__activity_user_id
+msgid "Responsible User"
+msgstr "Verantwoordelijke gebruiker"
+
+#. module: customer_ticket
+#. odoo-python
+#: code:addons/customer_ticket/models/ticket.py:0
+msgid "Security Limit: You cannot open more than 10 tickets per day."
+msgstr "Veiligheidslimiet: U kunt maximaal 10 tickets per dag openen."
+
+#. module: customer_ticket
+#: model:mail.template,subject:customer_ticket.email_template_ticket_delivery
+msgid "Solution Ready! Ticket {{ object.ticket_number }} Has Been Delivered"
+msgstr "Oplossing Klaar! Ticket {{ object.ticket_number }} is Geleverd"
+
+#. module: customer_ticket
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__stage
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_search
+msgid "Stage"
+msgstr "Fase"
+
+#. module: customer_ticket
+#: model:ir.model.fields,help:customer_ticket.field_customer_ticket__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+
+#. module: customer_ticket
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__name
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_search
+msgid "Subject"
+msgstr "Onderwerp"
+
+#. module: customer_ticket
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_wizard_form
+msgid "Submit"
+msgstr "Indienen"
+
+#. module: customer_ticket
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__confirmation_status
+msgid "Support Note"
+msgstr "Supportnotitie"
+
+#. module: customer_ticket
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_tree
+msgid "Support Tickets"
+msgstr "Supporttickets"
+
+#. module: customer_ticket
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_help_form
+msgid "System Training Video"
+msgstr "Systeemtrainingsvideo"
+
+#. module: customer_ticket
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket_wizard__ticket_id
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_form
+msgid "Ticket"
+msgstr ""
+
+#. module: customer_ticket
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_wizard_form
+msgid "Ticket Action"
+msgstr "Ticketactie"
+
+#. module: customer_ticket
+#: model:ir.model,name:customer_ticket.model_customer_ticket_wizard
+msgid "Ticket Action Wizard"
+msgstr "Wizard ticketactie"
+
+#. module: customer_ticket
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__ticket_number
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_search
+msgid "Ticket No"
+msgstr "Ticketnr"
+
+#. module: customer_ticket
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_form
+msgid "Ticket Subject..."
+msgstr "Onderwerp ticket…"
+
+#. module: customer_ticket
+#: model:ir.actions.server,name:customer_ticket.ir_cron_pull_ticket_stages_ir_actions_server
+msgid "Ticket Support: Pull Stages from Central"
+msgstr "Ticket support: Fasen ophalen van centraal"
+
+#. module: customer_ticket
+#: model:mail.template,subject:customer_ticket.email_template_ticket_on_hold
+msgid "Ticket {{ object.ticket_number }} is On Hold - Action Required"
+msgstr "Ticket {{ object.ticket_number }} staat In Wacht - Actie Vereist"
+
+#. module: customer_ticket
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket_help__name
+msgid "Title"
+msgstr ""
+
+#. module: customer_ticket
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_wizard_form
+msgid "Type here..."
+msgstr "Typ hier…"
+
+#. module: customer_ticket
+#: model:ir.model.fields,help:customer_ticket.field_customer_ticket__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Type van de uitzonderingsactiviteit in het dossier."
+
+#. module: customer_ticket
+#: model:ir.model.fields.selection,name:customer_ticket.selection__customer_ticket__stage__review
+msgid "Under Review"
+msgstr "In beoordeling"
+
+#. module: customer_ticket
+#: model:ir.model.fields,field_description:customer_ticket.field_customer_ticket__is_urgent
+msgid "Urgent"
+msgstr "Dringend"
+
+#. module: customer_ticket
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_help_form
+msgid ""
+"You can watch our 5-minute training video to learn how to use the ticketing "
+"system efficiently."
+msgstr ""
+"U kunt onze 5 minuten durende trainingsvideo bekijken om te leren hoe u het "
+"ticketsysteem efficiënt kunt gebruiken."
+
+#. module: customer_ticket
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_form
+msgid "Your Contact Person:"
+msgstr "Uw contactpersoon:"
+
+#. module: customer_ticket
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_help_form
+msgid "• Daily Limit: You can open a maximum of 10 tickets per day."
+msgstr "• U kunt maximaal 10 tickets per dag aanmaken."
+
+#. module: customer_ticket
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_help_form
+msgid "• Ticket stages are automatically updated every 3 hours."
+msgstr "• Ticketstatussen worden om de 3 uur automatisch geüpdatet."
+
+#. module: customer_ticket
+#: model_terms:ir.ui.view,arch_db:customer_ticket.view_customer_ticket_help_form
+msgid "• You can use the \"Refresh\" button to check the latest status instantly."
+msgstr ""
+"• U kunt de knop \"Vernieuwen\" gebruiken om de status direct te controleren."

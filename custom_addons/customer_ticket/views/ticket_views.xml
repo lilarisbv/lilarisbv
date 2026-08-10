@@ -1,0 +1,165 @@
+<odoo>
+    <record id="seq_customer_ticket" model="ir.sequence">
+        <field name="name">Customer Ticket Sequence</field>
+        <field name="code">customer.ticket</field>
+        <field name="prefix">T-</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="view_customer_ticket_form" model="ir.ui.view">
+        <field name="name">customer.ticket.form</field>
+        <field name="model">customer.ticket</field>
+        <field name="arch" type="xml">
+            <form string="Ticket">
+                <header>
+                    <div class="d-flex gap-2">
+                        <button name="action_approve"
+                                type="object"
+                                string="Approve"
+                                class="btn-success"
+                                invisible="stage != 'delivery'"/>
+
+                        <button name="action_open_change_wizard"
+                                type="object"
+                                string="Request Change"
+                                class="btn-warning"
+                                invisible="stage != 'delivery'"/>
+
+                        <button name="action_open_cancel_wizard"
+                                type="object"
+                                string="Cancel"
+                                class="btn-danger"
+                                invisible="stage in ['done', 'cancel','delivery','process']"/>
+                    </div>
+                    <field name="stage" widget="statusbar" options="{'clickable': '1'}"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="ticket_number"/>
+                        <h1>
+                            <field name="ticket_number" readonly="1"/>
+                        </h1>
+                        <label for="name"/>
+                        <h2>
+                            <field name="name" placeholder="Ticket Subject..." readonly="id != False"/>
+                        </h2>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="is_urgent" readonly="id != False"/>
+                            <field name="central_task_id" groups="base.group_no_one"/>
+                        </group>
+                        <group>
+                            <div colspan="2" class="mb-3" invisible="not contact_person_calendar_link or stage in ('draft', 'cancel','done')">
+                                <button name="action_book_appointment"
+                                        string="Book Appointment"
+                                        type="object"
+                                        icon="fa-calendar"
+                                        class="btn btn-outline-primary w-50 text-center py-2 px-3 fw-bold"/>
+                            </div>
+                            <field name="contact_person_name" string="Your Contact Person:" invisible="not contact_person_name or stage in ('draft', 'cancel','done')"/>
+                            <field name="contact_person_email" string="E-mail:" widget="email" invisible="not contact_person_email or stage in ('draft', 'cancel','done')"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description and Documents" name="description">
+                            <field name="description" readonly="id != False"/>
+                            <field name="attachment_file" filename="attachment_filename" widget="binary" string="Ekran Görüntüsü / Dosya" readonly="id != False"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/> </form>
+        </field>
+    </record>
+
+    <record id="view_customer_ticket_search" model="ir.ui.view">
+        <field name="name">customer.ticket.search</field>
+        <field name="model">customer.ticket</field>
+        <field name="arch" type="xml">
+            <search>
+                <!-- Arama kutusuna yazınca hangi alanlarda arasın? -->
+                <field name="name" string="Subject"/>
+                <field name="ticket_number" string="Ticket No"/>
+
+                <!-- Hızlı Filtreler -->
+                <filter string="Open Tickets"
+                    name="filter_open_tickets"
+                    domain="[('stage', 'not in', ['done', 'cancel'])]"/>
+                <filter string="Approved" name="filter_approved" domain="[('stage', '=', 'done')]"/>
+                <filter string="Canceled" name="filter_canceled" domain="[('stage', '=', 'cancel')]"/>
+                <separator/>
+                <filter string="Queued" name="filter_queue" domain="[('stage', '=', 'queue')]"/>
+                <filter string="In Progress" name="filter_process" domain="[('stage', '=', 'process')]"/>
+                <filter string="On Hold" name="filter_hold" domain="[('stage', '=', 'on_hold')]"/>
+                <filter string="Delivered" name="filter_delivery" domain="[('stage', '=', 'delivery')]"/>
+                <separator/>
+                <filter string="Archived" name="archived" domain="[('active', '=', False)]"/>
+
+                <!-- Gruplama Seçenekleri -->
+                <filter string="Stage" name="group_by_stage" context="{'group_by': 'stage'}"/>
+                <filter string="Date" name="group_by_date" context="{'group_by': 'create_date:year'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_customer_ticket_tree" model="ir.ui.view">
+        <field name="name">customer.ticket.list</field>
+        <field name="model">customer.ticket</field>
+        <field name="arch" type="xml">
+            <list string="Support Tickets">
+                <header>
+                    <button name="cron_pull_stage_updates"
+                            type="object"
+                            string="Refresh"
+                            class="btn-primary"
+                            icon="fa-refresh"
+                            display="always"/>
+                    <button name="action_open_help_page"
+                            string="Help"
+                            type="object"
+                            icon="fa-question-circle"
+                            class="btn-secondary"
+                            display="always"/>
+                </header>
+                <field name="contact_person_calendar_link" column_invisible="1"/>
+                <field name="is_urgent" widget="boolean_favorite" nolabel="1"/>
+                <field name="ticket_number"/>
+                <field name="name"/>
+                <field name="stage" widget="badge"
+                       decoration-muted="stage == 'draft'"
+                       decoration-primary="stage == 'process'"
+                       decoration-warning="stage == 'on_hold'"
+                       decoration-info="stage in ('queue','review')"
+                       decoration-success="stage in ('delivery', 'done')"
+                       decoration-danger="stage == 'cancel'"/>
+                <button name="action_book_appointment"
+                        string="Book Appointment"
+                        type="object"
+                        icon="fa-calendar"
+                        class="btn-link text-primary"
+                        invisible="not contact_person_calendar_link or stage in ('draft', 'cancel','done')"/>
+                <field name="confirmation_status" readonly="1"/>
+                <field name="write_date"/>
+                <field name="create_uid" optional="hide"/>
+                <field name="create_date" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+
+    <record id="action_customer_ticket" model="ir.actions.act_window">
+        <field name="name">My Tickets</field>
+        <field name="res_model">customer.ticket</field>
+        <field name="view_mode">list,form</field>
+
+        <field name="context">{'search_default_filter_open_tickets': 1}</field>
+        <field name="search_view_id" ref="view_customer_ticket_search"/>
+    </record>
+
+    <menuitem id="menu_customer_ticket_root"
+              name="Nametech Support"
+              sequence="100"
+              web_icon="customer_ticket,static/description/icon.png"/>
+    <menuitem id="menu_customer_ticket" name="My Tickets" parent="menu_customer_ticket_root" action="action_customer_ticket" sequence="10"/>
+</odoo>
