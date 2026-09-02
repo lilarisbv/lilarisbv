@@ -1,4 +1,0 @@
-[submodule "custom_addons/common_addons"]
-	path = custom_addons/common_addons
-	url = git@github.com:Nametechbv/nametech-common-modules.git
-	branch = v19
