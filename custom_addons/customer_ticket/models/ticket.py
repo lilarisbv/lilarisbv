@@ -66,7 +66,7 @@ class CustomerTicket(models.Model):
 
         tickets = super(CustomerTicket, self).create(vals_list)
         central_url = self.env['ir.config_parameter'].sudo().get_param('central_odoo.url',
-                                                                       'https://rubixb2.com/api/ticket/create')
+                                                                       'https://panel.nametech.be/api/ticket/create')
         api_token = self.env['ir.config_parameter'].sudo().get_param('central_odoo.token', 'Ticket2026')
 
 
@@ -103,7 +103,7 @@ class CustomerTicket(models.Model):
 
     def _call_central_api_respond(self, action, reason=""):
         central_url = self.env['ir.config_parameter'].sudo().get_param('central_odoo.url_respond',
-                                                                       'https://rubixb2.com/api/ticket/respond')
+                                                                       'https://panel.nametech.be/api/ticket/respond')
         api_token = self.env['ir.config_parameter'].sudo().get_param('central_odoo.token', 'RespondTicket2026')
         headers = {'Content-Type': 'application/json', 'Authorization': f'Bearer {api_token}'}
         payload = {
@@ -167,7 +167,7 @@ class CustomerTicket(models.Model):
             return {'type': 'ir.actions.client', 'tag': 'reload'}
 
         central_url = self.env['ir.config_parameter'].sudo().get_param('central_odoo.url_get_stage',
-                                                                       'https://rubixb2.com/api/ticket/get_stage')
+                                                                       'https://panel.nametech.be/api/ticket/get_stage')
         api_token = self.env['ir.config_parameter'].sudo().get_param('central_odoo.token', 'TicketStage2026')
         headers = {'Content-Type': 'application/json', 'Authorization': f'Bearer {api_token}'}
 
