@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="product_template_form_shopify_inherit" model="ir.ui.view">
+        <field name="name">product.template.integration.shopify.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="integration.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='store_specific_settings']" position="inside">
+                <group name="shopify_settings" string="Shopify Specific Settings">
+                    <group colspan="2">
+                        <field name="continue_selling_without_stock"/>
+                        <field name="taxonomy_category_id"
+                               options="{'no_create': True, 'no_create_edit': True, 'no_open': True}"/>
+                        <field name="shopify_sale_channel_ids"
+                               widget="many2many_tags"
+                               domain="[('integration_id.type_api', '=', 'shopify'), ('external_id', '!=', 'no_channel')]"
+                               options="{'no_create': True, 'no_create_edit': True}"/>
+                    </group>
+                </group>
+            </xpath>
+            <xpath expr="//group[@name='product_categories']" position="replace">
+                <group name="product_categories" string="Categories" colspan="2">
+                    <group>
+                        <field name="integration_default_category_id" string="Default Category (Collection)" domain="[('id', 'in', available_category_ids)]" options="{'no_create': True, 'no_edit': True}" help="Primary category for this product in e-commerce stores"/>
+                        <field name="integration_category_ids" string="Website Product Categories (Collections)" widget="many2many">
+                            <list string="Additional Categories (Collections)">
+                                <field name="display_name" nolabel="1"/>
+                            </list>
+                        </field>
+                        <field name="available_category_ids" widget="many2many_tags" invisible="1"/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

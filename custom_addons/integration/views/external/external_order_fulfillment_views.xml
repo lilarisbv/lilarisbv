@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="external_order_fulfillment_view_form" model="ir.ui.view">
+            <field name="name">external.order.fulfillment.view.form</field>
+            <field name="model">external.order.fulfillment</field>
+            <field name="arch" type="xml">
+                <form create="0" edit="0" delete="0">
+                    <header>
+                        <button name="action_skip" type="object" string="Skip"
+                                confirm="Mark this record as skipped? The connector will ignore it from now on."
+                                invisible="internal_status in ('done', 'skipped')"/>
+                        <field name="internal_status" widget="statusbar"
+                               statusbar_visible="draft,done"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="state" readonly="1" widget="badge"
+                                       decoration-success="state == 'success'"
+                                       decoration-danger="state in ('cancelled', 'error', 'failure')"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group string="Shipment Details">
+                                <field name="tracking_company" readonly="1"
+                                       string="Carrier"/>
+                                <field name="tracking_number" readonly="1"/>
+                                <field name="erp_order_id" readonly="1"
+                                       string="Sales Order"/>
+                            </group>
+                            <group string="Processing">
+                                <field name="internal_info" readonly="1"
+                                       string="Processing Notes"/>
+                                <field name="picking_id" readonly="1"
+                                       string="Delivery Order"
+                                       groups="stock.group_stock_user"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Fulfilled Items" name="fulfilled_items">
+                                <field name="line_ids" readonly="1">
+                                    <list>
+                                        <field name="external_reference"
+                                               string="Product"/>
+                                        <field name="code" string="SKU"/>
+                                        <field name="quantity" string="Shipped Qty"/>
+                                        <field name="fulfillable_quantity"
+                                               string="Remaining Qty"
+                                               optional="show"/>
+                                    </list>
+                                </field>
+                            </page>
+                            <page string="Technical Details" name="technical"
+                                  groups="base.group_no_one">
+                                <group>
+                                    <group>
+                                        <field name="id" readonly="1" string="ID"/>
+                                        <field name="name" readonly="1"
+                                               string="Resource Name"/>
+                                        <field name="external_str_id" readonly="1"
+                                               string="External ID"/>
+                                        <field name="external_location_id" readonly="1"
+                                               string="Warehouse Location ID"/>
+                                    </group>
+                                    <group>
+                                        <field name="external_status" readonly="1"
+                                               string="External Status (raw)"/>
+                                        <field name="is_ecommerce_ok" readonly="1"/>
+                                        <field name="do_cancel_external" readonly="1"/>
+                                        <field name="integration_id" readonly="1"/>
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="external_order_fulfillment_view_tree" model="ir.ui.view">
+            <field name="name">external.order.fulfillment.view.list</field>
+            <field name="model">external.order.fulfillment</field>
+            <field name="arch" type="xml">
+                <list create="0" js_class="external_order_record_list_view"
+                      decoration-danger="internal_status == 'failed'"
+                      decoration-info="internal_status == 'draft'"
+                      decoration-muted="internal_status in ('done', 'skipped')">
+                    <field name="id" groups="base.group_no_one"/>
+                    <field name="integration_id"/>
+                    <field name="erp_order_id"/>
+                    <field name="external_str_id" optional="hide"/>
+                    <field name="external_location_id" optional="hide"/>
+                    <field name="external_status" string="Shipment Status"/>
+                    <field name="tracking_company" string="Carrier"/>
+                    <field name="tracking_number"/>
+                    <field name="line_ids" widget="many2many_tags" optional="show"/>
+                    <field name="internal_status" string="Processing Status"/>
+                    <button name="action_skip" type="object" string="Skip"
+                            confirm="Mark this record as skipped? The connector will ignore it from now on."
+                            invisible="internal_status in ('done', 'skipped')"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="external_order_fulfillment_view_search" model="ir.ui.view">
+            <field name="name">external.order.fulfillment.view.search</field>
+            <field name="model">external.order.fulfillment</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="erp_order_id"/>
+                    <field name="external_str_id"/>
+                    <group>
+                        <filter string="Sales Order" name="group_by_erp_order_id" context="{'group_by': 'erp_order_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="external_order_fulfillment_tree_action" model="ir.actions.act_window">
+            <field name="name">Order Fulfillments</field>
+            <field name="path">eci-order-fulfillments</field>
+            <field name="res_model">external.order.fulfillment</field>
+            <field name="view_mode">list,form</field>
+            <field name="group_ids" eval="[(4, ref('base.group_no_one'))]"/>
+        </record>
+
+    </data>
+</odoo>

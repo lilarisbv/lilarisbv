@@ -1,0 +1,111 @@
+.o_integration_kanban .o_kanban_renderer {
+    --KanbanRecord-width: 650px;
+    --KanbanRecord-width-small: 500px;
+}
+
+.o_integration_kanban {
+    h2 {
+        font-size: 2rem;
+    }
+
+    .hoverable-card {
+        // We add white border to avoid the card to move when the border is added on hover
+        border: 1px solid #FFFFFF;
+    }
+
+    .hoverable-card:hover {
+        border: 1px solid #C9CCD2;
+    }
+
+    .kanban-card-logo {
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        width: 30%;
+        min-width: 30%;
+        height: 100%;
+        aspect-ratio: 1 / 1;
+    }
+
+    .kanban-card-content {
+        width: 70%;
+        min-width: 70%;
+    }
+
+    .btn-group .btn {
+        margin: 0 !important;
+    }
+
+    .btn-group .btn:not(:first-child):not(:last-child) {
+        border-left-width: 0;
+        border-right-width: 0;
+    }
+}
+
+.multiline {
+    white-space: pre-line;
+    font-family: monospace;
+    padding: 8px;
+    background-color: #f5f5f5;
+    border: 1px solid #ccc;
+    overflow: auto;
+}
+
+.integration-no-content-logo {
+    height: 128px;
+    max-width: 100%;
+    object-fit: contain;
+}
+
+/* YouTube embedded videos */
+iframe.youtube-embedded-video {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+}
+
+/* API Access Badge Buttons */
+.integration-api-badge-button {
+    background-color: #d1e7dd;
+    color: #0f5132;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    border: 1px solid #badbcc !important;
+    box-shadow: none !important;
+    padding: 0.25rem 0.6rem;
+
+    &:hover {
+        background-color: #badbcc;
+        text-decoration: none;
+        color: #0f5132;
+    }
+
+    &:focus {
+        outline: none;
+        box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+    }
+
+    &.api-access-not-granted {
+        background-color: #f8d7da;
+        color: #842029;
+        border-color: #f5c2c7 !important;
+
+        &:hover {
+            background-color: #f5c2c7;
+            color: #842029;
+        }
+
+        &:focus {
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+        }
+    }
+}
+
+/* Sale Integration form header logo */
+.o_integration_header_logo {
+    img {
+        max-height: 110px;
+        object-fit: contain;
+    }
+}

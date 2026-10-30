@@ -1,0 +1,1031 @@
+# See LICENSE file for full copyright and licensing details.
+
+from types import SimpleNamespace
+
+from .base import ShopifyResourceUpdate
+from .metafields_mixin import MetafieldMixin
+
+
+class OrderParseMixin:
+
+    def __init__(self, *args, **kwargs):
+        self._props = SimpleNamespace(
+            use_customer_currency=False,
+            personal_id_additional_field_name='',
+            vat_number_additional_field_name='',
+            enable_returns_refunds_sync=False,
+        )
+        self._order_line_items = []
+
+    @property
+    def props(self):
+        return self._props
+
+    @property
+    def order_line_items(self):
+        self.ensure_one()
+
+        if not self._order_line_items:
+            for data in (self['lineItems'] or []):
+                line = self._env.OrderLineItem.set(**data)
+                line._order = self
+
+                self._order_line_items.append(line)
+
+        return self._order_line_items
+
+    def update_props(self, **kwargs):
+        for key, value in kwargs.items():
+            setattr(self.props, key, value)
+
+    def parse(self, **kwargs):
+        self.ensure_one()
+
+        # 0. Update props
+        self.update_props(**kwargs)
+
+        # 1. Parse order values
+        lines = self.parse_lines()
+        payment_method = self.parse_payment_method()
+        payment_methods = self.parse_payment_gateway_names()
+        amount_total = self.parse_price_total()
+        delivery_data = self.parse_delivery_data()
+        order_risks = self.parse_order_risks()
+        payment_transactions = self.parse_payment_transactions()
+        integration_workflow_states = self.parse_workflow_states()
+        currency_code = self.parse_currency_code()
+        order_fulfillments = self.parse_fulfillments()
+        order_refunds = self.parse_refunds()
+        order_returns = self.parse_returns()
+        sale_channel_data = self.parse_sale_channel()
+        customer_data = self.parse_customer_data()
+
+        return {
+            'id': self.id_str,
+            'ref': self.name,
+            'date_order': self.created_at,
+            'lines': lines,
+            'payment_method': payment_method,
+            'payment_methods': payment_methods,
+            'amount_total': amount_total,
+            'delivery_data': delivery_data,
+            'discount_data': {},  # Prestashop only
+            'gift_data': {},
+            'order_risks': order_risks,
+            'payment_transactions': payment_transactions,
+            'current_order_state': '',
+            'external_tags': self.tags,
+            'is_cancelled': self.is_cancelled,
+            'external_location_id': self.location_id,
+            'integration_workflow_states': integration_workflow_states,
+            'currency': currency_code,
+            'order_fulfillments': order_fulfillments,
+            'order_refunds': order_refunds,
+            'order_returns': order_returns,
+            'sale_channel_data': sale_channel_data,
+            'order_source_name': self.source_name,
+            'custom_attributes': self.custom_attributes,
+            **customer_data,
+        }
+
+    def parse_lines(self):
+        self.ensure_one()
+
+        # 1. Reset the quantity to the original value
+        for line in self.order_line_items:
+            line.drop_key('current_quantity_tmp')
+
+        # 2. Group lines by location
+        lines_by_location = self._group_lines_by_location()
+
+        # 3. Parse line accouring to location requested quantity
+        result = []
+        for location_id, items in lines_by_location:
+            for (order_line_id, fulfillment_order_qty) in items:
+                order_line = self._get_order_line_by_id(order_line_id)
+
+                available_qty = order_line.current_quantity_tmp
+                if self.props.enable_returns_refunds_sync:
+                    # When returns/refunds sync is enabled, ingest the *original* order in Odoo
+                    # (not Shopify's post-refund currentQuantity) so refund/return processing
+                    # can create correct credit notes. Covers both fully refunded
+                    # (currentQuantity=0) and partially returned (currentQuantity reduced) lines.
+                    original_qty = order_line['quantity'] or 0
+                    if original_qty > 0 and original_qty != available_qty:
+                        available_qty = original_qty
+                        order_line.set(current_quantity_tmp=available_qty)
+                if available_qty <= 0:
+                    continue
+
+                fulfillment_order_qty = order_line.current_quantity_tmp
+                requested_qty = fulfillment_order_qty if (available_qty >= fulfillment_order_qty) else available_qty
+                order_line.set(current_quantity_tmp=available_qty - requested_qty)
+
+                data = order_line.parse(requested_qty)
+                data['external_location_id'] = location_id
+
+                result.append(data)
+
+        return result
+
+    def parse_payment_gateway_names(self) -> list:
+        self.ensure_one()
+
+        names = self.payment_gateway_names
+        OrderTransaction = self._env.OrderTransaction.cls
+
+        if not names:
+            return [OrderTransaction.format_payment_code(False)]
+        return [OrderTransaction.format_payment_code(x) for x in names]
+
+    def parse_payment_method(self):
+        return self.parse_payment_gateway_names()[-1]
+
+    def parse_price_total(self):
+        # When returns/refunds sync is enabled, parse_lines emits the *original* line
+        # quantities (see the equivalent branch above). The header total must follow: pick
+        # totalPriceSet (pre-refund) rather than currentTotalPriceSet (post-refund), otherwise
+        # the framework's total-amount-difference check rejects every partially or fully
+        # refunded order at import.
+        if self.props.enable_returns_refunds_sync:
+            money_bag = self.total_price_set
+        else:
+            money_bag = self.current_total_price_set
+        return money_bag.get_amount(self.props.use_customer_currency)
+
+    def parse_delivery_data(self):
+        """
+        Resolve the delivery carrier and shipping cost for the order.
+
+        The carrier is taken from the fulfillment order's delivery method when it is
+        valid. For marketplace orders (e.g. Amazon via Marketplace Connect) the
+        delivery method carries no service code (so `delivery_method.is_valid` is
+        False), while the carrier identity lives on the order's shipping line. In that
+        case we fall back to the shipping line via `_carrier_from_shipping_line`, which
+        formats the carrier exactly like a delivery method would. The same shipping
+        methods are also collected during master data import (see
+        `ShopifyAPIClient.get_delivery_methods`), so the carrier can be mapped manually
+        and does not depend on the `auto_create_delivery_carrier_on_so` flag.
+
+        Cost, taxes and discount come from the order's shipping lines, never from the fulfillment
+        orders. When the order has several shipping lines, Shopify returns in `shippingLine` a
+        summary of them (summed prices, joined titles, no id or code) whose tax lines and discount
+        allocations are always empty. So the summary supplies the cost and the fallback carrier,
+        while taxes and discount allocations are collected from the real lines of `shippingLines`.
+        Reading them from the summary made a discounted shipping (e.g. a free-shipping code) import
+        without its discount, and the framework levelled the order total with a price-difference
+        line instead.
+
+        For example a marketplace order with an unusable delivery method:
+
+            shippingLine = {
+                "id": "gid://shopify/ShippingLine/11959328473463",
+                "title": "Amazon Standard",
+                "code": "AMZSTD",
+                "carrierIdentifier": null,
+            }
+
+            delivery_method = {
+                "id": "gid://shopify/DeliveryMethod/8332656869751",
+                "presentedName": null,
+                "methodType": "SHIPPING",
+                "serviceCode": null
+            }
+        """
+        shipping_line = self.shipping_line
+        delivery_method = self.delivery_method
+
+        carrier, shipping_cost, taxes, note = {}, 0, [], ''
+        discount = {}
+
+        if shipping_line:
+            use_customer_currency = self.props.use_customer_currency
+
+            # Resolve the carrier. Prefer the fulfillment order's delivery method, but
+            # fall back to the shipping line itself for marketplace orders (e.g. Amazon
+            # via Marketplace Connect) where the delivery method carries no service code
+            # and is therefore not "valid" - yet the order still has a priced shipping
+            # line that must not be dropped.
+            if delivery_method and delivery_method.is_valid:
+                carrier = delivery_method.to_odoo_format()
+                if carrier.get('id'):
+                    method_type = delivery_method.method_type
+                    carrier['is_pickup_point'] = method_type.is_pick_up or method_type.is_pickup_point
+            else:
+                carrier = self._carrier_from_shipping_line(shipping_line)
+
+            # Use the original (non-discounted) price so that the factory can create
+            # proper discount lines for the full discount amount.  Fall back to the
+            # current discounted price if originalPriceSet is not available.
+            original_price = shipping_line.get_original_price(use_customer_currency)
+            shipping_cost = original_price or shipping_line.get_price(use_customer_currency)
+
+            # With several shipping lines `shippingLine` is a summary: it carries the summed prices but
+            # never any tax lines or discount allocations, so those are read from the real lines. Orders
+            # stored before the real lines were requested only have the summary. Removed lines are falsy
+            # (see `ShippingLine.__bool__`), so they neither add a tax nor a discount.
+            billed_lines = [x for x in self.shipping_lines if x] or [shipping_line]
+
+            if self.tax_exempt:
+                taxes = []
+            else:
+                # The tax lines were computed on the discounted price, so that - not the
+                # original one used as `shipping_cost` above - is the base to validate against.
+                taxes = list(dict.fromkeys(
+                    x.to_odoo_format(self.taxes_included_in_price)
+                    for line in billed_lines
+                    for x in line.tax_lines
+                    if not x.is_rate_amount_mismatch(line.get_price(use_customer_currency))
+                ))
+            note = self.note or ''
+
+            discount_allocations = sum([x.discount_allocations for x in billed_lines], [])
+            if discount_allocations:
+                parsed_allocations = []
+                for allocation in discount_allocations:
+                    alloc_amount = allocation.amount_set.get_amount(use_customer_currency)
+                    if not alloc_amount:
+                        continue
+                    parsed_allocations.append({
+                        'code': allocation.discount_application,
+                        'discount_amount': round(alloc_amount, 4),
+                        'discount_amount_tax_incl': 0,
+                    })
+                if parsed_allocations:
+                    total_discount = sum(a['discount_amount'] for a in parsed_allocations)
+                    # Both sides are sums over all shipping lines (`shipping_cost` comes from the summary),
+                    # so this is the discounted share of the whole shipping, not of a single line.
+                    discount_percent = (total_discount / shipping_cost * 100) if shipping_cost else 0
+                    discount = {
+                        'discount_allocations': parsed_allocations,
+                        'discount_amount': total_discount,
+                        'discount_percent': discount_percent,
+                    }
+
+        return {
+            'carrier': carrier,
+            'shipping_cost': shipping_cost,
+            'taxes': taxes,
+            'delivery_notes': note,
+            'discount': discount,
+        }
+
+    def _carrier_from_shipping_line(self, shipping_line):
+        """Build an Odoo carrier dict from the order's shipping line.
+
+        Used as a fallback when the fulfillment order's delivery method is not
+        "valid" (no service code / presented name), which happens for marketplace
+        orders such as Amazon via Marketplace Connect. In that case the carrier
+        identity still lives on the shipping line (`code` / `title`), so we format
+        it the same way `DeliveryMethod.to_odoo_format` does to keep the carrier
+        mapping code consistent.
+        """
+        code = shipping_line['code']
+        title = shipping_line['title']
+        if not code and not title:
+            return {}
+
+        name = title or code
+        # `format_delivery_code` only relies on the class-level prefix, so calling it
+        # on the (empty) DeliveryMethod resource is safe and avoids duplicating logic.
+        formatted_code = self._env.DeliveryMethod.format_delivery_code(name, code or name)
+        return {'id': formatted_code, 'name': name}
+
+    def parse_order_risks(self):
+        self.ensure_one()
+
+        result = self.risk_summary.parse()
+
+        for risk in result:
+            risk['order_id'] = self.id_str
+
+        return result
+
+    def parse_payment_transactions(self):
+        use_customer_currency = self.props.use_customer_currency
+        return [x.to_odoo_format(use_customer_currency) for x in self.transactions]
+
+    def parse_workflow_states(self):
+        """
+        Order of the `financial_status` (1)
+        and `fulfillment_status` (2) matters!!!
+        """
+        self.ensure_one()
+
+        return [
+            self.financial_status.to_odoo_format(),
+            self.fulfillment_status.to_odoo_format(),
+        ]
+
+    def parse_currency_code(self):
+        self.ensure_one()
+        return self.presentmentCurrencyCode if self.props.use_customer_currency else self.currencyCode
+
+    def parse_fulfillments(self):
+        self.ensure_one()
+        return [x.to_odoo_format() for x in self.fulfillments]
+
+    @property
+    def returns_refunds_enabled(self):
+        """Whether refund and return data was requested for this order.
+
+        Read from the client rather than from `props` because the two callers of the parse methods
+        set props differently: `parse()` passes every setting, while `SaleOrder.
+        _adjust_integration_external_data` passes only the currency switch. The client carries the
+        same value that shaped the query body, so body and parsers can never disagree.
+        """
+        return self._env.options.enable_returns_refunds_sync
+
+    def parse_refunds(self):
+        if not self.returns_refunds_enabled:
+            return []
+
+        use_customer_currency = self.props.use_customer_currency
+        return [x.to_odoo_format(use_customer_currency) for x in self.refunds]
+
+    def parse_returns(self):
+        # Guarding here rather than inside `synthesizes_return` is deliberate. With the refund body
+        # omitted from the query, `Refund.linked_return` is falsy for every refund, which would
+        # flip `synthesizes_return` to True and fabricate synthetic returns that do not exist.
+        # One check at the source removes the whole class of problem.
+        if not self.returns_refunds_enabled:
+            return []
+
+        fulfillment_lookup = self._build_fulfillment_line_item_lookup()
+        returns = [x.to_odoo_format(fulfillment_lookup) for x in self.returns]
+        # Shopify's order-level "Refund" action with restock produces refunds carrying
+        # restockType=RETURN/LEGACY_RESTOCK but no separate Return entity. Synthesize a return
+        # for each such refund so the standard return pipeline creates the restock picking
+        # (mirrors the WooCommerce pattern in WooOrder._map_refund). The refund links to it via
+        # linked_return_str_id (set in Refund.to_odoo_format).
+        for refund in self.refunds:
+            synthetic_return = refund.synthetic_return_format()
+            if synthetic_return:
+                returns.append(synthetic_return)
+        return returns
+
+    def _build_fulfillment_line_item_lookup(self):
+        """Build lookup: FulfillmentLineItem GID → parent Fulfillment id_str.
+
+        Used by parse_returns() so the base flow can create one return picking
+        per parent outgoing fulfillment (multi-picking partition).
+        """
+        lookup = {}
+        for fulfillment in self.fulfillments:
+            parent_id_str = fulfillment.id_str
+            for fl_item in fulfillment.fulfillment_line_items:
+                fli_gid = fl_item['id'] or ''
+                if fli_gid:
+                    lookup[fli_gid] = parent_id_str
+        return lookup
+
+    def parse_sale_channel(self):
+        self.ensure_one()
+        publication = self.publication
+
+        if not publication:
+            return None
+
+        return publication.to_odoo_format()
+
+    def parse_customer_data(self):
+        self.ensure_one()
+        customer = self.customer
+
+        if customer:
+            billing = self.billing_address
+
+            if billing:
+                billing_data_ = billing.to_odoo_format()
+            else:
+                billing_data_ = customer.parse_default_address()
+
+            if self.billing_matches_shipping:
+                shipping_data_ = billing_data_
+            else:
+                shipping = self.shipping_address
+
+                if shipping:
+                    shipping_data_ = shipping.to_odoo_format()
+                else:
+                    shipping_data_ = customer.parse_default_address()
+
+            vat_number_field_name = self.props.vat_number_additional_field_name
+            personal_id_field_name = self.props.personal_id_additional_field_name
+
+            if billing_data_:
+                if vat_number_field_name:
+                    billing_data_['company_reg_number'] = self.custom_attributes.get(vat_number_field_name, '')
+                if personal_id_field_name:
+                    billing_data_['person_id_number'] = self.custom_attributes.get(personal_id_field_name, '')
+
+            if shipping_data_ and not self.billing_matches_shipping:
+                if vat_number_field_name:
+                    shipping_data_['company_reg_number'] = self.custom_attributes.get(vat_number_field_name, '')
+                if personal_id_field_name:
+                    shipping_data_['person_id_number'] = self.custom_attributes.get(personal_id_field_name, '')
+
+            customer_data = customer.to_odoo_format()
+            billing_data = customer._update_with_defaults(billing_data_, type='invoice')
+            shipping_data = customer._update_with_defaults(shipping_data_)
+        else:
+            customer_data = billing_data = shipping_data = {}
+
+        return {
+            'customer': customer_data,
+            'billing': billing_data,
+            'shipping': shipping_data,
+        }
+
+
+class Order(ShopifyResourceUpdate, MetafieldMixin, OrderParseMixin):
+
+    _gid_name = 'Order'
+    _request_name = 'order'
+    _body = ShopifyResourceUpdate._tmpl.ORDER_BODY
+    BODY_NO_REFUNDS_RETURNS = ShopifyResourceUpdate._tmpl.ORDER_BODY_NO_REFUNDS_RETURNS
+
+    ORDER_GET_TAXES_BODY = ShopifyResourceUpdate._tmpl.ORDER_GET_TAXES_BODY
+    ORDER_GET_DELIVERY_METHODS_BODY = ShopifyResourceUpdate._tmpl.ORDER_GET_DELIVERY_METHODS_BODY
+    ORDER_GET_PAYMENT_METHODS_BODY = ShopifyResourceUpdate._tmpl.ORDER_GET_PAYMENT_METHODS_BODY
+    ORDER_INPUT_FILE_BODY = ShopifyResourceUpdate._tmpl.ORDER_INPUT_FILE_BODY
+
+    MUTATION_UPDATE = ShopifyResourceUpdate._tmpl.MUTATION_UPDATE_ORDER
+    MUTATION_CANCEL_ORDER = ShopifyResourceUpdate._tmpl.MUTATION_CANCEL_ORDER
+    MUTATION_MARK_AS_PAID = ShopifyResourceUpdate._tmpl.MUTATION_MARK_AS_PAID
+    MUTATION_RETURN_CREATE = ShopifyResourceUpdate._tmpl.MUTATION_RETURN_CREATE
+    MUTATION_REVERSE_DELIVERY_CREATE_WITH_SHIPPING = (
+        ShopifyResourceUpdate._tmpl.MUTATION_REVERSE_DELIVERY_CREATE_WITH_SHIPPING
+    )
+    QUERY_FULFILLMENT_LINE_ITEMS_FOR_EXPORT = (
+        ShopifyResourceUpdate._tmpl.QUERY_FULFILLMENT_LINE_ITEMS_FOR_EXPORT
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        OrderParseMixin.__init__(self, *args, **kwargs)
+
+    def default_body(self):
+        if self.returns_refunds_enabled:
+            return self._body
+        return self.BODY_NO_REFUNDS_RETURNS
+
+    def to_odoo_format(self):
+        self.ensure_one()
+        return {
+            'id': self.id_str,
+            'data': self.to_dict(),
+            'updated_at': self.updated_at,
+            'created_at': self.created_at,
+        }
+
+    @property
+    def is_cancelled(self):
+        self.ensure_one()
+        return bool(self.cancelledAt)
+
+    @property
+    def tax_exempt(self):
+        self.ensure_one()
+        return bool(self['taxExempt'])
+
+    @property
+    def taxes_included_in_price(self):
+        self.ensure_one()
+        return bool(self['taxesIncluded'])
+
+    @property
+    def duties_included(self):
+        self.ensure_one()
+        return bool(self['dutiesIncluded'])
+
+    @property
+    def requires_shipping(self):
+        self.ensure_one()
+        return self['requiresShipping']
+
+    @property
+    def source_name(self):
+        self.ensure_one()
+        return self['sourceName'] or ''
+
+    @property
+    def fulfillment_status(self):
+        self.ensure_one()
+        status = self['displayFulfillmentStatus']
+
+        if not status:
+            return self._env.OrderDisplayFulfillmentStatus('UNFULFILLED')
+
+        return self._env.OrderDisplayFulfillmentStatus(status)
+
+    @property
+    def financial_status(self):
+        self.ensure_one()
+        return self._env.OrderDisplayFinancialStatus(self['displayFinancialStatus'])
+
+    @property
+    def risk_summary(self):
+        self.ensure_one()
+        return self._env.OrderRiskSummary.set(**(self['risk'] or {}))
+
+    @property
+    def current_total_price_set(self):
+        self.ensure_one()
+        return self._env.MoneyBag.set(**(self['currentTotalPriceSet'] or {}))
+
+    @property
+    def total_price_set(self):
+        self.ensure_one()
+        return self._env.MoneyBag.set(**(self['totalPriceSet'] or {}))
+
+    @property
+    def payment_gateway_names(self):
+        self.ensure_one()
+        return self.paymentGatewayNames or []
+
+    @property
+    def line_items(self):
+        self.ensure_one()
+        return [self._env.LineItem.set(**x) for x in (self['lineItems'] or [])]
+
+    @property
+    def tax_lines(self):
+        self.ensure_one()
+        return [self._env.TaxLine.set(**x) for x in (self['taxLines'] or [])]
+
+    @property
+    def customer(self):
+        self.ensure_one()
+        return self._env.Customer.set(**(self['customer'] or {}))
+
+    @property
+    def transactions(self):
+        self.ensure_one()
+        return [self._env.OrderTransaction.set(**x) for x in (self['transactions'] or [])]
+
+    @property
+    def fulfillment_orders(self):
+        self.ensure_one()
+
+        if not self.key_exist('fulfillmentOrders'):
+            self.get_fulfillment_orders()
+
+        return [self._env.FulfillmentOrder.set(**x) for x in (self['fulfillmentOrders'] or [])]
+
+    @property
+    def fulfillments(self):
+        self.ensure_one()
+
+        if not self.key_exist('fulfillments'):
+            self.get_fulfillments()
+
+        return [self._env.Fulfillment.set(**x) for x in (self['fulfillments'] or [])]
+
+    @property
+    def refunds(self):
+        self.ensure_one()
+        return [self._env.Refund.set(**x) for x in (self['refunds'] or [])]
+
+    @property
+    def returns(self):
+        self.ensure_one()
+        return [self._env.Return.set(**x) for x in (self['returns'] or [])]
+
+    @property
+    def shipping_line(self):
+        """The order's shipping summary, good for the total cost and for the carrier title.
+
+        With several shipping lines Shopify synthesizes it: prices are summed, titles joined, `id` and
+        `code` are empty, and tax lines and discount allocations are always empty. For those use
+        `shipping_lines`.
+        """
+        self.ensure_one()
+        return self._env.ShippingLine.set(**(self['shippingLine'] or {}))
+
+    @property
+    def shipping_lines(self):
+        """The real shipping lines - the only place holding per-line tax lines and discount allocations.
+
+        Requested as `shippingLines(first: 5)`; empty for orders stored before it was requested.
+        """
+        self.ensure_one()
+        return [self._env.ShippingLine.set(**x) for x in (self['shippingLines'] or [])]
+
+    @property
+    def billing_address(self):
+        self.ensure_one()
+        return self._env.MailingAddress.set(**(self['billingAddress'] or {}))
+
+    @property
+    def shipping_address(self):
+        self.ensure_one()
+        return self._env.MailingAddress.set(**(self['shippingAddress'] or {}))
+
+    @property
+    def delivery_method(self):
+        self.ensure_one()
+
+        # Cancelled fulfillment orders and the ones closed before anything shipped never reach the
+        # customer, so their carrier is stale - the same rule `_group_lines_by_location` applies to the
+        # order lines. The carrier discovery query loads fulfillment orders without a status (and
+        # without line quantities, which are too costly to request there), so those are kept as they are.
+        fulfillment_orders = [
+            x for x in self.fulfillment_orders
+            if not x.key_exist('status') or not (x.is_cancelled or x.closed_before_fulfill)
+        ]
+        default_delivery_method = self._env.DeliveryMethod
+
+        # If there is no fulfillment orders, return the default delivery method.
+        if not fulfillment_orders:
+            return default_delivery_method
+
+        # Parse available delivery methods.
+        delivery_methods = [x.delivery_method for x in fulfillment_orders]
+
+        # Sort delivery methods by validity (it means the valid ones are first).
+        delivery_methods.sort(key=lambda x: x.is_valid, reverse=True)
+
+        # If the delivery_methods variable is an empty or all the delivery methods are Falsy or invalid,
+        # return the default delivery method.
+        if all(not x for x in delivery_methods) or all(not x.is_valid for x in delivery_methods):
+            return default_delivery_method
+
+        # If there is only one delivery method, return it.
+        delivery_method_first = delivery_methods[0]
+        if len(delivery_methods) == 1:
+            return delivery_method_first
+        # If all the delivery methods have the same code, return the first delivery method.
+        elif len(set([x.code for x in delivery_methods])) == 1:
+            return delivery_method_first
+        # If all the delivery methods have the same name, return the first delivery method.
+        elif len(set([x.name for x in delivery_methods])) == 1:
+            return delivery_method_first
+
+        # If there are multiple fulfillment orders, return the delivery method
+        # of the fulfillment order with the appropriate shipping code.
+        shipping_line = self.shipping_line
+
+        shipping_code = shipping_line['code']
+        shipping_name = shipping_line['title']
+
+        # If the shipping code is not set, return the first valid delivery method.
+        if not shipping_code and not shipping_name:
+            return delivery_method_first
+
+        # Return the delivery method with the appropriate shipping code.
+        delivery_method = next(
+            filter(lambda x: x.code == shipping_code, delivery_methods),
+            None,
+        )
+
+        # If the delivery method is not found by shipping code, try to find it by the shipping line title.
+        if not delivery_method and shipping_name:
+            delivery_method = next(
+                filter(lambda x: x.name == shipping_name, delivery_methods),
+                None,
+            )
+
+        # If the delivery method is not found by shipping code, return the first valid delivery method.
+        if not delivery_method:
+            return delivery_method_first
+
+        return delivery_method
+
+    @property
+    def publication(self):
+        self.ensure_one()
+        return self._env.Publication.set(**(self['publication'] or {}))
+
+    @property
+    def custom_attributes(self):
+        self.ensure_one()
+        return {x['key']: x['value'] for x in (self['customAttributes'] or [])}
+
+    @property
+    def location_id(self):
+        self.ensure_one()
+        fulfillment_orders = self.fulfillment_orders
+
+        # 1. Skip falsy values
+        location_ids = list(filter(None, [x.location.id for x in fulfillment_orders]))
+
+        # 2.1 If there are no location ids, return False
+        # 2.2 If there are multiple location ids, return False. Each location will be processed on the OrderLine level
+        if not location_ids or len(set(location_ids)) > 1:
+            return False
+
+        # 3. If there is only one location id, return it
+        return str(location_ids[0])
+
+    @property
+    def billing_matches_shipping(self):
+        self.ensure_one()
+        return self.billingAddressMatchesShippingAddress
+
+    @property
+    def business_entity(self):
+        self.ensure_one()
+        return self._env.BusinessEntity.set(**(self['merchantBusinessEntity'] or {}))
+
+    def get_orders_page(self, filter_params: str = '', page_token: str = None):
+        orders = self.get_batch(
+            body=self.ORDER_INPUT_FILE_BODY,
+            arguments='sortKey: UPDATED_AT',
+            filter_params=filter_params,
+            after=page_token,
+        )
+        return orders, (self.cursor or None)
+
+    def get_batch_for_payment_methods(self):
+        return self.get_batch(
+            body=self.ORDER_GET_PAYMENT_METHODS_BODY,
+            arguments='sortKey: ID, reverse: true',
+        )
+
+    def get_batch_for_taxes(self):
+        return self.get_batch(
+            body=self.ORDER_GET_TAXES_BODY,
+            arguments='sortKey: ID, reverse: true',
+        )
+
+    def get_batch_for_delivery_methods(self):
+        return self.get_batch(
+            body=self.ORDER_GET_DELIVERY_METHODS_BODY,
+            arguments='sortKey: ID, reverse: true',
+        )
+
+    def update(self, **kwargs: dict) -> bool:
+        self.ensure_one()
+
+        response = self.execute(
+            self.MUTATION_UPDATE,
+            variables={
+                'input': {
+                    'id': self.gid,
+                    **kwargs,
+                },
+            },
+            user_errors_path='data.orderUpdate.userErrors',
+        )
+
+        result = self._extract(response, 'data.orderUpdate.order', dict)
+        self.set(**result)
+
+        return True
+
+    def cancel(self, reason, restock, notify_customer, staff_note, refund_method=None):
+        """Call Shopify's orderCancel mutation for this order.
+
+        `refund_method` is the OrderCancelRefundMethodInput dict (e.g.
+        {'originalPaymentMethodsRefund': True}) or None to refund later (no refund now).
+        `reason` is an OrderCancelReason enum value; `restock` / `notify_customer` are booleans.
+        """
+        self.ensure_one()
+
+        variables = {
+            'orderId': self.gid,
+            'reason': reason,
+            'restock': restock,
+            'notifyCustomer': notify_customer,
+            'staffNote': staff_note or '',
+        }
+        if refund_method:
+            variables['refundMethod'] = refund_method
+
+        response = self.execute(
+            self.MUTATION_CANCEL_ORDER,
+            variables=variables,
+            user_errors_path='data.orderCancel.orderCancelUserErrors',
+        )
+
+        return self._extract(response, 'data.orderCancel.job', dict)
+
+    def fetch_fulfillment_line_item_lookup(self):
+        """Re-query the order's returnable fulfillments and build a
+        {LineItem GID -> [(FulfillmentLineItem GID, returnable quantity), ...]} lookup.
+
+        Used by the return export: returnCreate's ReturnLineItemInput requires
+        fulfillmentLineItemId, but the inbound parser stores only Fulfillment ids
+        and LineItem ids — never the FulfillmentLineItem id. One round-trip per
+        export click is the cost; the alternative is a stored field on
+        external.order.fulfillment.line that would need a backfill for historical
+        data.
+
+        A LineItem keeps one entry per fulfillment it was (partially) shipped in —
+        never collapsed to a single GID — because the caller must be able to split
+        a return across more than one fulfillment when the line was.
+
+        Queries `returnableFulfillments` rather than the order's plain `fulfillments`
+        connection, for two things confirmed empirically against a live store:
+        - It already excludes fulfillments returnCreate would reject (CANCELLED / ERROR /
+          FAILURE) — a cancelled fulfillment's line item never appears here even when its
+          full quantity was never claimed by any return, so there is no separate status
+          check to maintain here.
+        - Its per-line `quantity` is what's still available to return right now, net of
+          every prior return already claimed against that FulfillmentLineItem (open or
+          closed) — not the total ever fulfilled. So a return export that asks for more
+          than is actually left is caught here as E521 by the caller, instead of only
+          surfacing when Shopify's returnCreate mutation rejects the call.
+        """
+        self.ensure_one()
+
+        response = self.execute(
+            self.QUERY_FULFILLMENT_LINE_ITEMS_FOR_EXPORT,
+            variables={'id': self.gid},
+        )
+        returnable_data = self._extract(response, 'data.returnableFulfillments', dict) or {}
+
+        lookup = {}
+        for fulfillment in (returnable_data.get('nodes') or []):
+            fl_items_block = fulfillment.get('returnableFulfillmentLineItems') or {}
+            for edge in (fl_items_block.get('edges') or []):
+                node = edge.get('node') or {}
+                fli = node.get('fulfillmentLineItem') or {}
+                fli_gid = fli.get('id') or ''
+                line_item_gid = (fli.get('lineItem') or {}).get('id') or ''
+                quantity = node.get('quantity') or 0
+                if fli_gid and line_item_gid and quantity > 0:
+                    lookup.setdefault(line_item_gid, []).append((fli_gid, quantity))
+
+        return lookup
+
+    def create_return(self, return_line_items, notify_customer=True):
+        """Call Shopify's returnCreate mutation for this order.
+
+        `return_line_items` is a list of dicts:
+            {'fulfillmentLineItemId': <GID>, 'quantity': int,
+             'returnReason': <Shopify enum, e.g. 'UNKNOWN'>,
+             'returnReasonNote': <free text>}
+
+        Returns a flat dict pulled from the response via `_extract`:
+            {'id': <Return GID>, 'status': <Return status enum>,
+             'reverse_fulfillment_order_id': <rFO GID for tracking attachment>}
+
+        returnCreate always produces exactly one Return; its first
+        reverseFulfillmentOrder is the one to attach tracking to.
+        """
+        self.ensure_one()
+
+        response = self.execute(
+            self.MUTATION_RETURN_CREATE,
+            variables={
+                'returnInput': {
+                    'orderId': self.gid,
+                    'returnLineItems': return_line_items,
+                    'notifyCustomer': notify_customer,
+                },
+            },
+            user_errors_path='data.returnCreate.userErrors',
+        )
+
+        # The reverseFulfillmentOrder node carries the line items needed to attach tracking:
+        # reverseDeliveryCreateWithShipping requires reverseDeliveryLineItems (each a
+        # {reverseFulfillmentOrderLineItemId, quantity}). Build them here from the same
+        # returnCreate response so no extra round-trip is needed.
+        rfo = self._extract(
+            response,
+            'data.returnCreate.return.reverseFulfillmentOrders.edges.0.node',
+            dict,
+        ) or {}
+        rfo_line_items = [
+            {
+                'reverseFulfillmentOrderLineItemId': edge['node']['id'],
+                'quantity': edge['node']['totalQuantity'],
+            }
+            for edge in ((rfo.get('lineItems') or {}).get('edges') or [])
+            if edge.get('node') and edge['node'].get('id')
+        ]
+
+        return {
+            'id': self._extract(response, 'data.returnCreate.return.id', str),
+            'status': self._extract(response, 'data.returnCreate.return.status', str),
+            'reverse_fulfillment_order_id': rfo.get('id') or '',
+            'reverse_fulfillment_order_line_items': rfo_line_items,
+        }
+
+    def create_reverse_delivery_with_shipping(
+        self,
+        reverse_fulfillment_order_id,
+        reverse_delivery_line_items,
+        tracking_number,
+        tracking_url='',
+        notify_customer=True,
+    ):
+        """Attach a ReverseDelivery (merchant-supplied tracking) to an existing
+        reverseFulfillmentOrder.
+
+        `reverse_fulfillment_order_id` is the GID from the returnCreate response's
+        nested `reverseFulfillmentOrders.edges[0].node.id`. `reverse_delivery_line_items`
+        is the required, non-empty list of {reverseFulfillmentOrderLineItemId, quantity}
+        produced alongside it by create_return().
+
+        ReverseDeliveryTrackingInput only accepts `number` and `url` — there is no
+        carrier-name field (unlike fulfillment TrackingInput's `company`). The carrier is
+        conveyed to the customer via the tracking url. An empty url is dropped.
+
+        Returns the created reverseDelivery node (id).
+        """
+        self.ensure_one()
+
+        tracking_input = {'number': tracking_number}
+        if tracking_url:
+            tracking_input['url'] = tracking_url
+
+        response = self.execute(
+            self.MUTATION_REVERSE_DELIVERY_CREATE_WITH_SHIPPING,
+            variables={
+                'reverseFulfillmentOrderId': reverse_fulfillment_order_id,
+                'reverseDeliveryLineItems': reverse_delivery_line_items,
+                'trackingInput': tracking_input,
+                'notifyCustomer': notify_customer,
+            },
+            user_errors_path='data.reverseDeliveryCreateWithShipping.userErrors',
+        )
+
+        result = self._extract(
+            response,
+            'data.reverseDeliveryCreateWithShipping.reverseDelivery',
+            dict,
+        )
+
+        return result
+
+    def _get_order_line_by_id(self, line_id: str):
+        return {x.id_str: x for x in self.order_line_items}[line_id]
+
+    def _get_available_line_qty(self, line_id):
+        return sum(self._line_qty.get(line_id, []))
+
+    def _group_lines_by_location(self):
+        result = []
+        for f_order in self.fulfillment_orders:
+            if f_order.is_cancelled or not f_order.line_items:
+                continue
+
+            line_items = f_order.line_items
+
+            if f_order.is_closed:
+                if f_order.closed_before_fulfill:
+                    continue
+                line_items = filter(lambda x: not x.remaining_quantity, line_items)
+
+            items = [(x.sale_line_item.id_str, x.total_quantity) for x in line_items if x.total_quantity]
+
+            if items:
+                result.append((f_order.location.id_str, items))
+
+        return result
+
+    def get_fulfillment_orders(self, open_or_in_progress=False):
+        self.ensure_one()
+
+        body = 'id fulfillmentOrders(first: 25) { nodes { %s } }' % self._env.FulfillmentOrder.default_body()
+        result = self.read(body=body, return_raw=True)
+
+        self.set(fulfillmentOrders=result['fulfillmentOrders'])
+
+        orders = self.fulfillment_orders
+
+        if open_or_in_progress:
+            return [x for x in orders if x.status.open_or_in_progress and x.line_items]
+
+        return orders
+
+    def get_fulfillments(self):
+        self.ensure_one()
+
+        body = 'id fulfillments(first: 25) { %s }' % self._env.Fulfillment.default_body()
+        result = self.read(body=body, return_raw=True)
+
+        self.set(fulfillments=result['fulfillments'])
+
+        return self.fulfillments
+
+    def mark_as_paid(self):
+        self.ensure_one()
+
+        self.read(body='displayFinancialStatus')
+
+        if (
+            self.financial_status.is_paid
+            or self.financial_status.is_partially_refunded
+            or self.financial_status.is_refunded
+        ):
+            return True
+
+        response = self.execute(
+            self.MUTATION_MARK_AS_PAID,
+            variables={
+                'input': {
+                    'id': self.gid,
+                },
+            },
+            user_errors_path='data.orderMarkAsPaid.userErrors',
+        )
+
+        result = self._extract(response, 'data.orderMarkAsPaid.order', dict)
+        self.set(**result)
+
+        return True

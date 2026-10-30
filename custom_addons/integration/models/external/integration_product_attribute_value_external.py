@@ -1,0 +1,42 @@
+# See LICENSE file for full copyright and licensing details.
+
+from odoo import models, fields
+
+import logging
+
+_logger = logging.getLogger(__name__)
+
+
+class IntegrationProductAttributeValueExternal(models.Model):
+    _name = 'integration.product.attribute.value.external'
+    _inherit = 'integration.external.mixin'
+    _description = 'Integration Product Attribute Value External'
+    _odoo_model = 'product.attribute.value'
+
+    external_attribute_id = fields.Many2one(
+        comodel_name='integration.product.attribute.external',
+        string='External Attribute',
+        readonly=True,
+        ondelete='cascade',
+    )
+
+    used_for_variants = fields.Boolean(
+        related='external_attribute_id.used_for_variants',
+    )
+
+    def _compute_display_name(self):
+        for rec in self:
+            if rec.external_attribute_id:
+                rec.display_name = f'(ID: {rec.code}) {rec.external_attribute_id.name}: {rec.name}'
+            else:
+                super(IntegrationProductAttributeValueExternal, rec)._compute_display_name()
+
+    def _fix_unmapped(self, adapter_external_data):
+        self._fix_unmapped_element(self.integration_id, 'attribute')
+
+        # After importing new attribute values, we need to re-check all mapped attributes
+        # to make sure that there is no new unmapped values for them
+        self._fix_unmapped_element_values(self.integration_id, 'attribute')
+
+    def _post_import_external_one(self, adapter_external_record):
+        self._post_import_external_element(adapter_external_record, 'attribute')
