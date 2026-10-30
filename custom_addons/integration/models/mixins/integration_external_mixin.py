@@ -1,0 +1,713 @@
+# See LICENSE file for full copyright and licensing details.
+
+import logging
+import re
+
+from collections import defaultdict
+
+from odoo import models, fields, api, _
+from odoo.fields import Domain
+from odoo.tools.sql import escape_psql
+
+from ...tools import is_translated_value
+from ...exceptions import ErrorStore as es
+
+
+_logger = logging.getLogger(__name__)
+
+
+RESULT_CREATED = 1
+RESULT_ALREADY_MAPPED = 2
+RESULT_MAPPED = 3
+RESULT_EXISTS = 4
+RESULT_NOT_IN_EXTERNAL = 5
+RESULT_MODE_CONFLICT = 6
+
+
+class IntegrationExternalMixin(models.AbstractModel):
+    _name = 'integration.external.mixin'
+    _description = 'Integration External Mixin'
+    _odoo_model = None
+    _map_field = 'external_reference'
+
+    integration_id = fields.Many2one(
+        string='E-Commerce Store',
+        comodel_name='sale.integration',
+        required=True,
+        ondelete='cascade',
+    )
+    company_id = fields.Many2one(
+        related='integration_id.company_id',
+    )
+    type_api = fields.Selection(
+        related='integration_id.type_api',
+    )
+    code = fields.Char(
+        required=True,
+    )
+    name = fields.Char(
+        string='External Name',
+        help='Contains name of the External Object in selected Integration',
+    )
+    external_reference = fields.Char(
+        string='External Reference',
+        help='Contains unique code of the External Object in the external '
+             'system. Used for automated mapping',
+    )
+
+    _uniq_code = models.Constraint(
+        'unique(integration_id, code)',
+        'Code should be unique',
+    )
+    # PostgreSQL treats NULLs as distinct values, therefore, this constraint won't work with
+    # NULL values in a column with a UNIQUE index.
+    _uniq_reference = models.Constraint(
+        'unique(integration_id, external_reference)',
+        'External Reference should be unique',
+    )
+
+    @api.model
+    def _sql_error_to_message(self, exc: es.UniqueViolation) -> str:
+        """Override to enrich default SQL constraint error messages with actionable details.
+
+        Odoo's default behavior shows only the static constraint message
+        (e.g. "Code should be unique") or raw PostgreSQL detail
+        (e.g. "Key (integration_id, code)=(1, 1231) already exists"),
+        which is not enough for the user to identify and resolve the conflict.
+
+        We skip default Odoo sql constraint handling to get info in raw PostgreSQL format (with conflicting
+        fields and values) -> grep existing record -> format user-friendly error message
+        """
+        # 1. Check if this constraint should be handled by our custom formatting
+        constraint_name = getattr(getattr(exc, 'diag'), 'constraint_name')
+
+        constraint_formatting_conditions = (
+            self._name in ('integration.product.template.external', 'integration.product.product.external'),
+            constraint_name.endswith('_uniq_code') or constraint_name.endswith('_uniq_reference')
+        )
+
+        if not all(constraint_formatting_conditions):
+            return super()._sql_error_to_message(exc)
+
+        # 2. Parse duplicated field:value pairs from PostgreSQL error details
+        field_value_dict = None
+        detail = getattr(getattr(exc, 'diag'), 'message_detail') or None
+        match = re.search(r'Key \((.+?)\)=\((.+?)\) already exists', detail)
+        if match:
+            keys = match.group(1).split(', ')
+            values = match.group(2).split(', ')
+            field_value_dict = dict(zip(keys, values))
+
+        # 3. Grep existing record
+        integration_id = field_value_dict.pop('integration_id')
+        domain = [(k, '=', v) for k, v in field_value_dict.items()]
+        domain.append(('integration_id', '=', int(integration_id)))
+
+        existing_record = self.search(domain, limit=1)
+
+        # 4. Format existing record info for the error message
+        existing_info = _(
+            'Could not be identified. The duplicate may come from '
+            'another record being imported in the same batch'
+        )
+        if existing_record:
+            record_fields = ', '.join('%s: %s' % (k, v) for k, v in field_value_dict.items())
+            existing_info = _('%s (ID: %s, %s)') % (existing_record.name, existing_record.id, record_fields)
+
+        # 5. Raise formatted error with all collected details
+        es.raise_error(
+            err_code='E113',
+            support_contact=True,
+            raise_from_none=True,
+            exc=exc,
+            existing_info=existing_info,
+            entity_label=self._external_label,
+        )
+
+    @property
+    def mapping_model(self):
+        if not self._odoo_model:
+            return None
+
+        model_name = f'integration.{self._odoo_model}.mapping'
+        return self.env[model_name] if model_name in self.env else None
+
+    @property
+    def odoo_model(self):
+        assert bool(self._odoo_model), 'Class attribute `_odoo_model` not defined'
+        return self.env[self._odoo_model]
+
+    @property
+    def mapping_record(self):
+        if self.mapping_model is None:
+            return self.env['integration.mapping.mixin'].browse()
+        return self.mapping_model._search_mapping_from_external(
+            self.integration_id,
+            self,
+        )
+
+    @property
+    def odoo_record(self):
+        return self.mapping_record.odoo_record
+
+    def write(self, vals):
+        result = super().write(vals)
+        self.requeue_jobs_if_needed()
+        return result
+
+    @api.model_create_multi
+    def create(self, vals):
+        result = super().create(vals)
+        result.requeue_jobs_if_needed()
+        return result
+
+    def requeue_jobs_if_needed(self):
+        QueueJob = self.env['queue.job']
+
+        for external in self:
+            if external.external_reference:
+                QueueJob.requeue_integration_jobs(
+                    'NoExternal',
+                    external._name,
+                    external.code,
+                )
+
+    def create_or_update_mapping(self, odoo_id=None):
+        """
+        :odoo_id:
+            - None - just create mapping-record if not exists
+            - False - create mapping-record if not exists, or unmap Odoo ID
+            - int - create or update mapping-record + update Odoo ID
+        """
+        self.ensure_one()
+
+        mapping = self.mapping_record
+        internal_field_name, external_field_name = mapping._mapping_fields
+
+        if not mapping:
+            return mapping.create({
+                internal_field_name: odoo_id,
+                external_field_name: self.id,
+                'integration_id': self.integration_id.id,
+            })
+
+        if odoo_id is not None:
+            if mapping.odoo_record.id != odoo_id:
+                mapping.write({internal_field_name: odoo_id})
+
+        return mapping
+
+    @api.model
+    def create_or_update(self, vals):
+        domain = [
+            ('integration_id', '=', vals['integration_id']),
+            ('code', '=', vals['code']),
+        ]
+
+        record = self.search(domain, limit=1)
+        if record:
+            record.write(vals)
+            return record
+        return self.create(vals)
+
+    @api.depends('name', 'code', 'external_reference')
+    def _compute_display_name(self):
+        for rec in self:
+            value = f'(ID: {rec.code})'
+
+            if rec.external_reference and rec.external_reference != rec.code:
+                value = f'{value}[{rec.external_reference}]'
+
+            value = f'{value} {getattr(rec, rec._rec_name)}'
+
+            rec.display_name = value
+
+    @api.model
+    def name_search(self, name='', domain=None, operator='ilike', limit=100) -> list[tuple[int, str]]:
+        """Search for records that have a display name matching the given name pattern.
+
+        This method searches both 'name' and 'code' fields to provide flexible search
+        functionality for external integration records.
+        """
+        domain = domain or []
+        if operator == 'ilike' and not (name or '').strip():
+            search_domain = []
+        else:
+            search_domain = ['|', ('name', operator, name), ('code', operator, name)]
+
+        # Use search_fetch to get records with display_name
+        records = self.search_fetch(
+            Domain.AND([search_domain, domain]),
+            ['display_name'],
+            limit=limit
+        )
+
+        # Return list of (id, display_name) tuples as expected by Odoo 18.0
+        return [(record.id, record.display_name) for record in records.sudo()]
+
+    def _map_external(self, adapter_external_data):
+        if not self:
+            return False
+
+        for rec in self:
+            rec.try_map_by_external_reference()
+
+        return self._fix_unmapped(adapter_external_data)
+
+    def try_map_by_external_reference(self, odoo_search_domain=False):
+        self.ensure_one()
+
+        # If we found existing mapping, we do not need to do anything
+        odoo_record = self.odoo_record
+        if odoo_record:
+            return odoo_record
+
+        self.create_or_update_mapping()
+        reference = getattr(self, self._map_field)
+
+        if reference:
+            if odoo_search_domain:
+                search_domain = odoo_search_domain
+            else:
+                search_domain = [(
+                    self.integration_id._get_reference_field_name(self.odoo_model),
+                    '=ilike',
+                    escape_psql(reference),
+                )]
+
+            # Bind the integration language so name matching uses the translation the value was stored under at
+            # import time; otherwise translatable reference fields (e.g. product.attribute.name) are searched in
+            # the runtime user's language and silently miss matches in multi-language setups. Falls back to the
+            # current context language when the integration language is not configured yet (e.g. during the Quick
+            # Configuration wizard, before the language step is reached).
+            odoo_record = self.odoo_model \
+                .with_context(**self.integration_id.get_integration_lang_context()) \
+                .search(search_domain)
+
+            if len(odoo_record) > 1:
+                record_details = '\n'.join([
+                    '- %(display_name)s (ID: %(id)s)' % {
+                        'display_name': getattr(record, "display_name", "Unnamed Record"),
+                        'id': record.id
+                    }
+                    for record in odoo_record
+                ])
+
+                raise es.ValidationError(_(
+                    'Multiple Odoo records (%(model)s) found with the same internal reference:\n'
+                    '%(details)s\n\n'
+                    'Please review the duplicated records and resolve the issue by either removing '
+                    'the unnecessary records or updating the internal reference field (%(ref_field)s) '
+                    'for the appropriate records.'
+                ) % {
+                    'model': self.odoo_model._description,
+                    'details': record_details,
+                    'ref_field': self.integration_id._get_reference_field_name(self.odoo_model),
+                })
+
+        if odoo_record:
+            self.create_or_update_mapping(odoo_id=odoo_record.id)
+
+        return self.odoo_record
+
+    def _fix_unmapped(self, adapter_external_data):
+        # Method that should be overridden in needed external models
+        pass
+
+    def action_open_mapping(self):
+        mapping = self.mapping_record
+
+        return {
+            'type': 'ir.actions.act_window',
+            'name': mapping._description,
+            'res_model': mapping._name,
+            'view_mode': 'list',
+            'domain': [('id', 'in', mapping.ids)],
+            'target': 'current',
+        }
+
+    def create_integration_external(self, odoo_record, extra_vals=None):
+        """Integration External --> Odoo"""
+        self.ensure_one()
+
+        odoo_record.create_mapping(
+            self.integration_id,
+            self.code,
+            extra_vals=extra_vals,
+        )
+
+    @api.model
+    def get_external_by_code(self, integration, code, raise_error=True):
+        external = self.search([
+            ('code', '=', code),
+            ('integration_id', '=', integration.id),
+        ])
+
+        if raise_error:
+            if not external:
+                raise es.NoExternal(_(
+                    '\nCannot find external record. Please ensure the relevant objects are imported from '
+                    'the E-Commerce System.'), model_name=self._name, code=code, integration=integration
+                )
+
+            if len(external) > 1:
+                raise es.MultipleExternalRecordsFound(
+                    _('Found several external records'),
+                    model_name=self._name,
+                    code=code,
+                    integration=integration,
+                    duplicates=external,
+                )
+
+        return external
+
+    def get_original_name(self, value, integration=None):
+        integration = integration or self.integration_id
+        translations = self.env['integration.res.lang.mapping'] \
+            .convert_external_translations(integration.id, value)
+        return integration._get_original_from_translations(translations)
+
+    @api.model
+    def create_or_update_with_translations(
+        self,
+        integration_id: int,
+        odoo_object: 'models.Model',
+        vals: dict,
+        translations_only: bool = False,
+    ):
+        """
+        Create or update an Odoo record from external data that may contain translations.
+
+        ``vals`` mixes two kinds of values:
+          * plain values -> written as-is;
+          * "translated values" -> a dict shaped like
+            ``{'language': {res_lang_id: value, ...}}`` (recognised by
+            ``is_translated_value``), carrying one value per Odoo language.
+
+        For every translatable field we need a single *base value* (stored in the
+        integration language) plus one extra write per other language:
+          * base value = the translation in the integration language
+            (``context_lang_code``); if that language is not provided we fall back to
+            the shop default language (``shop_lang_code``) value, and if that is missing
+            too the field is left untouched;
+          * each remaining language is collected in ``translations[lang_code]`` and
+            written afterwards under that language's context.
+
+        :param integration_id: ``sale.integration`` id the data comes from.
+        :param odoo_object: target record (empty recordset -> create, else update).
+        :param vals: ``{field: value}`` where value is plain or a translated value.
+        :param translations_only: when True, only write the per-language translations
+            and leave the base values untouched - used by the translation import flow
+            on an already existing record.
+        :return: the created/updated record.
+        """
+        # translations:           {lang_code: {field: value}} for every language
+        #                         except the integration one (written later per lang).
+        # translatable_fields:    {field: {res_lang_id: value}} extracted from vals.
+        # non_translatable_fields: {field: base_value} written in the integration language.
+        translations, translatable_fields, non_translatable_fields = defaultdict(dict), {}, {}
+
+        integration = self.env['sale.integration'].browse(integration_id)
+        shop_lang_code = integration.get_shop_lang_code()            # shop primary language
+        context_lang_code = integration.get_integration_lang_code()  # integration base language
+
+        # 1. Split incoming values into translatable ones and plain ones.
+        for field, value in vals.items():
+            if is_translated_value(value):
+                translatable_fields[field] = value['language']
+            else:
+                non_translatable_fields[field] = value
+
+        # 2. For each translatable field, choose its base value and bucket the rest per language.
+        ResLang = self.env['res.lang']
+        for field, raw_translations in translatable_fields.items():
+            for res_lang_id, translation in raw_translations.items():
+                translation_lang_code = ResLang.browse(res_lang_id).code
+
+                if context_lang_code == translation_lang_code:
+                    # Translation in the integration language -> this is the base value.
+                    non_translatable_fields[field] = translation
+                else:
+                    # Any other language is written later under its own context.
+                    translations[translation_lang_code][field] = translation
+
+            if field not in non_translatable_fields:
+                # No translation in the integration language, so use the shop default
+                # language value as the base value. It may be absent (e.g. Shopify
+                # metafields expose only secondary-language translations) - in that case
+                # keep the existing Odoo value instead of crashing the whole import.
+                shop_default_value = translations.get(shop_lang_code, {}).get(field)
+                if shop_default_value is not None:
+                    non_translatable_fields[field] = shop_default_value
+
+        odoo_object = odoo_object \
+            .with_company(integration.company_id) \
+            .with_context(lang=context_lang_code)
+
+        # 3. Write the base values (in the integration language), or create the record.
+        if odoo_object:
+            if not translations_only:
+                odoo_object.write(non_translatable_fields)
+        else:
+            odoo_object = odoo_object.create(non_translatable_fields)
+
+        # 4. Write the remaining languages, each under its own language context.
+        #    An empty per-language value falls back to the base value (same content);
+        #    if there is no base value either, skip the field (keep the existing value).
+        for lang_code, data in translations.items():
+            lang_vals = {}
+            for field, value in data.items():
+                value = value or non_translatable_fields.get(field)
+                if value is not None:
+                    lang_vals[field] = value
+
+            odoo_object.with_context(lang=lang_code).write(lang_vals)
+
+        return odoo_object
+
+    def _pre_import_external_check(self, external_record, integration):
+        return True
+
+    def _post_import_external_one(self, adapter_external_record):
+        """It's a hook method for redefining."""
+        pass
+
+    def _post_import_external_multi(self, adapter_external_record):
+        """It's a hook method for redefining."""
+        pass
+
+    @api.model
+    def _fix_unmapped_element(self, integration, element):
+        # element - 'attribute' or 'feature'
+        ElementValueMapping = self.env[f'integration.product.{element}.value.mapping']
+        ExternalElement = self.env[f'integration.product.{element}.external']
+        MappingElement = self.env[f'integration.product.{element}.mapping']
+        # Bind the integration language so name comparisons run against the
+        # translation values were stored under at import time. Without this,
+        # the search uses the runtime user's language and silently misses
+        # matches in multi-language setups. Falls back to the current context
+        # language when the integration language is not configured yet.
+        ElementValue = self.env[f'product.{element}.value'] \
+            .with_context(**integration.get_integration_lang_context())
+
+        external_values = getattr(integration.adapter, f'get_{element}_values')()
+
+        external_values_by_id = {
+            x['id']: x['id_group'] for x in external_values
+        }
+
+        # 1. Try to find unmapped "Product Attribute/Feature Value Mapping"
+        mapped_element_values = ElementValueMapping.search([
+            ('integration_id', '=', integration.id),
+            (element + '_value_id', '=', False),
+        ])
+
+        for mapped_element_value in mapped_element_values:
+            # 2. Get "Product Attribute/Feature Value External"
+            external_element_value = getattr(mapped_element_value, f'external_{element}_value_id')
+
+            if not external_element_value:
+                continue
+
+            external_element_code = external_values_by_id.get(external_element_value.code, None)
+
+            # 3. Get "Product Attribute/Feature External" by Code (External ID)
+            external_element = ExternalElement.search([
+                ('integration_id', '=', integration.id),
+                ('code', '=', external_element_code)
+            ])
+
+            if not external_element:
+                continue
+
+            # 4. Get by mapping "Product Attribute/Feature" by Code (External ID)
+            value = MappingElement.search([
+                ('integration_id', '=', integration.id),
+                (f'external_{element}_id', '=', external_element.id),
+            ]).mapped(f'{element}_id')
+
+            if not value or len(value) != 1:
+                continue
+
+            # 5. Get "Product Attribute/Feature Value" by Name
+            product_element_value = ElementValue.search([
+                (f'{element}_id', '=', value.id),
+                ('name', '=ilike', escape_psql(external_element_value.name)),
+            ])
+
+            if product_element_value and len(product_element_value) == 1:
+                # 6. Set attribute_value_id or feature_value_id
+                setattr(mapped_element_value, element + '_value_id', product_element_value)
+
+    @api.model
+    def _fix_unmapped_element_values(self, integration, element):
+        """
+        This method tries to map unmapped "Product Attribute/Feature Value Mapping" for
+        already mapped "Product Attribute/Feature Mapping".
+
+        This is useful for cases when we have some "Product Attribute/Feature" already existed
+        in Odoo while importing them from external system. In this case, their values are not
+        mapped. This method tries to map them.
+
+        element: 'attribute' or 'feature'
+        """
+        if element not in ('attribute', 'feature'):
+            raise es.UserError(_(
+                'The value must be either "attribute" or "feature". This is a technical issue '
+                'that cannot be fixed through configuration and requires investigation by our developers. '
+                'If you encounter this error, please contact our support team: https://support.ventor.tech/'
+            ))
+
+        ElementValueMapping = self.env[f'integration.product.{element}.value.mapping']
+        ElementMapping = self.env[f'integration.product.{element}.mapping']
+        # See _fix_unmapped_element for the rationale on binding the integration language.
+        ElementValue = self.env[f'product.{element}.value'] \
+            .with_context(**integration.get_integration_lang_context())
+
+        # 1. Find all mapped "Product Attribute/Feature Mapping"
+        mapped_elements = ElementMapping.search([
+            ('integration_id', '=', integration.id),
+            (element + '_id', '!=', False),
+        ])
+
+        for mapped_element in mapped_elements:
+            # 2. Try to map unmapped "Product Attribute/Feature Value Mapping"
+            # Find all external "Product Attribute/Feature Value Mapping" for current element
+            external_element = getattr(mapped_element, f'external_{element}_id')
+            external_element_values = getattr(external_element, f'external_{element}_value_ids')
+
+            unmapped_element_values = ElementValueMapping.search([
+                ('integration_id', '=', integration.id),
+                (f'external_{element}_value_id', 'in', external_element_values.ids),
+                (element + '_value_id', '=', False),
+            ])
+
+            for unmapped_element_value in unmapped_element_values:
+                # 3. Try to find "Product Attribute/Feature Value" by Name or create
+                external_field_name = unmapped_element_value._mapping_fields[1]
+                name = getattr(unmapped_element_value, external_field_name).name
+
+                internal_field_name = mapped_element._mapping_fields[0]
+                element_id = getattr(mapped_element, internal_field_name)
+
+                element_value = ElementValue.search([
+                    (f'{element}_id', '=', element_id.id),
+                    ('name', '=ilike', escape_psql(name)),
+                ], limit=1)
+
+                if not element_value:
+                    sequence_value = getattr(mapped_element, f'{element}_id')._get_next_sequence()
+
+                    element_value = self.create_or_update_with_translations(
+                        integration.id,
+                        ElementValue,
+                        {
+                            'name': name,
+                            'sequence': sequence_value,
+                            f'{element}_id': element_id.id,
+                        },
+                    )
+
+                # 4. Try to map unmapped "Product Attribute/Feature Value Mapping"
+                external_record = getattr(unmapped_element_value, f'external_{element}_value_id')
+                external_record.create_or_update_mapping(odoo_id=element_value.id)
+
+    def _post_import_external_element(self, adapter_external_record, element):
+        """
+        This method will receive individual attribute/feature value record.
+        And link external attribute/feature value with external attribute/feature
+        element - 'attribute' or 'feature'
+        """
+        # 1. Try to get Code (External ID) of Value
+        element_code = adapter_external_record.get('id_group')
+        if not element_code:
+            raise es.UserError(_(
+                'External %s value is missing the required "id_group" field. '
+                'This is a technical issue with the data received from the e-commerce system. '
+                'Please contact our support team to investigate the issue: https://support.ventor.tech/'
+            ) % element.capitalize())
+
+        # 2. Get "Product Attribute/Feature External" by Code (External ID)
+        external_element = self.env[f'integration.product.{element}.external'].search([
+            ('code', '=', element_code),
+            ('integration_id', '=', self.integration_id.id),
+        ])
+
+        if not external_element:
+            raise es.UserError(_(
+                'No External Product %s found with code %s. '
+                'It is possible that %ss have not been imported yet. '
+                'Please ensure that %ss are imported from the e-commerce system.\n'
+                'If the issue persists, contact support: https://support.ventor.tech/'
+            ) % (element.capitalize(), element_code, element, element))
+
+        if len(external_element) != 1:
+            raise es.UserError(_(
+                'Multiple or no external %s records found for code %s. '
+                'This is a technical issue that requires investigation. '
+                'Please contact our support team for assistance: https://support.ventor.tech/'
+            ) % (element.capitalize(), element_code))
+
+        # 3. Set external_attribute_id or external_feature_id
+        setattr(self, f'external_{element}_id', external_element.id)
+
+    def _build_import_elements_action(self, element_label, res_element, res_values):
+        """Build the summary wizard action for an attribute/feature import.
+
+        ``element_label`` is the singular, capitalised label (e.g. "Attribute").
+        ``res_element`` maps a ``RESULT_*`` code to a count (created / already
+        mapped) or to a list of record names (the other outcomes); ``res_values``
+        maps ``RESULT_*`` codes to value counts. This is presentation only - it
+        contains no attribute/feature-specific logic.
+        """
+        msg = ''
+
+        if res_element.get(RESULT_CREATED) or res_values.get(RESULT_CREATED):
+            msg += _('\n\nImported:\n - Product %ss: %s\n - Product %s Values: %s') % (
+                element_label,
+                res_element.get(RESULT_CREATED, 0),
+                element_label,
+                res_values.get(RESULT_CREATED, 0),
+            )
+
+        if res_element.get(RESULT_ALREADY_MAPPED) or res_values.get(RESULT_ALREADY_MAPPED):
+            msg += _('\n\nAlready mapped:\n - Product %ss: %s\n - Product %s Values: %s') % (
+                element_label,
+                res_element.get(RESULT_ALREADY_MAPPED, 0),
+                element_label,
+                res_values.get(RESULT_ALREADY_MAPPED, 0),
+            )
+
+        if res_element.get(RESULT_MAPPED):
+            msg += _('\n\nProduct %ss Values mapped: %s') % (
+                element_label, res_element.get(RESULT_MAPPED))
+
+        if res_element.get(RESULT_EXISTS):
+            msg += _('\n\nProduct %ss already existing in Odoo:\n - ') % element_label
+            msg += '%s' % '\n - '.join(res_element.get(RESULT_EXISTS))
+
+        if res_element.get(RESULT_MODE_CONFLICT):
+            msg += _(
+                '\n\nProduct %ss left unmapped because a same-name Odoo attribute uses a '
+                'different "Variant Creation" mode. Rename or change that Odoo attribute '
+                '(or create a separate one), then re-import:\n - '
+            ) % element_label
+            msg += '%s' % '\n - '.join(res_element.get(RESULT_MODE_CONFLICT))
+
+        if res_element.get(RESULT_NOT_IN_EXTERNAL):
+            msg += _('\n\nProduct %ss that do not exist in E-Commerce System:\n - ') % element_label
+            msg += '%s' % '\n - '.join(res_element.get(RESULT_NOT_IN_EXTERNAL))
+
+        message_id = self.env['message.wizard'].create({'message': msg[2:]})
+
+        return {
+            'name': _('Import Product %ss') % element_label,
+            'type': 'ir.actions.act_window',
+            'view_mode': 'form',
+            'res_model': 'message.wizard',
+            'res_id': message_id.id,
+            'target': 'new',
+        }
+
+    def _unmap(self):
+        return self.mapping_record._unmap()

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <menuitem id="menu_business_entity_external"
+                  name="Business Entities"
+                  parent="integration.menu_external_shopify_only"
+                  action="external_business_entity_action"
+                  sequence="10"/>
+
+        <menuitem id="menu_integration_catalog_external"
+                  name="Catalogs"
+                  parent="integration.menu_external_shopify_only"
+                  action="integration_catalog_external_action"
+                  sequence="20"/>
+
+        <menuitem id="menu_integration_taxonomy_category_external"
+                  name="Taxonomy Categories"
+                  parent="integration.menu_external_shopify_only"
+                  action="integration_taxonomy_category_external_action"
+                  sequence="20"/>
+
+        <record id="integration.menu_categories_external" model="ir.ui.menu">
+            <!-- In other connectors we call collections categories, so we need to rename them to make it more clear for user -->
+            <field name="name">Categories (Collections)</field>
+        </record>
+
+        <!-- "Order Fulfillments" moved to the core External Records menu (not Shopify-specific). -->
+
+        <menuitem id="menu_order_risk"
+                  name="Order Risks"
+                  parent="integration.menu_external_shopify_only"
+                  action="external_order_risk_action"
+                  sequence="40"/>
+
+        <menuitem id="menu_order_source_name"
+                  name="Order Source Names"
+                  parent="integration.menu_external_shopify_only"
+                  action="external_order_source_name_action"
+                  sequence="50"/>
+
+        <menuitem id="menu_shopify_order_tag_external"
+                  name="Order Tags"
+                  parent="integration.menu_external_shopify_only"
+                  action="action_external_integration_shopify_order_tag"
+                  sequence="60"/>
+
+        <menuitem id="menu_shopify_product_tag_external"
+                  name="Product Tags"
+                  parent="integration.menu_external_shopify_only"
+                  action="action_external_integration_shopify_product_tag"
+                  sequence="70"/>
+
+        <menuitem id="menu_sale_channel"
+                  name="Sales Channels"
+                  parent="integration.menu_external_shopify_only"
+                  action="external_sale_channel_action"
+                  sequence="80"/>
+
+    </data>
+</odoo>

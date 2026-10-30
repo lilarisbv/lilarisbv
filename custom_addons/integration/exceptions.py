@@ -1,0 +1,784 @@
+# See LICENSE file for full copyright and licensing details.
+
+from odoo.tools import _, LazyTranslate
+from odoo.exceptions import UserError, ValidationError
+
+from inspect import stack
+from logging import getLogger
+from psycopg2 import IntegrityError, OperationalError
+from psycopg2.errors import UniqueViolation
+from requests.exceptions import HTTPError, SSLError, ConnectionError as RequestsConnectionError
+from typing import Type, NamedTuple, Optional, List
+
+
+_logger = getLogger(__name__)
+# ErrorStore's format methods are classmethods with no `self`/env in scope, so the frame-based
+# lang lookup in odoo.tools.translate can never resolve a language here. Without a default_lang
+# that logs a WARNING on every call and still falls back to English; with it, the same fallback
+# happens quietly at DEBUG level.
+_lt = LazyTranslate(__name__, default_lang='en_US')
+
+
+class PrerequisiteNotMet(Exception):
+    """Raised by external entity _process() when prerequisites are not yet met.
+
+    Examples: refund processing called before invoice is paid; return processing
+    called before outgoing picking is validated. The record stays in 'draft'
+    status — lifecycle hooks (or the next dispatch run) will retry when
+    prerequisites are met.
+
+    This is NOT a failure — it's deferred work. Calling code should NOT mark
+    the record as failed and should NOT propagate as job error. It should be
+    logged as info / debug so user understands why the record is pending.
+    """
+    pass
+
+
+class NotMappedFromExternal(Exception):
+
+    def __init__(self, msg, model_name=None, code=None, integration=None):
+        if model_name and code and integration:
+            msg = '%s → %s(code=%s, integration=%s) \n%s' % (integration.name, model_name, code, integration.id, msg)
+
+        super(NotMappedFromExternal, self).__init__(msg)
+
+
+class NotMappedToExternal(Exception):
+
+    def __init__(self, msg, model_name=None, obj_id=None, integration=None):
+        if model_name and obj_id and integration:
+            msg = (
+                f'Export error for model "{model_name}" with ID "{obj_id}" in {integration.name} '
+                f'integration (ID: {integration.id}).\n'
+                f'Details: {msg}\n\n'
+                f'Suggested action: The corresponding external record does not exist. This usually means '
+                f'the Odoo entity (e.g., product) was not exported to the e-commerce system.\n'
+                f'Please try the following steps:\n'
+                f'  1. Manually export the problematic entity from Odoo to the e-commerce system, or\n'
+                f'  2. If there is an export job in the queue, please wait until the export job is completed.\n\n'
+                f'If the issue persists or the export fails, please contact our support '
+                f'team: https://support.ventor.tech/'
+            )
+        else:
+            msg = (
+                f'Export error: {msg}\n\n'
+                f'Suggested action: The corresponding external record does not exist. Please manually export '
+                f'the Odoo entity to '
+                f'the e-commerce system or wait for the export job to complete. '
+                f'If the issue persists, please contact our support team: https://support.ventor.tech/'
+            )
+
+        super(NotMappedToExternal, self).__init__(msg)
+
+
+class NoReferenceFieldDefined(Exception):
+
+    def __init__(self, msg, object_name=None):
+        super(NoReferenceFieldDefined, self).__init__(msg)
+        self.object_name = object_name
+
+
+class ApiImportError(Exception):
+
+    pass
+
+
+class ApiExportError(Exception):
+
+    pass
+
+
+class NoExternal(Exception):
+
+    def __init__(self, msg, model_name=None, code=None, integration=None):
+        if model_name and code and integration:
+            msg = (
+                f'External record not found for model "{model_name}" with code "{code}" in '
+                f'integration ID {integration.id}.\n'
+                f'Details: {msg}\n\n'
+                f'Suggested action: Please ensure the relevant objects are imported from the e-commerce system.\n'
+                f'Steps to resolve:\n'
+                f'  1. Check the e-commerce system to confirm that the record with code "{code}" exists.\n'
+                f'  2. If the record exists, make sure it is correctly imported into Odoo via the import process.\n'
+                f'  3. If the record does not exist, ensure it is created in the e-commerce system and '
+                f'then import it into Odoo.\n\n'
+                f'If the issue persists, please contact our support team: https://support.ventor.tech/'
+            )
+        else:
+            msg = (
+                f'External record not found: {msg}\n\n'
+                f'Suggested action: Please ensure the relevant objects are imported from the e-commerce system.\n'
+                f'Steps to resolve:\n'
+                f'  1. Confirm the external record exists in the e-commerce system.\n'
+                f'  2. Import the record into Odoo using the import process.\n\n'
+                f'If the issue persists, please contact our support team: https://support.ventor.tech/'
+            )
+
+        super(NoExternal, self).__init__(msg)
+
+
+class UndefinedExternalProduct(Exception):
+
+    pass
+
+
+class NotFoundExternalProduct(Exception):
+
+    pass
+
+
+class MultipleExternalRecordsFound(Exception):
+
+    def __init__(self, msg, model_name=None, code=None, integration=None, duplicates=None):
+        if model_name and code and integration:
+            duplicate_info = ', '.join(str(dup.id) for dup in duplicates) if duplicates else 'unknown'
+            msg = (
+                f'Multiple external records found for model "{model_name}" with code "{code}" '
+                f'in {integration.name} integration (ID: {integration.id}).\n'
+                f'Details: {msg}\n'
+                f'Duplicate record IDs: {duplicate_info}\n\n'
+                f'Suggested action: Please remove duplicates in the external records.\n'
+                f'Steps to resolve:\n'
+                f'  1. Go to the external records for "{model_name}" model and search for records with code "{code}".\n'
+                f'  2. Identify and remove the duplicated records to ensure only one unique record exists.\n'
+                f'  3. Once the duplicates are resolved, restart any failed jobs or retry '
+                f'the action you were attempting.\n\n'
+                f'If the issue persists, please contact our support team: https://support.ventor.tech/'
+            )
+        else:
+            msg = (
+                f'Multiple external records found: {msg}\n\n'
+                f'Suggested action: Please remove duplicates in the external records.\n'
+                f'Steps to resolve:\n'
+                f'  1. Search for the relevant records in the external system and resolve duplicates.\n'
+                f'  2. Once the duplicates are resolved, restart any failed jobs or retry '
+                f'the action you were attempting.\n\n'
+                f'If the issue persists, please contact our support team: https://support.ventor.tech/'
+            )
+
+        super(MultipleExternalRecordsFound, self).__init__(msg)
+
+
+class IntegrationNotImplementedError(NotImplementedError):
+
+    def __init__(self, msg: str = ''):
+        method_name = stack()[1].function
+        # Format string first, then translate to avoid translation context issues
+        formatted_msg = (
+            'Method %(method_name)s must be implemented by each connector. '
+            'Additional information: %(msg)s\n\n'
+            'This is a technical issue that cannot be fixed through configuration and requires '
+            'investigation by our developers. '
+            'If you encounter this error, please contact our support team: https://support.ventor.tech/'
+        ) % {'method_name': method_name, 'msg': msg}
+        formatted_msg = str(_lt(formatted_msg))
+
+        super(IntegrationNotImplementedError, self).__init__(formatted_msg)
+
+
+class JsonMissedKey(Exception):
+
+    pass
+
+
+class ResourceConflict(HTTPError):
+
+    code = 409
+
+    def __init__(self, message: str, *args, **kwargs):
+        super().__init__(f'{self.code}: {message}', *args, **kwargs)
+
+
+class TooManyRequestsError(HTTPError):
+
+    code = 429
+
+    def __init__(self, message: str, *args, **kwargs):
+        super().__init__(f'{self.code}: {message}', *args, **kwargs)
+
+
+class ServerError(HTTPError):  # HTTP error 500-599
+
+    def __init__(self, code: int, message: str, *args, **kwargs):
+        self.code = code
+
+        super().__init__(f'{code}: {message}', *args, **kwargs)
+
+
+class ThrottledError(Exception):
+
+    def __init__(self, timeout: int, message: str):
+        super().__init__(message)
+
+        self.timeout = timeout
+
+
+class ErrorInfo(NamedTuple):
+
+    error_type: Type[Exception] = UserError
+    format_method: Optional[str] = None  # noqa: E701
+    format_method_params: Optional[List] = None  # noqa: E701
+
+
+class ErrorStore:
+    """Utility class for generating standardized error messages.
+    This class cannot be instantiated - use its static methods directly.
+
+    TODO: new format E1xx, E2xx, etc.
+    For example:
+    E0xx: Invalid usage of ErrorStore
+    E1xx: Import errors
+    E2xx: Export errors
+    E3xx: Mapping errors
+    .
+    .
+    .
+    E9xx: Technical errors"""
+
+    RESOURCE_CONFLICT = 409
+    TOO_MANY_REQUESTS = 429
+
+    INTERNAL_SERVER_ERROR = 500
+    BAD_GATEWAY = 502
+    SERVICE_UNAVAILABLE = 503
+    CONNECTION_TIMED_OUT = 522
+    TIMEOUT_OCCURRED = 524
+    UNABLE_RESOLVE_ORIGIN_HOSTNAME = 530
+
+    SERVER_ERROR_CODES = list(range(500, 600))
+
+    AssertionError = AssertionError
+    UserError = UserError
+    ValidationError = ValidationError
+
+    ApiImportError = ApiImportError
+    ApiExportError = ApiExportError
+
+    PrerequisiteNotMet = PrerequisiteNotMet
+
+    IntegrationNotImplementedError = IntegrationNotImplementedError
+    JsonMissedKey = JsonMissedKey
+
+    NoExternal = NoExternal
+    MultipleExternalRecordsFound = MultipleExternalRecordsFound
+    NotMappedToExternal = NotMappedToExternal
+    NotMappedFromExternal = NotMappedFromExternal
+
+    UndefinedExternalProduct = UndefinedExternalProduct
+    NotFoundExternalProduct = NotFoundExternalProduct
+
+    ThrottledError = ThrottledError
+
+    HTTPError = HTTPError
+    SSLError = SSLError
+    RequestsConnectionError = RequestsConnectionError
+    ResourceConflict = ResourceConflict
+    ServerError = ServerError
+    TooManyRequestsError = TooManyRequestsError
+    HTTPError = HTTPError
+
+    NoReferenceFieldDefined = NoReferenceFieldDefined
+
+    IntegrityError = IntegrityError
+    UniqueViolation = UniqueViolation
+    OperationalError = OperationalError
+
+    _error_codes = {
+        'E000': ErrorInfo(),  # Common error code for raise non-standard integration errors
+        'E001': ErrorInfo(),  # Unknown error code provided to ErrorStore.raise_error
+        'E002': ErrorInfo(
+            error_type=UserError,
+            format_method='format_wrong_error_store_params',
+        ),
+        'E101': ErrorInfo(
+            format_method='format_circular_dependency_related_products',
+            format_method_params=[
+                'parent_product',
+                'optional_products',
+                'integration_name=None',
+            ],
+        ),
+        'E102': ErrorInfo(
+            format_method='format_related_product_not_exported',
+            format_method_params=[
+                'parent_product',
+                'optional_products',
+                'integration_name=None',
+            ],
+        ),
+        'E103': ErrorInfo(
+            format_method='format_no_external',
+            format_method_params=[
+                'msg',
+                'model_name=None',
+                'code=None',
+                'integration=None',
+            ],
+        ),
+        'E104': ErrorInfo(
+            format_method='format_multiple_external_records_found',
+            format_method_params=[
+                'msg',
+                'model_name=None',
+                'code=None',
+                'integration=None',
+                'duplicates=None',
+            ],
+        ),
+        'E105': ErrorInfo(
+            error_type=IntegrationNotImplementedError,
+            format_method='format_integration_not_implemented',
+            format_method_params=[
+                'method_name',
+                'msg=None',
+            ],
+        ),
+        'E106': ErrorInfo(
+            error_type=NotMappedFromExternal,
+            format_method='format_not_mapped_from_external',
+            format_method_params=[
+                'msg',
+                'model_name=None',
+                'code=None',
+                'integration=None',
+            ],
+        ),
+        'E107': ErrorInfo(
+            error_type=NotMappedToExternal,
+            format_method='format_not_mapped_to_external',
+            format_method_params=[
+                'msg',
+                'model_name=None',
+                'obj_id=None',
+                'integration=None',
+            ],
+        ),
+        'E108': ErrorInfo(
+            error_type=ApiImportError,
+        ),
+        'E109': ErrorInfo(
+            error_type=UndefinedExternalProduct,
+            format_method='format_undefined_external_product',
+            format_method_params=[
+                'integration_name',
+                'product_name',
+                'product_reference',
+            ],
+        ),
+        'E110': ErrorInfo(
+            error_type=NotFoundExternalProduct,
+            format_method='format_not_found_external_product',
+            format_method_params=[
+                'integration_name',
+                'product_id',
+                'variant_id',
+                'product_name',
+                'product_reference',
+            ],
+        ),
+        'E111': ErrorInfo(
+            error_type=NotImplementedError,
+            format_method='format_not_implemented',
+        ),
+        'E112': ErrorInfo(
+            format_method='format_related_product_not_imported',
+            format_method_params=[
+                'unmapped_codes',
+            ],
+        ),
+        'E113': ErrorInfo(
+            # error_type=UniqueViolation,
+            error_type=ValidationError,
+            format_method='format_unique_violation_error_message',
+            format_method_params=[
+                'exc',
+                'existing_info',
+                'entity_label',
+            ],
+        ),
+        'E114': ErrorInfo(
+            error_type=UserError,
+            format_method='format_product_not_connected_for_stock_refresh',
+            format_method_params=[
+                'product_name',
+            ],
+        ),
+        'E116': ErrorInfo(
+            error_type=ApiImportError,
+        ),
+        # E5xx — Returns & Refunds processing errors.
+        # No format_method: messages live next to the raise sites in
+        # external_order_refund.py / external_order_return.py and are passed
+        # to raise_error(err_msg=_(...)). raise_error injects the code into
+        # the final message, so tests assert on the code — the human-readable
+        # text is not a stable contract and is expected to change with
+        # rewording and translation.
+        # Ranges: E50x / E51x refund and return processing; E518a-c return
+        # conflict guard; E519-E523 return export and the pre-fulfillment
+        # safety net; E55x / E56x errors specific to refunds and returns
+        # respectively.
+        'E501': ErrorInfo(error_type=UserError),           # refund line not on posted invoice
+        'E502': ErrorInfo(error_type=PrerequisiteNotMet),  # draft invoice (soft)
+        'E503': ErrorInfo(error_type=PrerequisiteNotMet),  # no invoice (soft)
+        'E504': ErrorInfo(error_type=UserError),           # no refund journal
+        'E505': ErrorInfo(error_type=UserError),           # no restock location
+        'E506': ErrorInfo(error_type=UserError),           # currency mismatch
+        'E509': ErrorInfo(error_type=UserError),           # manual credit note
+        'E511': ErrorInfo(error_type=UserError),           # cancel after validated
+        'E513': ErrorInfo(error_type=UserError),           # zero amount no linked return
+        'E514': ErrorInfo(error_type=PrerequisiteNotMet),  # unpaid invoice (soft)
+        'E516': ErrorInfo(error_type=PrerequisiteNotMet),  # no done outgoing picking (soft)
+        'E517': ErrorInfo(error_type=UserError),           # unresolvable return line
+        'E551': ErrorInfo(error_type=UserError),           # restock_type=CANCEL with linked_return
+        'E552': ErrorInfo(error_type=UserError),           # credit note creation returned no moves
+        'E553': ErrorInfo(error_type=UserError),           # lineless refund without refund_product_id
+        'E554': ErrorInfo(error_type=UserError),           # no discount product configured
+        'E555': ErrorInfo(error_type=UserError),           # refund total mismatch, no adjustment product
+        'E561': ErrorInfo(error_type=UserError),           # unknown return state (defensive)
+        'E562': ErrorInfo(error_type=UserError),           # no outgoing picking for fulfillment
+        'E518a': ErrorInfo(error_type=UserError),          # return conflict: open return mismatch
+        'E518b': ErrorInfo(error_type=UserError),          # return conflict: over-return
+        'E518c': ErrorInfo(error_type=UserError),          # kit return could not be processed
+        'E519': ErrorInfo(error_type=UserError),           # kit return export not supported
+        'E520': ErrorInfo(error_type=UserError),           # duplicate return export attempt
+        # Return export pre-flight (non-Shopify, unresolved fulfillment line items)
+        'E521': ErrorInfo(error_type=UserError),
+        # No reverseFulfillmentOrder in the returnCreate response
+        'E522': ErrorInfo(error_type=UserError),
+        # Outgoing-picking validation blocked by pending external return
+        'E523': ErrorInfo(error_type=UserError),
+    }
+
+    def __new__(cls):
+        raise TypeError(_("%(cls_name)s cannot be instantiated. Use static methods directly.") % {
+            'cls_name': cls.__name__,
+        })
+
+    @classmethod
+    def raise_error(
+        cls,
+        err_type: Type[Exception] = None,
+        err_code: str = 'E000',
+        err_msg: str = '',
+        support_contact: bool = True,
+        raise_from_none: bool = False,
+        **kwargs,
+    ):
+        """
+        Method to raise an error with a given error code or message.
+
+        Passing both err_code and err_msg is intentional and expected: err_code gives tests a
+        stable identifier to assert on, err_msg carries the actionable, context-specific text.
+        In that case err_msg is used verbatim instead of the err_code's format_method.
+        """
+        if not err_type:
+            err_type = cls._error_codes.get(err_code).error_type
+
+        if err_code and err_code != 'E000':
+            if not err_msg:
+                err_msg = cls.format_message(err_code, raise_from_none=raise_from_none, **kwargs)
+            else:
+                # Concatenate prefix + err_msg + suffix. Prior implementation used
+                # a single template "%(gap)sError %(err_code)s:\n%(err_msg)s\n" %
+                # {...} which re-interprets percent-format codes inside the
+                # user-provided err_msg, breaking on any literal '%' character
+                # (e.g. when an upstream field value such as a refund note
+                # contained "50% off"). The prefix uses controlled values only.
+                prefix = str(_lt('%(gap)sError %(err_code)s:\n')) % {
+                    'gap': '' if raise_from_none else '\n\n',
+                    'err_code': err_code,
+                }
+                err_msg = prefix + err_msg + '\n'
+
+        if support_contact:
+            err_msg += cls.format_support_contact_string()
+
+        if raise_from_none:
+            raise err_type(err_msg) from None
+        raise err_type(err_msg)
+
+    @classmethod
+    def format_message(cls, err_code: str, support_contact: bool = False, raise_from_none: bool = False, **kwargs):
+        error_info = cls._error_codes.get(err_code, None)
+        if not error_info:
+            cls.raise_error(
+                err_code='E001',
+                err_msg=_('Unknown error code provided to ErrorStore.raise_error: %(err_code)s.') % {
+                    'err_code': err_code,
+                },
+                support_contact=True,
+            )
+
+        if error_info.format_method:
+            return str(_lt(
+                '%(gap)sError %(err_code)s:\n'
+            )) % {
+                'gap': '' if raise_from_none else '\n\n',
+                'err_code': err_code,
+            } + getattr(cls, error_info.format_method)(**kwargs) \
+                + (cls.format_support_contact_string() if support_contact else '')
+
+        cls.raise_error(err_code='E000', err_msg=_('Error code %(err_code)s does not have a format method defined.') % {
+            'err_code': err_code,
+        })
+
+    @staticmethod
+    def format_support_contact_string():
+        return str(
+            _lt(
+                '\n\nIf you need assistance, please contact your Odoo partner '
+                'or our support team: https://support.ventor.tech/'
+            )
+        )
+
+    @classmethod
+    def format_unique_violation_error_message(
+        cls,
+        exc: UniqueViolation,
+        existing_info: str,
+        entity_label: str,
+    ):
+        """Currently the error message steps to resolve are focused on the problem with only products
+        if other records will use it -- update steps to resolve section with conditions"""
+        return _(
+            'Duplicate value detected during import of %(entity_label)s.\n\n'
+            'Existing record: %(existing_info)s\n\n'
+            'Steps to resolve:\n'
+            '\tStep 1 (always): Run validation test. If issues - fix; after fixing - retry action (e.g. failed job).\n'
+            '\tStep 2 (if problem still persists):\n'
+            '\t\t1. Go to External menu\n'
+            '\t\t2. Find existing product (specified above in the error message)\n'
+            '\t\t3. Do one of two things:\n'
+            '\t\t\t3.1 If product is still relevant (exists in store): Run Refresh External Products for product above (or all products).\n' # NOQA
+            '\t\t\t3.2. If this product does not exist anymore in store: Remove external record\n'
+            '\t\t4. Retry action.\n\n'
+            'Technical details: %(error)s'
+        ) % {
+            'existing_info': existing_info,
+            'entity_label': entity_label,
+            'error': str(exc),
+        }
+
+    @staticmethod
+    def format_not_mapped_from_external(msg, model_name=None, code=None, integration=None):
+        if model_name and code:
+            return _(
+                '%(integration)s → %(model)s(code=%(code)s, integration=%(integration_id)s) \n%(msg)s' % {
+                    'integration': integration.name,
+                    'model': model_name,
+                    'code': code,
+                    'integration_id': integration.id,
+                    'msg': msg,
+                }
+            )
+        return msg
+
+    @staticmethod
+    def format_not_mapped_to_external(msg, model_name=None, obj_id=None, integration=None):
+        if model_name and obj_id and integration:
+            return _(
+                'Export error for model "%(model)s" with ID "%(obj_id)s" in %(integration_name)s '
+                'integration (ID: %(integration_id)s).\n'
+                'Details: %(msg)s\n\n'
+                'Suggested action: The corresponding external record does not exist. This usually means '
+                'the Odoo entity (e.g., product) was not exported to the e-commerce system.\n'
+                'Please try the following steps:\n'
+                '  1. Manually export the problematic entity from Odoo to the e-commerce system, or\n'
+                '  2. If there is an export job in the queue, please wait until the export job is completed.'
+            ) % {
+                'model': model_name,
+                'obj_id': obj_id,
+                'integration_name': integration.name,
+                'integration_id': integration.id,
+                'msg': msg,
+            }
+        return _(
+            'Export error: %(msg)s\n\n'
+            'Suggested action: The corresponding external record does not exist. Please manually export '
+            'the Odoo entity to '
+            'the e-commerce system or wait for the export job to complete. '
+        ) % {'msg': msg}
+
+    @staticmethod
+    def format_no_external(msg, model_name=None, code=None, integration=None):
+        if model_name and code and integration:
+            return _(
+                'External record not found for model "%(model)s" with code "%(code)s" in '
+                'integration ID %(integration_id)s.\n'
+                'Details: %(msg)s\n\n'
+                'Suggested action: Please ensure the relevant objects are imported from the e-commerce system.\n'
+                'Steps to resolve:\n'
+                '  1. Check the e-commerce system to confirm that the record with code "%(code)s" exists.\n'
+                '  2. If the record exists, make sure it is correctly imported into Odoo via the import process.\n'
+                '  3. If the record does not exist, ensure it is created in the e-commerce system and '
+                'then import it into Odoo.'
+            ) % {
+                'model': model_name,
+                'code': code,
+                'integration_id': integration.id,
+                'msg': msg,
+            }
+        return _(
+            'External record not found: %(msg)s\n\n'
+            'Suggested action: Please ensure the relevant objects are imported from the e-commerce system.\n'
+            'Steps to resolve:\n'
+            '  1. Confirm the external record exists in the e-commerce system.\n'
+            '  2. Import the record into Odoo using the import process.'
+        ) % {'msg': msg}
+
+    @staticmethod
+    def format_multiple_external_records_found(
+        msg, model_name=None, code=None, integration=None, duplicates=None,
+    ):
+        if model_name and code and integration:
+            duplicate_info = ', '.join(str(dup.id) for dup in duplicates) if duplicates else 'unknown'
+            return _(
+                'Multiple external records found for model "%(model)s" with code "%(code)s" '
+                'in %(integration_name)s integration (ID: %(integration_id)s).\n'
+                'Details: %(msg)s\n'
+                'Duplicate record IDs: %(duplicate_info)s\n\n'
+                'Suggested action: Please remove duplicates in the external records.\n'
+                'Steps to resolve:\n'
+                '  1. Go to the external records for "%(model)s" model and search for records with code "%(code)s".\n'
+                '  2. Identify and remove the duplicated records to ensure only one unique record exists.\n'
+                '  3. Once the duplicates are resolved, restart any failed jobs or retry '
+                'the action you were attempting.'
+            ) % {
+                'model': model_name,
+                'code': code,
+                'integration_name': integration.name,
+                'integration_id': integration.id,
+                'msg': msg,
+                'duplicate_info': duplicate_info,
+            }
+        return _(
+            'Multiple external records found: %(msg)s\n\n'
+            'Suggested action: Please remove duplicates in the external records.\n'
+            'Steps to resolve:\n'
+            '  1. Search for the relevant records in the external system and resolve duplicates.\n'
+            '  2. Once the duplicates are resolved, restart any failed jobs or retry '
+            'the action you were attempting.'
+        ) % {'msg': msg}
+
+    @staticmethod
+    def format_integration_not_implemented(method_name, msg=''):
+        return _(
+            'Method %(method_name)s must be implemented by each connector. '
+            'Additional information: %(msg)s\n\n'
+            'This is a technical issue that cannot be fixed through configuration and requires '
+            'investigation by our developers.'
+        ) % {
+            'method_name': method_name,
+            'msg': msg,
+        }
+
+    @staticmethod
+    def format_circular_dependency_related_products(parent_product, optional_products, integration_name=None):
+        if not parent_product or not optional_products:
+            raise ValueError(_(
+                'Invalid arguments provided to ErrorStore.format_circular_dependency_related_products (E101).\n'
+                'Both parent_product and optional_products must be provided.'
+            ))
+
+        platform = integration_name or 'the e-commerce platform'
+        return (_(
+            'Circular dependency detected between product "%(parent)s '
+            '(Internal Reference: %(parent_internal_reference)s)" and next related products:\n'
+            '%(optional_products)s\n\n'
+            'Example: Product "%(parent)s" is linked as a related product to "%(optional)s", '
+            'and vice versa. This creates an export loop.\n\n'
+            'To resolve this issue follow these steps:\n'
+            '1. Open Product Field Mappings and disable "Related Products" synchronization.\n'
+            '2. Export all related products manually to %(platform)s.\n'
+            '3. Then export "%(parent)s" again.\n'
+            '4. Finally, re-enable "Related Products" synchronization and export again.\n\n'
+            'This ensures all products are linked correctly without recursion.'
+        ) % {
+            'optional_products': '\n'.join([
+                f'\t- Product: {product.name} (Internal Reference: {product.default_code})'
+                for product in optional_products
+            ]),
+            'parent': parent_product.name,
+            'parent_internal_reference': parent_product.default_code,
+            'optional': optional_products[0].name,
+            'platform': platform,
+        })
+
+    @staticmethod
+    def format_related_product_not_exported(parent_product, optional_products, integration_name=None):
+        if not parent_product or not optional_products:
+            raise ValueError(_(
+                'Invalid arguments provided to ErrorStore.format_related_product_not_exported.\n'
+                'Both parent_product and optional_products must be provided.'
+            ))
+
+        platform = integration_name or 'the e-commerce platform'
+        return (_(
+            'There were problems exporting this product: '
+            '"%(parent)s (Internal Reference: %(parent_internal_reference)s)" to %(platform)s.\n\n'
+            'Next related products were not exported:\n'
+            '%(optional_products)s\n\n'
+            'Options to resolve this issue:\n'
+            '1. Export all related products(see above) manually to %(platform)s and run "%(parent)s" export again.\n'
+            '2. Open Product Field Mappings and disable "Related Products" synchronization '
+            'and run "%(parent)s" export again to export only parent product.'
+        ) % {
+            'optional_products': '\n'.join([
+                f'\t- Product: {product.name} (Internal Reference: {product.default_code})'
+                for product in optional_products
+            ]),
+            'parent': parent_product.name,
+            'parent_internal_reference': parent_product.default_code or '',
+            'platform': platform,
+        })
+
+    @staticmethod
+    def format_undefined_external_product(integration_name, product_name, product_reference):
+        return _(
+            '%s: The product "%s" (%s) cannot be imported because it does not have an identifier in the e-commerce system.\n\n'  # noqa: E501
+            'This can happen in the following cases:\n'
+            '- The order contains a custom or manually added item that is not linked to a real product\n'
+            '- The product was removed from the store and automatically unlinked from the order\n'
+            '- The product was created or modified by a customization and does not have a valid identifier\n'
+            'Please review the order and product data in the e-commerce system and try again.'
+
+        ) % (integration_name, product_name, product_reference)
+
+    @staticmethod
+    def format_not_found_external_product(
+        integration_name,
+        product_id,
+        variant_id,
+        product_name,
+        product_reference,
+    ):
+        return _(
+            '%s: The product "%s" (%s) with (ID=%s, Variant-ID=%s) could not be found in the e-commerce system. '
+            'It may have been deleted, archived, or is no longer available. '
+            'Please verify that the product and its variants still exist in your store.'
+        ) % (integration_name, product_name, product_reference, product_id, variant_id)
+
+    @staticmethod
+    def format_related_product_not_imported(unmapped_codes):
+        return _(
+            'Some optional products are not mapped to Odoo products yet. \nPlease run initial import of products '
+            'or import products by IDs using import wizard: \n\tE-Commerce Integrations → Stores → <your store> '
+            '→ Data Import → Open Import Wizard button.\n\n'
+            'Unmapped optional product IDs:\n%s'
+        ) % '\n'.join(f'\t- {code}' for code in unmapped_codes)
+
+    @staticmethod
+    def format_not_implemented():
+        return _(
+            'This functionality is not yet implemented.'
+        )
+
+    @staticmethod
+    def format_product_not_connected_for_stock_refresh(product_name):
+        return _(
+            'Product "%s" is not connected to any e-commerce store for stock refresh.\n\n'
+            'To resolve this issue, please do the following:\n'
+            '1. Open the product and go to the "E-Commerce Integration" tab.\n'
+            '2. Assign at least one active store to the product (or its variants).\n'
+            '3. Ensure product mapping to the selected store is completed.'
+        ) % product_name
