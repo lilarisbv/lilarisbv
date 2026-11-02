@@ -77,7 +77,7 @@ class StockPicking(models.Model):
         for picking_id in self:
             if picking_id.sale_id.invoice_status == 'invoiced':
                 continue
-            marketplace_workflow_id = picking_id.sale_id.order_workflow_id
+            marketplace_workflow_id = picking_id.sale_id.order_workflow_id.sudo()
             delivery_lines = picking_id.move_line_ids.filtered(lambda l: l.product_id.invoice_policy == 'delivery')
             if delivery_lines and marketplace_workflow_id and marketplace_workflow_id.is_create_invoice and picking_id.picking_type_id.code == 'outgoing':
                 picking_id.sale_id.with_context(manual_validate=True).process_invoice(marketplace_workflow_id)
@@ -93,6 +93,7 @@ class StockQuant(models.Model):
     _inherit = 'stock.quant'
 
     def create_or_update_inventory_quant(self, location_id, product_id, quantity, name="", auto_validate=False):
+        self = self.sudo()
         inventory_quant = self.search([('location_id', '=', location_id), ('product_id', '=', product_id.id)])
         if inventory_quant:
             inventory_quant.write({'inventory_quantity': quantity})

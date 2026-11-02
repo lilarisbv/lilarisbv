@@ -67,7 +67,7 @@ class MKScopeWizard(models.TransientModel):
         Task: T4565 - Marketplace Access Rights Check
         Ignore the missing scopes and establishes a connection to the marketplace, sets the pricelist, and imports location from marketplace.
         """
-        mk_instance_id = self.env['mk.instance'].browse(self.env.context.get('mk_instance_id'))
+        mk_instance_id = self.env['mk.instance'].browse(self.env.context.get('mk_instance_id')).sudo()
         mk_instance_id.confirm_connection()
 
     def action_check_again(self):

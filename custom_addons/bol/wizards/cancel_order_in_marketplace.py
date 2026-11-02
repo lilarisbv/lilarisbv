@@ -1,5 +1,9 @@
+import datetime
+import time
+
 from odoo import models, api, fields, _
 from odoo.addons.base_marketplace.models.exceptions import MarketplaceException
+from ..models.bol_process_status import BOL_PROCESS_STATUS_MAX_CHECKS
 
 BOL_CANCEL_REASON_CODES = [('OUT_OF_STOCK', 'OUT OF STOCK / ALREADY SOLD THROUGH ANOTHER CHANNEL / WEBSITE'),
                            ('REQUESTED_BY_CUSTOMER', 'REQUESTED BY CUSTOMER'),
@@ -28,28 +32,36 @@ class MKCancelOrder(models.TransientModel):
         if any([not item.bol_cancel_reason for item in self.bol_cancel_item_line_ids]):
             raise MarketplaceException(_("'Cancel Reason' is mandatory for each line."))
         mk_instance_id = order_id.mk_instance_id
-        cancelled_bol_item_ids = []
+        waiting_items = []
         for item_line in self.bol_cancel_item_line_ids:
-            response = mk_instance_id._send_bol_request('retailer/orders/cancellation', {'orderItems': [{'orderItemId': item_line.order_line_id.mk_id, 'reasonCode': item_line.bol_cancel_reason}]}, method="PUT")
+            order_line = item_line.order_line_id
+            # A cancel that was sent a moment ago and is not answered yet must not be sent twice.
+            sent = order_line.bol_cancel_process_id
+            if sent.state == 'pending' and sent.create_date > fields.Datetime.now() - datetime.timedelta(days=1):
+                waiting_items.append(order_line.name)
+                continue
+            response = mk_instance_id._send_bol_request('retailer/orders/cancellation', {'orderItems': [{'orderItemId': order_line.mk_id, 'reasonCode': item_line.bol_cancel_reason}]}, method="PUT")
             process_id = self.env['bol.process.status'].create_or_update_process_status(response, mk_instance_id)
-            while True:
+            order_line.bol_cancel_process_id = process_id
+            for attempt in range(1, BOL_PROCESS_STATUS_MAX_CHECKS + 1):
                 process_id.get_process_status()
-                if process_id.state == 'success' and process_id.entity_id:
-                    cancelled_bol_item_ids.append(item_line.order_line_id.mk_id)
-                    order_id.message_post(body=_("Order item '{}' has been successfully cancelled in bol.com".format(item_line.order_line_id.name)))
+                if process_id.state == 'success':
+                    order_line._apply_bol_cancel_result(process_id)
                     break
                 if process_id.state in ['failure', 'timeout']:
                     raise MarketplaceException(_("Failed to Cancel Order '{}'. \nSTATUS: {} \nERROR: {}".format(order_id.name, process_id.state.upper(), process_id.error_message)))
-            self.env.cr.commit()
-        if cancelled_bol_item_ids:
-            if all([order_line.mk_id in cancelled_bol_item_ids for order_line in order_id.order_line]):
-                order_id.write({'canceled_in_marketplace': True})
-                order_id.message_post(body=_("Order '{}' has been successfully cancelled in bol.com".format(order_id.name)))
+                if attempt < BOL_PROCESS_STATUS_MAX_CHECKS:
+                    time.sleep(min(2 ** attempt, 30))
             else:
-                order_id.action_draft()
-                order_id.order_line.filtered(lambda x: x.mk_id in cancelled_bol_item_ids).write({'product_uom_qty': 0.0})
-                order_id.action_confirm()
+                # Still pending: do not raise (that would roll back the process record). The webhook or the scheduled action finish it later.
+                waiting_items.append(order_line.name)
+            self.env.cr.commit()
+        if waiting_items:
+            message = _("Not finished at Bol.com yet: %s. Odoo cancels the item(s) when Bol.com answers.") % ', '.join(waiting_items)
+            return {'type': 'ir.actions.client', 'tag': 'display_notification',
+                    'params': {'message': message, 'type': 'warning', 'sticky': False, 'next': {'type': 'ir.actions.act_window_close'}}}
         return True
+
 
 class BolCancelItemLine(models.TransientModel):
     _name = "bol.cancel.item.line"

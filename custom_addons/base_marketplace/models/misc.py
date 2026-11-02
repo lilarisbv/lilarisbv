@@ -1,10 +1,54 @@
 import functools
+import hashlib
 import json
 import logging
+import re
 
+from odoo.http import db_list
 from odoo.tools.mimetypes import _mime_mappings
 
+from odoo.addons.base_marketplace.models.exceptions import MarketplaceGoLiveSkip
+
 _logger = logging.getLogger("Teqstars:Base Marketplace")
+
+_MARKETPLACE_DB_TOKEN_RE = re.compile(r'^[0-9a-f]{32}$')
+
+
+def marketplace_db_token(db_name):
+    """
+    Task: T9113 - Build the token that stands for a database name in public marketplace URLs.
+        It is the first 32 hex characters of the SHA-256 of the name (same as the eBay connector), so the URL no longer
+        shows the database name.
+    Args:
+        db_name (str): The database name.
+    Returns:
+        str: The 32 character token.
+    """
+    return hashlib.sha256(db_name.encode()).hexdigest()[:32]
+
+
+def resolve_marketplace_db_name(db_value, host=None):
+    """
+    Task: T9113 - Find the database a public marketplace URL (webhook or image) points to.
+        The URL segment holds either the plain database name, as every URL built before the token existed does, or its
+        token. The plain name is tried first, so existing URLs resolve exactly as before. Only the databases that pass
+        the operator's db_filter for this host are considered, because db_list already applies it.
+    Args:
+        db_value (str): The database segment taken from the URL.
+        host (str, optional): The HTTP host of the request, used by db_filter.
+    Returns:
+        str or bool: The database name, or False when the segment matches no permitted database.
+    """
+    if not db_value:
+        return False
+    db_names = db_list(force=True, host=host)
+    if db_value in db_names:
+        return db_value
+    if _MARKETPLACE_DB_TOKEN_RE.match(db_value):
+        for db_name in db_names:
+            if marketplace_db_token(db_name) == db_value:
+                return db_name
+    return False
 
 
 def check_go_live(instance_arg=None):
@@ -58,9 +102,11 @@ def check_go_live(instance_arg=None):
                 for mk_instance_id in instance:
                     if mk_instance_id.is_neutralized and not mk_instance_id.go_live:
                         # On UI this raises (redirect popup); during cron it only logs
-                        # a warning and returns False, so we skip the API request.
+                        # a warning, then the cron is skipped through MarketplaceGoLiveSkip.
                         mk_instance_id.redirect_instance_for_go_live(mk_instance_id)
-                        return False
+                        if self.env.context.get('cron_id') or self.env.context.get('ir_cron_progress_id'):
+                            raise MarketplaceGoLiveSkip(f"Go Live is off for the instance {mk_instance_id.name}, cron skipped.")
+                        return {}
             return func(self, *args, **kwargs)
         return wrapper
 

@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 {
-    "name": "Bol.com Integration",
-    "version": "1.0.3",
+    "name": "Bol.com Connector | Bol.com Odoo Integration | Bol.com Marketplace Integration",
+    "version": "19.0.1.1.4",
     "category": "eCommerce",
-    'summary': 'Integrate & Manage Bol.com Operations from Odoo by using Odoo Bol.com Integration or Bol.com Odoo Integration or Bol Integration. Odoo BOL.com integration, BOL.com integration with Odoo, Odoo integration for BOL.com, Bol.com Connector, Bol.com Connector Odoo, We also provide modules like shipping and marketplace dhl integration express integration fedex integration ups integration gls integration usps integration stamps.com integration shipstation integration easyship integration amazon integration sendcloud integration woocommerce integration shopify integration',
+    'summary': """TeqStars Bol.com Integration for Odoo helps businesses manage Bol.com marketplace operations directly from Odoo. This Bol.com connector supports product synchronization, order import, inventory management, shipment updates, and marketplace workflow automation. The Bol.com integration simplifies daily eCommerce operations, and reduces manual marketplace management. This app is also part of the TeqStars marketplace connector solution for Odoo users.
+                  Sell on Bol.com from Odoo — Connect with bol.com, the Odoo Bol.com Connector and Bol.com Integration for Odoo, with offer sync, order import and stock updates, built on TeqStars Base Marketplace, the shared core behind every TeqStars marketplace connector.""",
 
     "depends": ['base_marketplace', 'base_address_extended'],
 
@@ -33,21 +34,27 @@
         'data/data.xml',
 
     ],
+    'assets': {
+        'web.assets_backend': [
+            'bol/static/src/js/onboarding/**/*',
+        ],
+    },
     "cloc_exclude": [
         '**/*.xml',  # exclude all XML files from the module
         'static/description/**/*',  # exclude all files in a folder hierarchy recursively
     ],
 
-    'images': ['static/description/bol_banner.jpg'],
+    'images': ['static/description/bol_banner.png'],
 
     "author": "TeqStars",
-    "website": "http://teqstars.com/r/bSq",
+    "website": "https://teqstars.com/r/bSq",
     'support': 'support@teqstars.com',
     'maintainer': 'TeqStars',
 
     "description": """""",
 
     'demo': [],
+    'live_test_url': 'https://teqstars.com/r/Azo',
     'license': 'OPL-1',
     'auto_install': False,
     'installable': True,

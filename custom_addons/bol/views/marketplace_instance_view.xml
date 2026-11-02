@@ -24,17 +24,95 @@
                 </div>
                 <page name="product_config" position="inside">
                     <div class="row mt16 o_settings_container" invisible="marketplace != 'bol'">
-                        <div class="col-xs-12 col-md-6 o_setting_box" name="bol_managing_excluded_taxes_on_product">
-                            <div class="o_setting_left_pane">
-                                <b>
+                        <div class="col-xs-12 col-md-6">
+                            <div class="o_setting_box" name="bol_managing_excluded_taxes_on_product">
+                                <div class="o_setting_left_pane">
                                     <field name="bol_managing_excluded_taxes_on_product"/>
-                                </b>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label string="Managing Excluded Taxes on Odoo Product?" for="bol_managing_excluded_taxes_on_product"/>
+                                    <div class="text-muted">
+                                        The unit price of the order line will automatically adjust to accommodate Bol.com's practice of providing tax included price.
+                                        <br/><br/>
+                                        <strong>Note:</strong>
+                                        To ensure accurate calculations and prevent potential rounding issues, we recommend setting the taxes as "included" on Odoo products.
+                                    </div>
+                                </div>
                             </div>
-                            <div class="o_setting_right_pane">
-                                <label string="Managing Excluded Taxes on Odoo Product?" for="bol_managing_excluded_taxes_on_product"/>
-                                <div class="text-muted">
-                                    The unit price of the order line will automatically adjust to accommodate Bol.com's practice of providing tax included price. <br/><br/>
-                                    <strong>Note:</strong> To ensure accurate calculations and prevent potential rounding issues, we recommend setting the taxes as "included" on Odoo products. By doing so, the taxes will be included in the product price, eliminating any discrepancies during calculations.
+
+                            <div class="o_setting_box mt16" invisible="bol_operation_type not in ['FBR', 'Both']">
+                                <div class="o_setting_left_pane"/>
+                                <div class="o_setting_right_pane">
+                                    <label for="bol_default_fulfilment_schedule"/>
+                                    <div class="text-muted">
+                                        Used when fulfilment method is FBR.
+                                    </div>
+                                    <field name="bol_default_fulfilment_schedule" readonly="state == 'confirmed' or not is_marketplace_manager" required="marketplace == 'bol'"/>
+
+                                    <div class="content-group" invisible="bol_default_fulfilment_schedule != 'BOL_DELIVERY_PROMISE'">
+                                        <div class="mt16 d-flex align-items-center">
+                                            <div style="width: 140px;">
+                                                <label string="Delivery Days" class="o_light_label" for="bol_default_delivery_min_days"/>
+                                            </div>
+                                            <div class="d-flex align-items-center">
+                                                <div style="width: 35px !important;">
+                                                    <field name="bol_default_delivery_min_days" nolabel="1" class="mb-0" readonly="not is_marketplace_manager"/>
+                                                </div>
+                                                <span class="mx-2" style="font-weight: bold;">-</span>
+                                                <div style="width: 35px !important;">
+                                                    <field name="bol_default_delivery_max_days" nolabel="1" class="mb-0" readonly="not is_marketplace_manager"/>
+                                                </div>
+                                                <span class="text-muted ms-3" style="font-size: 0.8rem;">(Min - Max days)</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="mt16 d-flex align-items-center" invisible="not (bol_default_delivery_min_days == 0 and bol_default_delivery_max_days == 1)">
+                                            <div style="width: 140px;">
+                                                <label for="bol_default_ultimate_order_time" class="o_light_label"/>
+                                            </div>
+                                            <div style="flex-grow: 1;">
+                                                <field name="bol_default_ultimate_order_time" required="bol_default_delivery_min_days == 0 and bol_default_delivery_max_days == 1" readonly="not is_marketplace_manager"/>
+                                                <div class="text-muted" style="font-size: 0.75rem;">Required for 24h delivery.</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12 col-md-6">
+                            <div class="o_setting_box">
+                                <div class="o_setting_left_pane"/>
+                                <div class="o_setting_right_pane">
+                                    <label for="bol_default_condition_category"/>
+                                    <div class="text-muted">
+                                        Default condition category used when creating listings.
+                                    </div>
+                                    <field name="bol_default_condition_category" readonly="state == 'confirmed' or not is_marketplace_manager" required="marketplace == 'bol'"/>
+
+                                    <div class="content-group">
+                                        <div class="row mt16" invisible="bol_default_condition_category != 'SECONDHAND'">
+                                            <label for="bol_default_condition_state" class="col-lg-4 o_light_label"/>
+                                            <div class="col-lg-8">
+                                                <field name="bol_default_condition_state" required="bol_default_condition_category == 'SECONDHAND'" readonly="not is_marketplace_manager"/>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mt16" invisible="bol_default_condition_category != 'REFURBISHED'">
+                                            <label for="bol_default_condition_grade" class="col-lg-4 o_light_label"/>
+                                            <div class="col-lg-8">
+                                                <field name="bol_default_condition_grade" required="bol_default_condition_category == 'REFURBISHED'" readonly="not is_marketplace_manager"/>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mt16" invisible="bol_default_condition_category != 'REFURBISHED'">
+                                            <label for="bol_default_condition_margin" class="col-lg-4 o_light_label"/>
+                                            <div class="col-lg-8">
+                                                <field name="bol_default_condition_margin" readonly="not is_marketplace_manager"/>
+                                                <div class="text-muted" style="font-size: 0.75rem;">VAT margin scheme.</div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -81,7 +159,7 @@
                             </div>
                             <div class="text-muted">
                                 <b>
-                                    <field name="bol_operation_type" readonly="state == 'confirmed'" required="marketplace == 'bol'"/>
+                                    <field name="bol_operation_type" readonly="state == 'confirmed' or not is_marketplace_manager" required="marketplace == 'bol'"/>
                                 </b>
                             </div>
                         </div>
@@ -94,7 +172,7 @@
                             </div>
                             <div class="text-muted">
                                 <b>
-                                    <field name="bol_import_return" readonly="state == 'confirmed'" required="marketplace == 'bol'"/>
+                                    <field name="bol_import_return" readonly="state == 'confirmed' or not is_marketplace_manager" required="marketplace == 'bol'"/>
                                 </b>
                             </div>
                         </div>
@@ -109,7 +187,7 @@
                             </div>
                             <div class="text-muted">
                                 <b>
-                                    <field name="bol_fbb_warehouse_id" readonly="state == 'confirmed'" required="bol_operation_type != 'FBR' and marketplace == 'bol'" options="{'no_create' : True}"/>
+                                    <field name="bol_fbb_warehouse_id" readonly="state == 'confirmed' or not is_marketplace_manager" required="bol_operation_type != 'FBR' and marketplace == 'bol'" options="{'no_create' : True}"/>
                                 </b>
                             </div>
                         </div>
@@ -128,7 +206,7 @@
                                 </div>
                                 <div class="text-muted">
                                     <b>
-                                        <field name="bol_order_status" readonly="state == 'confirmed'" required="marketplace == 'bol'"/>
+                                        <field name="bol_order_status" readonly="state == 'confirmed' or not is_marketplace_manager" required="marketplace == 'bol'"/>
                                     </b>
                                 </div>
                             </div>
@@ -141,7 +219,7 @@
                                 </div>
                                 <div class="text-muted">
                                     <b>
-                                        <field name="bol_payment_term_id" readonly="state == 'confirmed'"/>
+                                        <field name="bol_payment_term_id" readonly="state == 'confirmed' or not is_marketplace_manager"/>
                                     </b>
                                 </div>
                             </div>
@@ -149,7 +227,7 @@
                         <div class="col-xs-12 col-md-6 o_setting_box" name="bol_export_invoice">
                             <div class="o_setting_left_pane" invisible="marketplace != 'bol'">
                                 <b>
-                                    <field name="bol_export_invoice" />
+                                    <field name="bol_export_invoice" readonly="not is_marketplace_manager"/>
                                 </b>
                             </div>
                             <div class="o_setting_right_pane" invisible="marketplace != 'bol'">
@@ -160,11 +238,11 @@
                                 <div class="content-group"  invisible="not bol_export_invoice">
                                     <div class="row mt16" id="bol_invoice_report_id">
                                         <label for="bol_invoice_report_id" class="col-lg-3"/>
-                                        <field name="bol_invoice_report_id" required="bol_export_invoice" />
+                                        <field name="bol_invoice_report_id" required="bol_export_invoice" readonly="not is_marketplace_manager"/>
                                     </div>
                                     <div class="row mt16" id="bol_export_invoice_delay">
                                         <label for="bol_export_invoice_delay" class="col-lg-3"/>
-                                        <field name="bol_export_invoice_delay" required="bol_export_invoice" />
+                                        <field name="bol_export_invoice_delay" required="bol_export_invoice" readonly="not is_marketplace_manager"/>
                                     </div>
                                 </div>
                             </div>
@@ -174,14 +252,76 @@
                 <page name="workflow_config" position="inside">
                     <group invisible="marketplace != 'bol'">
                         <group>
-                            <field name="bol_fbr_workflow_id" invisible="bol_operation_type not in ['FBR', 'Both']" required="bol_operation_type in ['FBR', 'Both'] and marketplace == 'bol'"/>
-                            <field name="bol_fbb_workflow_id" invisible="bol_operation_type not in ['FBB', 'Both']" required="bol_operation_type in ['FBB', 'Both'] and marketplace == 'bol'"/>
+                            <field name="bol_fbr_workflow_id" invisible="bol_operation_type not in ['FBR', 'Both']" required="bol_operation_type in ['FBR', 'Both'] and marketplace == 'bol'" readonly="not is_marketplace_manager"/>
+                            <field name="bol_fbb_workflow_id" invisible="bol_operation_type not in ['FBB', 'Both']" required="bol_operation_type in ['FBB', 'Both'] and marketplace == 'bol'" readonly="not is_marketplace_manager"/>
                         </group>
                     </group>
                 </page>
+                <xpath expr="//page[@name='workflow_config']" position="after">
+                    <page name="bol_subscriptions" string="Webhook" invisible="marketplace != 'bol'" groups="base_marketplace.group_base_marketplace_manager">
+                        <group>
+                            <label for="bol_webhook_url" string="Webhook URL"/>
+                            <div>
+                                <field name="bol_webhook_url" widget="CopyClipboardURL" placeholder="URL will be created once the instance is confirmed." readonly="1"/>
+                                <field name="bol_last_webhook_received" invisible="1"/>
+                                <div class="alert alert-warning" role="status">
+                                    <strong><i class="fa fa-lock"/> Keep it secret, keep it safe.</strong>
+                                    <p>Your webhook URL contains a secret. Don't share it online or carelessly.</p>
+                                    <button class="btn" type="object" name="action_bol_rotate_webhook_uuid" string="Rotate Secret" icon="fa-refresh"
+                                            help="Change the URL's secret if you think the URL is no longer secure. Active webhooks are re-registered on the new URL."/>
+                                    <field name="use_db_token_in_url" invisible="1"/>
+                                    <button class="btn ms-2" type="object" name="action_bol_use_db_token_in_webhook_url" string="Use Database Token in URL" icon="fa-shield"
+                                            help="Replace the database name in the webhook URL with a token, so the URL no longer shows the database name."
+                                            invisible="use_db_token_in_url"
+                                            groups="base.group_no_one"
+                                            confirm="A new webhook URL will be generated with a database token instead of the database name. The active webhooks will be deleted from Bol.com and registered again with the new URL. Do you want to continue?"/>
+                                </div>
+                            </div>
+                        </group>
+                        <p colspan="2" class="alert alert-warning" role="alert" style="border-radius: 1em;">
+                            <h3>Note</h3>
+                            <ul>
+                                <li>Bol.com has implemented a five-second timeout period and a retry period for webhook subscriptions.</li>
+                                <li>Bol.com waits five seconds for a response to each request to a webhook. If there's no response, or an error is returned, then Bol.com retries the connection 10 times over the next 10 minutes. If the failures continue, then the webhook subscription is automatically disabled.</li>
+                                <li>If you continue to receive failure notifications, you will need to deactivate the related webhook and then activate it again, or use <b>Fetch Webhook</b> to reconcile.</li>
+                                <li>If an instance is reset to the <b>Draft</b> state, the associated webhooks will be automatically deleted on Bol.com.</li>
+                                <li>Confirming an instance registers the Process Status webhook on Bol.com automatically. Order and Shipment stay manual - add them here when you want them.</li>
+                                <li>Only instances with an SSL connection (https://) are permitted.</li>
+                                <li>The webhook payload only contains an id; the connector fetches the full record using the existing import logic.</li>
+                            </ul>
+                        </p>
+                        <div>
+                            <button type="object" class="float-end btn btn-danger" name="delete_bol_webhook" icon="fa-trash" string="Delete Webhook" groups="base.group_no_one"/>
+                            <button type="object" class="float-end btn btn-primary me-2" name="fetch_bol_webhook" icon="fa-get-pocket" string="Fetch Webhook"/>
+                            <br/>
+                            <field name="bol_webhook_ids">
+                                <list editable="bottom">
+                                    <field name="webhook_event" required="1"/>
+                                    <field name="active_webhook" widget="boolean_toggle"/>
+                                    <field name="webhook_id" readonly="1" optional="hide"/>
+                                </list>
+                            </field>
+                        </div>
+                    </page>
+                </xpath>
                 <field name="marketplace" position="after">
-                    <a href='https://docs.teqstars.com/19.0/applications/bol/setup.html' invisible="marketplace != 'bol'" target='_blank'><i class="fa fa-question-circle" title="Help" style="font-size: 1.1rem;"/> Setup Guide</a>
+                    <a href='https://docs.teqstars.com/19.0/applications/bol/setup.html' invisible="marketplace != 'bol'" target='_blank'><i class="fa fa-question-circle" title="Help" style="font-size: 1.1rem;"/> Setup
+                        Guide</a>
                 </field>
+            </field>
+        </record>
+
+        <record id="bol_marketplace_dashboard_kanban" model="ir.ui.view">
+            <field name="name">bol.mk.instance.kanban</field>
+            <field name="model">mk.instance</field>
+            <field name="inherit_id" ref="base_marketplace.marketplace_dashboard_kanban"/>
+            <field name="arch" type="xml">
+                <xpath expr="//kanban/field[@name='last_sync_display']" position="after">
+                    <field name="bol_operation_type" invisible="marketplace != 'bol'"/>
+                </xpath>
+                <xpath expr="//a[hasclass('mk-saas-store-title')]" position="after">
+                    <p t-if="record.bol_operation_type.raw_value and record.marketplace.raw_value == 'bol'" class="mk-saas-store-subtitle" t-esc="record.bol_operation_type.raw_value"/>
+                </xpath>
             </field>
         </record>
     </data>

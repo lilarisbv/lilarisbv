@@ -142,7 +142,7 @@ class MkListingItem(models.Model):
                 variant_price = pricelist_currency._convert(variant_price, company_currency, instance_id.company_id, fields.Date.today())
         pricelist_item_id = self.env['product.pricelist.item'].search([('pricelist_id', '=', instance_id.pricelist_id.id), ('product_id', '=', self.product_id.id)], limit=1)
         if not pricelist_item_id:
-            instance_id.pricelist_id.write({'item_ids': [(0, 0, {
+            instance_id.pricelist_id.sudo().write({'item_ids': [(0, 0, {
                 'applied_on': '0_product_variant',
                 'product_id': self.product_id.id,
                 'product_tmpl_id': self.product_id.product_tmpl_id.id,
@@ -150,11 +150,11 @@ class MkListingItem(models.Model):
                 'fixed_price': variant_price
             })]})
         elif pricelist_item_id and update_product_price:
-            pricelist_item_id.write({'compute_price': 'fixed', 'fixed_price': variant_price})
+            pricelist_item_id.sudo().write({'compute_price': 'fixed', 'fixed_price': variant_price})
         return True
 
     def action_change_listing_item_price(self):
-        action = self.env.ref('base_marketplace.action_product_pricelistitem_mk').read()[0]
+        action = self.env.ref('base_marketplace.action_product_pricelistitem_mk').sudo().read()[0]
         custom_view_id = self.env.ref('base_marketplace.mk_product_pricelist_item_advanced_tree_view') if self.env.user.has_group('product.group_product_pricelist') else False
         if hasattr(self, '%s_action_change_price_view' % self.mk_instance_id.marketplace):
             custom_view_id = getattr(self, '%s_action_change_price_view' % self.mk_instance_id.marketplace)()

@@ -7,15 +7,15 @@
             <field name="arch" type="xml">
                 <form string="Marketplace Instance">
                     <header>
-                        <button type="object" name="action_confirm" string="Confirm" invisible="state not in ['draft','error']" class="btn-primary"/>
+                        <button type="object" name="action_confirm" string="Confirm" invisible="state not in ['draft','error']" class="btn-primary" groups="base_marketplace.group_base_marketplace_manager"/>
                         <button type="object" name="reset_to_draft" string="Reset" invisible="state != 'confirmed'" context="{'skip_instance_go_live': True}" groups="base_marketplace.group_base_marketplace_manager"/>
-                        <button type="object" name="action_test_connection" string="Test Connection" class="'btn btn-success"/>
-                        <div class="mk-saas-golive-banner mk-gl-chip is-sandbox" invisible="go_live or not is_neutralized" title="When enabled, you can perform import/export operations.">
+                        <button type="object" name="action_test_connection" string="Test Connection" class="'btn btn-success" groups="base_marketplace.group_base_marketplace_manager"/>
+                        <div class="mk-saas-golive-banner mk-gl-chip is-sandbox" groups="base_marketplace.group_base_marketplace_manager" invisible="go_live or not is_neutralized" title="When enabled, you can perform import/export operations.">
                             <div class="mk-gl-icon"><i class="fa fa-globe"/></div>
                             <div class="mk-gl-text"><span class="mk-gl-title">Go Live</span></div>
                             <field name="go_live" widget="boolean_toggle" nolabel="1"/>
                         </div>
-                        <div class="mk-saas-golive-banner mk-gl-chip is-live" invisible="not go_live or not is_neutralized" title="When enabled, you can perform import/export operations.">
+                        <div class="mk-saas-golive-banner mk-gl-chip is-live" groups="base_marketplace.group_base_marketplace_manager" invisible="not go_live or not is_neutralized" title="When enabled, you can perform import/export operations.">
                             <div class="mk-gl-icon"><i class="fa fa-globe"/></div>
                             <div class="mk-gl-text"><span class="mk-gl-title">Go Live</span></div>
                             <field name="go_live" widget="boolean_toggle" nolabel="1"/>
@@ -61,6 +61,7 @@
                                 <field name="mk_log_ids" invisible="1"/><!-- always invisible: technical field required by view logic -->
                                 <field name="is_neutralized" invisible="1"/><!-- always invisible: technical field required by view logic -->
                                 <field name="kanban_badge_color" invisible="1"/><!-- always invisible: technical field required by view logic -->
+                                <field name="is_marketplace_manager" invisible="1"/><!-- always invisible: technical field required by view logic -->
                             </group>
                         </group>
 
@@ -153,7 +154,7 @@
                                     </div>
                                 </div>
                             </page>
-                            <page name="credentials" string="Credentials"></page>
+                            <page name="credentials" string="Credentials" groups="base_marketplace.group_base_marketplace_manager"></page>
                             <page string="Configuration" name="configuration">
                                 <div class="row mt16 o_settings_container">
                                     <div class="col-xs-12 col-md-6 o_setting_box" id="warehouse" name="warehouse_id">
@@ -164,7 +165,7 @@
                                             </div>
                                             <div class="text-muted">
                                                 <b>
-                                                    <field name="warehouse_id" required="1" readonly="state == 'confirmed'" options="{'no_create' : True}"/>
+                                                    <field name="warehouse_id" required="1" readonly="state == 'confirmed' or not is_marketplace_manager" options="{'no_create' : True}"/>
                                                 </b>
                                             </div>
                                         </div>
@@ -178,7 +179,7 @@
                                             </div>
                                             <div class="text-muted">
                                                 <b>
-                                                    <field name="country_id" required="1" options="{'no_create' : True}" readonly="state == 'confirmed'"/>
+                                                    <field name="country_id" required="1" options="{'no_create' : True}" readonly="state == 'confirmed' or not is_marketplace_manager"/>
                                                 </b>
                                             </div>
                                         </div>
@@ -192,7 +193,7 @@
                                             </div>
                                             <div class="text-muted">
                                                 <b>
-                                                    <field name="company_id" required="1" options="{'no_create' : True}" readonly="state == 'confirmed'"/>
+                                                    <field name="company_id" required="1" options="{'no_create' : True}" readonly="state == 'confirmed' or not is_marketplace_manager"/>
                                                 </b>
                                             </div>
                                         </div>
@@ -206,7 +207,7 @@
                                             </div>
                                             <div class="text-muted">
                                                 <b>
-                                                    <field name="lang" required="1"/>
+                                                    <field name="lang" required="1" readonly="not is_marketplace_manager"/>
                                                 </b>
                                             </div>
                                         </div>
@@ -220,7 +221,7 @@
                                             </div>
                                             <div class="text-muted">
                                                 <b>
-                                                    <field name="log_level"/>
+                                                    <field name="log_level" readonly="not is_marketplace_manager"/>
                                                 </b>
                                             </div>
                                         </div>
@@ -234,7 +235,7 @@
                                             </div>
                                             <div class="text-muted">
                                                 <b>
-                                                    <field name="queue_batch_limit"/>
+                                                    <field name="queue_batch_limit" readonly="not is_marketplace_manager"/>
                                                 </b>
                                             </div>
                                         </div>
@@ -248,7 +249,7 @@
                                             </div>
                                             <div class="text-muted">
                                                 <b>
-                                                    <field name="api_limit"/>
+                                                    <field name="api_limit" readonly="not is_marketplace_manager"/>
                                                 </b>
                                             </div>
                                         </div>
@@ -266,7 +267,7 @@
                                             </div>
                                             <div class="content-group">
                                                 <div class="mt16">
-                                                    <field name="sync_product_with" required="1" widget="radio"/>
+                                                    <field name="sync_product_with" required="1" widget="radio" readonly="not is_marketplace_manager"/>
                                                 </div>
                                             </div>
                                         </div>
@@ -279,7 +280,7 @@
                                             </div>
                                             <div class="text-muted">
                                                 <b>
-                                                    <field name="pricelist_id" readonly="state == 'confirmed'" options="{'no_create' : True}"/>
+                                                    <field name="pricelist_id" readonly="state == 'confirmed' or not is_marketplace_manager" options="{'no_create' : True}"/>
                                                 </b>
                                             </div>
                                         </div>
@@ -287,7 +288,7 @@
                                     <div class="col-xs-12 col-md-6 o_setting_box" name="is_export_product_sale_price">
                                         <div class="o_setting_left_pane">
                                             <b>
-                                                <field name="is_export_product_sale_price"/>
+                                                <field name="is_export_product_sale_price" readonly="not is_marketplace_manager"/>
                                             </b>
                                         </div>
                                         <div class="o_setting_right_pane">
@@ -301,7 +302,7 @@
                                     <div class="col-xs-12 col-md-6 o_setting_box" name="is_create_products">
                                         <div class="o_setting_left_pane">
                                             <b>
-                                                <field name="is_create_products"/>
+                                                <field name="is_create_products" readonly="not is_marketplace_manager"/>
                                             </b>
                                         </div>
                                         <div class="o_setting_right_pane">
@@ -314,7 +315,7 @@
                                     <div class="col-xs-12 col-md-6 o_setting_box" name="is_update_odoo_product_category">
                                         <div class="o_setting_left_pane">
                                             <b>
-                                                <field name="is_update_odoo_product_category"/>
+                                                <field name="is_update_odoo_product_category" readonly="not is_marketplace_manager"/>
                                             </b>
                                         </div>
                                         <div class="o_setting_right_pane">
@@ -327,7 +328,7 @@
                                     <div class="col-xs-12 col-md-6 o_setting_box" name="is_sync_images">
                                         <div class="o_setting_left_pane">
                                             <b>
-                                                <field name="is_sync_images"/>
+                                                <field name="is_sync_images" readonly="not is_marketplace_manager"/>
                                             </b>
                                         </div>
                                         <div class="o_setting_right_pane">
@@ -353,7 +354,7 @@
                                             <div class="content-group">
                                                 <div class="mt16">
                                                     <field name="stock_field_id" required="1" widget="radio"
-                                                           domain="[('model_id.model','=','product.product'),('name','in',['qty_available','virtual_available', 'free_qty'])]"/>
+                                                           domain="[('model_id.model','=','product.product'),('name','in',['qty_available','virtual_available', 'free_qty'])]" readonly="not is_marketplace_manager"/>
                                                 </div>
                                             </div>
                                         </div>
@@ -361,7 +362,7 @@
                                     <div class="col-xs-12 col-md-6 o_setting_box" name="is_validate_adjustment">
                                         <div class="o_setting_left_pane">
                                             <b>
-                                                <field name="is_validate_adjustment"/>
+                                                <field name="is_validate_adjustment" readonly="not is_marketplace_manager"/>
                                             </b>
                                         </div>
                                         <div class="o_setting_right_pane">
@@ -379,7 +380,7 @@
                                     <div class="col-xs-12 col-md-6 o_setting_box" name="use_marketplace_sequence">
                                         <div class="o_setting_left_pane">
                                             <b>
-                                                <field name="use_marketplace_sequence"/>
+                                                <field name="use_marketplace_sequence" readonly="not is_marketplace_manager"/>
                                             </b>
                                         </div>
                                         <div class="o_setting_right_pane">
@@ -397,7 +398,7 @@
                                             </div>
                                             <div class="text-muted">
                                                 <b>
-                                                    <field name="order_prefix"/>
+                                                    <field name="order_prefix" readonly="not is_marketplace_manager"/>
                                                 </b>
                                             </div>
                                         </div>
@@ -410,7 +411,7 @@
                                             </div>
                                             <div class="text-muted">
                                                 <b>
-                                                    <field name="fbm_order_prefix"/>
+                                                    <field name="fbm_order_prefix" readonly="not is_marketplace_manager"/>
                                                 </b>
                                             </div>
                                         </div>
@@ -418,7 +419,7 @@
                                     <div class="col-xs-12 col-md-6 o_setting_box" name="use_marketplace_currency">
                                         <div class="o_setting_left_pane">
                                             <b>
-                                                <field name="use_marketplace_currency"/>
+                                                <field name="use_marketplace_currency" readonly="not is_marketplace_manager"/>
                                             </b>
                                         </div>
                                         <div class="o_setting_right_pane">
@@ -438,7 +439,7 @@
                                             </div>
                                             <div class="text-muted">
                                                 <b>
-                                                    <field name="discount_product_id" required="0"/>
+                                                    <field name="discount_product_id" required="0" readonly="not is_marketplace_manager"/>
                                                 </b>
                                             </div>
                                         </div>
@@ -452,7 +453,7 @@
                                             </div>
                                             <div class="text-muted">
                                                 <b>
-                                                    <field name="delivery_product_id" required="1"/>
+                                                    <field name="delivery_product_id" required="1" readonly="not is_marketplace_manager"/>
                                                 </b>
                                             </div>
                                         </div>
@@ -466,7 +467,7 @@
                                             </div>
                                             <div class="text-muted">
                                                 <b>
-                                                    <field name="team_id" required="1"/>
+                                                    <field name="team_id" required="1" readonly="not is_marketplace_manager"/>
                                                 </b>
                                             </div>
                                         </div>
@@ -481,7 +482,7 @@
                                             <div class="text-muted">
                                                 <b>
                                                     <field name="salesperson_user_id" domain="['|', ('active', '=', True), ('active', '=', False), ('share', '=', False)]"
-                                                           options='{"no_create": True}'/>
+                                                           options='{"no_create": True}' readonly="not is_marketplace_manager"/>
                                                 </b>
                                             </div>
                                         </div>
@@ -495,7 +496,7 @@
                                             </div>
                                             <div class="text-muted">
                                                 <b>
-                                                    <field name="import_order_after_date"/>
+                                                    <field name="import_order_after_date" readonly="not is_marketplace_manager"/>
                                                 </b>
                                             </div>
                                         </div>
@@ -509,7 +510,7 @@
                                             </div>
                                             <div class="text-muted">
                                                 <b>
-                                                    <field name="tax_system" required="1"/>
+                                                    <field name="tax_system" required="1" readonly="not is_marketplace_manager"/>
                                                 </b>
                                             </div>
                                         </div>
@@ -524,7 +525,7 @@
                                             <div class="text-muted">
                                                 <b>
                                                     <field name="tax_account_id" options="{'no_create' : True}" required="tax_system != 'default'"
-                                                           domain="[('company_ids', 'parent_of', company_id), ('account_type', 'not in', ('asset_receivable', 'liability_payable', 'off_balance'))]" />
+                                                           domain="[('company_ids', 'parent_of', company_id), ('account_type', 'not in', ('asset_receivable', 'liability_payable', 'off_balance'))]"  readonly="not is_marketplace_manager"/>
                                                 </b>
                                             </div>
                                         </div>
@@ -539,7 +540,7 @@
                                             <div class="text-muted">
                                                 <b>
                                                     <field name="tax_refund_account_id" options="{'no_create' : True}" required="tax_system != 'default'"
-                                                           domain="[('company_ids', 'parent_of', company_id), ('account_type', 'not in', ('asset_receivable', 'liability_payable', 'off_balance'))]" />
+                                                           domain="[('company_ids', 'parent_of', company_id), ('account_type', 'not in', ('asset_receivable', 'liability_payable', 'off_balance'))]"  readonly="not is_marketplace_manager"/>
                                                 </b>
                                             </div>
                                         </div>
@@ -553,7 +554,7 @@
                                             </div>
                                             <div class="text-muted">
                                                 <b>
-                                                    <field name="tax_rounding"/>
+                                                    <field name="tax_rounding" readonly="not is_marketplace_manager"/>
                                                 </b>
                                             </div>
                                         </div>
@@ -567,14 +568,14 @@
                                                 Rule set up in Odoo will not be applied to Marketplace orders.
                                             </div>
                                             <group class="text-muted">
-                                                <field name="analytic_distribution" widget="analytic_distribution" groups="analytic.group_analytic_accounting" nolabel="1"/>
+                                                <field name="analytic_distribution" widget="analytic_distribution" groups="analytic.group_analytic_accounting" nolabel="1" readonly="not is_marketplace_manager"/>
                                             </group>
                                         </div>
                                     </div>
                                     <div class="col-xs-12 col-md-6 o_setting_box" name="is_create_single_invoice" groups="base.group_no_one">
                                         <div class="o_setting_left_pane">
                                             <b>
-                                                <field name="is_create_single_invoice"/>
+                                                <field name="is_create_single_invoice" readonly="not is_marketplace_manager"/>
                                             </b>
                                         </div>
                                         <div class="o_setting_right_pane">
@@ -596,7 +597,7 @@
                                             </div>
                                             <div class="text-muted">
                                                 <b>
-                                                    <field name="account_receivable_id" options="{'no_create' : True}"/>
+                                                    <field name="account_receivable_id" options="{'no_create' : True}" readonly="not is_marketplace_manager"/>
                                                 </b>
                                             </div>
                                         </div>
@@ -624,7 +625,7 @@
                                     </list>
                                 </field>
                             </page>
-                            <page string="Notification &amp; Alerts" name="notification_config">
+                            <page string="Notification &amp; Alerts" name="notification_config" groups="base_marketplace.group_base_marketplace_manager">
                                 <group string="Activity Configuration">
                                     <p colspan="2" class="alert alert-warning" style="border-radius: 1em;" role="alert">
                                         <h3>Help</h3>
@@ -692,12 +693,13 @@
                     <field name="kanban_badge_color"/>
                     <field name="environment"/>
                     <field name="is_neutralized"/>
+                    <field name="go_live"/>
 
                     <templates>
                         <t t-name="card" clickable="false">
                             <t t-set="mk_color" t-value="record.kanban_badge_color.raw_value or '#7C7BAD'"/>
                             <div class="mk-saas-card" t-att-data-mk-color="mk_color">
-                                <div t-attf-class="mk-saas-golive-banner #{record.go_live.raw_value ? 'is-live' : 'is-sandbox'}" title="When enabled, you can perform import/export operations." invisible="not is_neutralized">
+                                <div t-attf-class="mk-saas-golive-banner #{record.go_live.raw_value ? 'is-live' : 'is-sandbox'}" title="When enabled, you can perform import/export operations." invisible="not is_neutralized" groups="base_marketplace.group_base_marketplace_manager">
                                     <div class="mk-gl-icon">
                                         <i class="fa fa-globe"/>
                                     </div>

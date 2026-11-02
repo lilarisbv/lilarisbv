@@ -5,6 +5,8 @@ import logging
 from odoo import api, models
 from odoo.tools.safe_eval import safe_eval
 
+from odoo.addons.base_marketplace.models.exceptions import MarketplaceGoLiveSkip
+
 _logger = logging.getLogger(__name__)
 _server_action_logger = _logger.getChild("server_action_safe_eval")
 
@@ -21,7 +23,15 @@ class ServerAction(models.Model):
 
             is_exist = self.xml_id.split('.')[0] in downstream_dep_name_list
             if is_exist:
-                safe_eval(self.code.strip(), eval_context, mode="exec", filename=str(self))
+                try:
+                    safe_eval(self.code.strip(), eval_context, mode="exec", filename=str(self))
+                except MarketplaceGoLiveSkip as e:
+                    _logger.warning("%s: %s", self.name, e.args[0])
+                    return False
                 return eval_context.get('action')
-        res = super()._run_action_code_multi(eval_context)
+        try:
+            res = super()._run_action_code_multi(eval_context)
+        except MarketplaceGoLiveSkip as e:
+            _logger.warning("%s: %s", self.name, e.args[0])
+            return False
         return eval_context.get('action', res)

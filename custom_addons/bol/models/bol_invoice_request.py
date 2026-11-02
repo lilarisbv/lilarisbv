@@ -37,7 +37,7 @@ class BolInvoiceRequest(models.Model):
     mk_instance_id = fields.Many2one('mk.instance', string="Instance", ondelete='cascade', help="The marketplace instance used to communicate with BOL for this invoice request.")
     bol_process_status_id = fields.Many2one('bol.process.status', string="Process Status", help="Technical field to identify the process status for request and later to identify process went finished or failed.")
 
-    @api.depends('invoice_ids.invoice_date', 'mk_instance_id.bol_export_invoice_delay', 'mk_instance_id.bol_export_invoice', 'status')
+    @api.depends('sale_order_id.invoice_ids','sale_order_id.invoice_ids.invoice_date', 'mk_instance_id.bol_export_invoice_delay', 'mk_instance_id.bol_export_invoice', 'status', 'bol_process_status_id.state')
     def _compute_show_manual_button(self):
         today = fields.Date.today()
         for record in self:
@@ -58,6 +58,22 @@ class BolInvoiceRequest(models.Model):
                         show = False
                         break
             record.show_manual_button = show
+
+    def _is_export_delay_over(self):
+        """
+        Tells whether the invoice export delay of the instance has passed for all invoices of this request.
+
+        - Used by the scheduled export. The manual button follows the same rule.
+
+        :return: True when there is no delay or every invoice is older than the delay.
+        :rtype: bool
+        """
+        self.ensure_one()
+        delay_days = self.mk_instance_id.bol_export_invoice_delay
+        if not delay_days:
+            return True
+        min_allowed_date = fields.Date.today() - relativedelta(days=delay_days)
+        return all(inv.invoice_date and inv.invoice_date < min_allowed_date for inv in self.invoice_ids)
 
     @api.depends("transitions_line_ids.date")
     def _compute_request_date(self):
@@ -105,7 +121,7 @@ class BolInvoiceRequest(models.Model):
     def action_view_invoices(self):
         self.ensure_one()
         invoices = self.invoice_ids
-        action = self.env.ref("account.action_move_out_invoice_type").read()[0]
+        action = self.env.ref("account.action_move_out_invoice_type").sudo().read()[0]
         if len(invoices) == 1:
             action.update({"views": [(self.env.ref("account.view_move_form").id, "form")], "res_id": invoices.id})
         else:
@@ -174,8 +190,14 @@ class BolInvoiceRequest(models.Model):
     def get_open_import_request_for_invoice(self, mk_instance_id):
         date_now = fields.Datetime.now()
         params = {'state': 'OPEN'}  # 'ALL'
-        response = mk_instance_id._send_bol_request('retailer/shipments/invoices/requests', {}, params=params)
-        invoice_requests = response.get('invoiceRequests') or []
+        invoice_requests, page = [], 1
+        while True:
+            response = mk_instance_id._send_bol_request('retailer/shipments/invoices/requests', {}, params=dict(params, page=page))
+            page_invoice_requests = response.get('invoiceRequests') or []
+            invoice_requests += page_invoice_requests
+            if len(page_invoice_requests) < 50:
+                break
+            page += 1
         for invoice_request in invoice_requests:
             order_id = invoice_request.get('orderId')
             shipment_id = invoice_request.get('shipmentId')
@@ -242,11 +264,12 @@ class BolInvoiceRequest(models.Model):
             except Exception as e:
                 mk_log_line_dict['error'].append(
                     {'log_message': _('UPLOAD INVOICE: Failed to retrieve invoice request status from Bol.com for Sales Order "{}" (Shipment ID: "{}").'
-                                      '\n\nError: {}'.format(self.sale_order_id.name or self.order_id, self.shipment_id, str(e)))})
+                                      '\n\nError: {}'.format(request.sale_order_id.name or request.order_id, request.shipment_id, str(e)))})
                 continue
         # 2) Upload only records that are eligible
         invoice_requests = self.search([('status', 'in', target_statuses), ('mk_instance_id', '=', mk_instance_id.id),
                                         '|', ('no_of_retry_count', '<', 3), ('no_of_retry_count', '=', False), ('bol_process_status_id', '=', False)])
+        invoice_requests = invoice_requests.filtered(lambda request: request._is_export_delay_over())
         invoice_requests.with_context(mk_log_line_dict=mk_log_line_dict, mk_log_id=mk_log_id)._process_invoice_request(manual_process=False)
         self.env['mk.log'].create_update_log(mk_instance_id=mk_instance_id, mk_log_id=mk_log_id, mk_log_line_dict=mk_log_line_dict)
         if not mk_log_id.log_line_ids and not self.env.context.get('log_id', False):
@@ -260,11 +283,12 @@ class BolInvoiceRequest(models.Model):
         for instance, requests in tools.groupby(self, lambda inv_request: inv_request.mk_instance_id):
             report_id = instance.bol_invoice_report_id
             if not report_id:
-                self._raise_or_log_invoice_export_error(
-                    'Missing Invoice Report configuration for instance "{}". Configure it in Instance -> Orders: enable "Export Invoices to Bol.com" and select an "Invoice Report"'.format(
-                        instance.name), manual_process=manual_process)
+                for request in requests:
+                    request._raise_or_log_invoice_export_error(
+                        'Missing Invoice Report configuration for instance "{}". Configure it in Instance -> Orders: enable "Export Invoices to Bol.com" and select an "Invoice Report"'.format(
+                            instance.name), manual_process=manual_process)
                 continue
-            requests = self.env['bol.invoice.request'].concat(*requests)
+            requests = self.env['bol.invoice.request'].concat(requests)
             for request in requests:
                 order = request.sale_order_id
                 if not order:
@@ -281,7 +305,7 @@ class BolInvoiceRequest(models.Model):
                             request.order_id, request.shipment_id), manual_process=manual_process)
                     continue
                 request._generate_and_upload_invoice_to_bol(manual_process=manual_process)
-                self._cr.commit()
+                self.env.cr.commit()
         return True
 
     def _generate_and_upload_invoice_to_bol(self, manual_process=False):
@@ -324,7 +348,7 @@ class BolInvoiceRequest(models.Model):
         # Step 2: Upload PDF
         try:
             files = {'invoice': ('invoice.pdf', pdf_bytes, 'application/pdf')}
-            response = instance.with_context(force_content_type_for_invoice=True)._send_bol_request(f'/retailer/shipments/invoices/{self.shipment_id}', {}, files=files,
+            response = instance.with_context(force_content_type_for_invoice=True)._send_bol_request(f'retailer/shipments/invoices/{self.shipment_id}', {}, files=files,
                                                                                                     method='POST')
         except Exception as e:
             self._raise_or_log_invoice_export_error(

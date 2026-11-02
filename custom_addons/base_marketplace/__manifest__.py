@@ -1,9 +1,9 @@
 {
     "name": "Base Marketplace",
-    "version": "19.0.1.1.0",
+    "version": "19.0.1.1.3",
     "category": "Extra",
     'summary': 'TeqStars Base Marketplace app for Odoo provides the core framework required for TeqStars marketplace connector integrations. This base module helps manage common marketplace functionalities, shared configurations, and integration workflows across multiple marketplace connectors. The module simplifies connector management, improves integration consistency, and serves as the foundation for TeqStars marketplace solutions in Odoo such as WooCommerce (woo, woo commerce), Shopify, Bol (bol.com), BigCommerce, Etsy, eBay, Mirakl, PrestaShop (Presta Shop).',
-    "depends": ['delivery', 'sale_management', 'sale_stock'],
+    "depends": ['stock_delivery', 'sale_management'],
 
     'data': [
         'security/group.xml',

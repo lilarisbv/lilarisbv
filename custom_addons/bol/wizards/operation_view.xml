@@ -57,7 +57,7 @@
                             <field name="mk_order_id" placeholder="1580015XXX, 158218XXXX" string="Marketplace ID(s)"
                                    invisible="bol_operation_type != 'Both' or bol_operations != 'import_order_by_ids'" required="bol_operation_type == 'Both' and bol_operations == 'import_order_by_ids'"/>
                             <field name="bol_return_import_from_date" string="Import Return After"
-                                   invisible="bol_operation_type != 'Both' or bol_fbb_operations != 'import_return'" required="bol_operation_type == 'Both' and bol_operations == 'import_return'"/>
+                                   invisible="bol_operation_type != 'Both' or bol_operations != 'import_return'" required="bol_operation_type == 'Both' and bol_operations == 'import_return'"/>
                         </group>
                     </group>
                     <p class="alert alert-danger" style="border-radius: 1em;" role="alert" invisible="not restricted_operation or  not cron_message">
@@ -207,6 +207,35 @@
                             </li>
                         </ul>
                     </p>
+                    <p class="alert alert-warning" style="border-radius: 1em;" role="alert"
+                       invisible="bol_operation_type != 'Both' or bol_operations != 'import_invoice_request'">
+                        <h3 class="alert alert-heading" role="alert"><strong>Note:</strong></h3>
+                        <ul>
+                            <li>Retrieves all open <strong>Invoice Requests</strong> from Bol.com only if the <b>Export Invoices to Bol.com</b> option (configured under Instance → Orders tab) is enabled.</li>
+                            <li> Successfully imported requests can be viewed under <b>Marketplaces > Bol.com > Invoice Requests</b>.</li>
+                            <li> Requests are linked with corresponding Sales Orders when available.</li>
+                        </ul>
+                    </p>
+                    <p class="alert alert-warning" style="border-radius: 1em;" role="alert"
+                       invisible="bol_operation_type != 'Both' or bol_operations != 'export_invoice'">
+                        <h3 class="alert alert-heading" role="alert"><strong>Note:</strong></h3>
+                        <ul>
+                            <li>Automatically uploads the Odoo PDF invoice to the Bol.com portal.</li>
+                            <li>
+                                <b>Required Conditions:</b>
+                                <ul>
+                                    <li><b>Export Invoices to Bol.com</b> must be enabled (Instance → Orders).</li>
+                                    <li>The Sales Order must be fully invoiced.</li>
+                                    <li>The invoice must be in <b>Posted</b> state.</li>
+                                    <li>The configured <b>Invoice Export Delay</b> must be satisfied.</li>
+                                    <li>The PDF is generated using the selected <b>Invoice Report</b>.</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <i>Safety Check:</i> The export delay (default 1 day) helps prevent sending invoices for orders that may be cancelled or modified.
+                            </li>
+                        </ul>
+                    </p>
                     <footer>
                         <button string="Process" type="object" class="btn-primary" name="do_bol_operations" icon="fa-exchange" invisible="restricted_operation"/>
                         <button string="Cancel" class="btn-secondary" special="cancel" icon="fa-close" />
@@ -232,16 +261,23 @@
             <field name="model">mk.operation</field>
             <field name="arch" type="xml">
                 <form>
+                    <group>
+                        <group>
+                            <field name="bol_publish_in_store" required="True"/>
+                        </group>
+                    </group>
                     <div class="alert alert-warning" style="border-radius: 1em;" role="alert">
                         <h3 class="alert alert-heading" role="alert"><strong>Notes</strong></h3>
                         <p colspan="2" class="my-0">
                             <strong>
                                 <ol>
                                     <li>
-                                        Please carefully review the offer details, including the name, fulfillment method, promised delivery time, condition, and other relevant information, as this action cannot be reversed.
+                                        Please carefully review the offer details, including the name, fulfillment method, promised delivery time, condition, and other relevant information, as this action cannot be
+                                        reversed.
                                     </li>
                                     <li>
-                                        Limit of 80 products can be handled at a time and already exported offer will be skipped.
+                                        <strong>Publish / Unpublish:</strong> If "Publish in Store" is Publish, the offer will be made live on Bol.com immediately after export. If Unpublish, the offer will remain
+                                        unpublished. Any changes directly reflect on Bol.com.
                                     </li>
                                 </ol>
                             </strong>

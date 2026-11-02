@@ -1,11 +1,40 @@
 import base64
+import logging
 import re
 
 from odoo import http, SUPERUSER_ID, api, _
 from odoo.http import request, Stream, STATIC_CACHE
 from odoo.modules.registry import Registry
 from odoo.tools.misc import file_path
+from odoo.addons.base_marketplace.models.misc import resolve_marketplace_db_name
 
+_logger = logging.getLogger("Teqstars:Base Marketplace")
+
+
+def _safe_open_db_registry(db_segment, host=None):
+    """
+     Task: T9113 - Safely open the Odoo registry for a requested database.
+         The URL segment is either the database name or its token. It is resolved to a database that exists in the ``db_list`` for the
+         given host, which already applies the operator's configured ``db_filter``, before its registry is opened. If the segment is
+         missing, unknown, not permitted, or an error occurs during validation, no registry is opened.
+     Args:
+         db_segment (str): The database name or database token taken from the URL.
+         host (str, optional): The HTTP host used when applying the database filter and retrieving the database list.
+     Returns:
+         Registry or None: The registry of the resolved database when it is valid. Its ``db_name`` is the real database name.
+    """
+    if not db_segment:
+        _logger.info("Database registry request rejected: no database segment provided (host=%s)", host)
+        return None
+    try:
+        resolved_db_name = resolve_marketplace_db_name(db_segment, host=host)
+    except Exception:
+        _logger.info("Database registry request rejected: error validating database segment=%s for host=%s", db_segment, host)
+        return None
+    if not resolved_db_name:
+        _logger.info("Database registry request rejected: segment=%s is not a database or database token permitted by db_filter for host=%s", db_segment, host)
+        return None
+    return Registry(resolved_db_name)
 
 class MarketplaceProductImage(http.Controller):
 
@@ -14,9 +43,15 @@ class MarketplaceProductImage(http.Controller):
     def retrive_marketplace_image_from_url(self, db_name, encodedres='', filename='', **kwargs):
         try:
             if len(encodedres) and db_name:
-                db_registry = Registry(db_name)
-                if db_name and not request.session.db:
-                    request.session.db = db_name
+                # Task: T9113 - Validate the requested database before accessing its registry.
+                host = request.httprequest.environ.get('HTTP_HOST')
+                db_registry = _safe_open_db_registry(db_name, host=host)
+                if not db_registry:
+                    _logger.warning("Marketplace image request rejected: db_name=%s not permitted for host=%s", db_name, host)
+                    return request.not_found()
+                # Task: T9113 - Store the real database name, never the token from the URL.
+                if not request.session.db:
+                    request.session.db = db_registry.db_name
                 with db_registry.cursor() as cr:
                     env = api.Environment(cr, SUPERUSER_ID, {})
                     decode_data = base64.urlsafe_b64decode(encodedres)

@@ -31,6 +31,7 @@ class MkListing(models.Model):
     is_published = fields.Boolean("Published", copy=False)
     image_ids = fields.One2many('mk.listing.image', 'mk_listing_id', 'Images')
     number_of_variants_in_mk = fields.Integer("Number of Variants in Marketplace.")
+    currency_id = fields.Many2one(related="mk_instance_id.pricelist_id.currency_id", string="Currency", store=True)
 
     def get_fields_for_hide(self):
         marketplace_list = self.env['mk.instance'].get_all_marketplace()
@@ -212,27 +213,48 @@ class MkListing(models.Model):
     def _extract_sku_and_barcode(self, sync_product_with, listing_item_validation_dict):
         """
         Helper method to extract SKUs and Barcodes from product variants.
+        Task: T9560 - Validate only the fields selected in Sync Product With, so the error message is accurate.
         :param sync_product_with: Specifies whether the product should be synchronized by SKU, barcode, or both.
         :param listing_item_validation_dict: Dictionary containing product variants.
-        :return: (List, List) -> Two lists: one for SKUs and another for Barcodes.
+        :return: (List, List, String/False) -> SKU list, Barcode list and error message if any.
         """
         mk_sku_list = []
         mk_barcode_list = []
 
+        # T9560: Validate only the fields selected in Sync Product With.
         for mk_variant in listing_item_validation_dict.get('variants', []):
-            if not mk_variant.get('sku') and not mk_variant.get('barcode'):
-                return [], [], self._format_error_message(_("SKU and Barcode not set"), listing_item_validation_dict)
+            sku = mk_variant.get('sku', False)
+            barcode = mk_variant.get('barcode', False)
 
-            if sync_product_with == 'sku' and not mk_variant.get('sku', False):
+            if sync_product_with == 'sku' and not sku:
                 return [], [], self._format_error_message(_("SKU not set"), listing_item_validation_dict)
 
-            elif sync_product_with == 'barcode' and not mk_variant.get('barcode', False):
+            if sync_product_with == 'barcode' and not barcode:
                 return [], [], self._format_error_message(_("Barcode not set"), listing_item_validation_dict)
 
-            mk_variant.get('sku') and mk_sku_list.append(mk_variant.get('sku'))
-            mk_variant.get('barcode') and mk_barcode_list.append(mk_variant.get('barcode'))
+            if sync_product_with == 'barcode_or_sku' and not sku and not barcode:
+                return [], [], self._format_error_message(_("SKU and Barcode not set"), listing_item_validation_dict)
+
+            sku and mk_sku_list.append(sku)
+            barcode and mk_barcode_list.append(barcode)
 
         return mk_sku_list, mk_barcode_list, False
+
+    def _get_duplicate_values(self, value_list):
+        """
+        Return the values that appear more than once in the given list.
+        :param value_list: List of SKUs or Barcodes.
+        :return: String -> Comma separated duplicate values, empty string if none.
+        """
+        unique_values = set()
+        duplicate_values = set()
+
+        for value in value_list:
+            if value in unique_values:
+                duplicate_values.add(value)
+            unique_values.add(value)
+
+        return ", ".join(sorted(duplicate_values))
 
     def _validate_sku_or_barcode(self, sync_product_with, mk_sku_list, mk_barcode_list, listing_item_validation_dict):
         """
@@ -248,23 +270,23 @@ class MkListing(models.Model):
 
         # Check for unique Barcodes (mandatory as Odoo doesn't allow duplicate Barcodes)
         if mk_barcode_list and len(mk_barcode_list) != count_unique_barcode:
-            return False, self._format_error_message(_("Duplicate Barcode found"), listing_item_validation_dict)
+            return False, self._format_error_message(_("Duplicate Barcode %s found") % self._get_duplicate_values(mk_barcode_list), listing_item_validation_dict)
 
         # Check for duplicate SKU or Barcode based on sync strategy
         if sync_product_with == 'sku' and len(mk_sku_list) != count_unique_sku:
-            return False, self._format_error_message(_("Duplicate SKU found"), listing_item_validation_dict)
+            return False, self._format_error_message(_("Duplicate SKU %s found") % self._get_duplicate_values(mk_sku_list), listing_item_validation_dict)
 
         if sync_product_with == 'barcode' and len(mk_barcode_list) != count_unique_barcode:
-            return False, self._format_error_message(_("Duplicate Barcode found"), listing_item_validation_dict)
+            return False, self._format_error_message(_("Duplicate Barcode %s found") % self._get_duplicate_values(mk_barcode_list), listing_item_validation_dict)
 
         if sync_product_with == 'barcode_or_sku':
             # If both lists are present, ensure at least one has unique values
             if (mk_barcode_list and len(mk_barcode_list) == count_unique_barcode) or (mk_sku_list and len(mk_sku_list) == count_unique_sku):
                 return True, ""
             if len(mk_sku_list) != count_unique_sku:
-                return False, self._format_error_message(_("Duplicate SKU found"), listing_item_validation_dict)
+                return False, self._format_error_message(_("Duplicate SKU %s found") % self._get_duplicate_values(mk_sku_list), listing_item_validation_dict)
             if len(mk_barcode_list) != count_unique_barcode:
-                return False, self._format_error_message(_("Duplicate Barcode found"), listing_item_validation_dict)
+                return False, self._format_error_message(_("Duplicate Barcode %s found") % self._get_duplicate_values(mk_barcode_list), listing_item_validation_dict)
 
         return True, ""
 
@@ -444,16 +466,19 @@ class MkListing(models.Model):
         return self.get_mk_listing_item_from_product_variants(product_ids, mk_instance_id)
 
     def remove_extra_listing_item(self, mk_id_list):
-        if mk_id_list:
+        """
+        Task: T9220 - Remove extra listing items based on marketplace variant IDs.
+        """
+        keep_mk_id_set = {str(mk_id) for mk_id in mk_id_list or [] if mk_id}
+        if keep_mk_id_set:
             mk_log_id = self.env.context.get('mk_log_id', False)
             queue_line_id = self.env.context.get('queue_line_id', False)
-            odoo_variant_id_list = [item_id.mk_id for item_id in self.listing_item_ids]
-            need_to_remove_id_set = set(mk_id_list) ^ set(odoo_variant_id_list)
-            if need_to_remove_id_set:
-                need_to_remove_id_list = list(need_to_remove_id_set)
-                self.env['mk.listing.item'].search([('mk_id', 'in', need_to_remove_id_list)]).unlink()
-                self.env['mk.log'].create_update_log(mk_instance_id=self.mk_instance_id, mk_log_id=mk_log_id, mk_log_line_dict={'success': [
-                    {'log_message': _("IMPORT LISTING: %s listing item deleted.") % (need_to_remove_id_list,), 'queue_job_line_id': queue_line_id and queue_line_id.id or False}]})
+            to_remove = self.listing_item_ids.filtered(lambda item: item.mk_id not in keep_mk_id_set)
+            if to_remove:
+                log_line_list = [{'log_message': _("IMPORT LISTING: Deleting listing item with marketplace ID %s from listing '%s'.") % (item.mk_id, self.name),
+                                   'queue_job_line_id': queue_line_id and queue_line_id.id or False} for item in to_remove]
+                self.env['mk.log'].create_update_log(mk_instance_id=self.mk_instance_id, mk_log_id=mk_log_id, mk_log_line_dict={'success': log_line_list})
+                to_remove.unlink()
         return True
 
     def action_open_listing_view(self):

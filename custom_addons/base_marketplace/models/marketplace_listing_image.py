@@ -5,7 +5,7 @@ import urllib.parse
 import requests
 
 from odoo import models, fields, api, _
-from odoo.addons.base_marketplace.models.misc import guess_mimetype
+from odoo.addons.base_marketplace.models.misc import guess_mimetype, marketplace_db_token
 
 
 class ListingImage(models.Model):
@@ -72,7 +72,8 @@ class ListingImage(models.Model):
 
             safe_name = urllib.parse.quote(record.name).replace('/', '-')
             # Task: T7493 - Converted strings to f-strings.
-            url = f"{base_url}/marketplace/product/image/{self.env.cr.dbname}/{base64.urlsafe_b64encode(str(record.id).encode('utf-8')).decode('utf-8')}/{safe_name + imgext}"
+            # Task: T9113 - Use the database token instead of the database name; URLs of existing images keep the name and still resolve.
+            url = f"{base_url}/marketplace/product/image/{marketplace_db_token(self.env.cr.dbname)}/{base64.urlsafe_b64encode(str(record.id).encode('utf-8')).decode('utf-8')}/{safe_name + imgext}"
             if record.mk_listing_item_ids and not record.mk_listing_id:
                 record.write({'mk_listing_id': record.mk_listing_item_ids.mapped('mk_listing_id') and record.mk_listing_item_ids.mapped('mk_listing_id')[0].id or False})
             record.write({'url': url})

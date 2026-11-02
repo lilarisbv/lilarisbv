@@ -17,19 +17,20 @@
                     <field name="mk_instance_id" invisible="1"/><!-- always invisible: technical field required by view logic -->
                     <field name="is_fbm_order" invisible="1"/><!-- always invisible: technical field required by view logic -->
                     <field name="cancel_in_marketplace" invisible="1"/><!-- always invisible: technical field required by view logic -->
-                    <div class="alert alert-danger row" role="alert" style="margin-bottom:0;" invisible="not is_marketplace_exception">
+                    <field name="marketplace" invisible="1" groups="!base_marketplace.group_base_marketplace"/>
+                    <div class="alert alert-danger row" role="alert" style="margin-bottom:0;" groups="base_marketplace.group_base_marketplace" invisible="not is_marketplace_exception">
                         <field name="exception_message" readonly="1"/>
                         <strong>
                             <button name="do_marked_as_updated_in_odoo" type="object" class="btn-link" icon="fa-check" string="Marked as Updated in Odoo"/>
                             <button name="update_order_status_to_marketplace" type="object" class="btn-link" icon="fa-repeat" string="Retry"/>
                         </strong>
                     </div>
-                    <div class="alert alert-success mb-0" role="alert" invisible="not updated_in_marketplace">
+                    <div class="alert alert-success mb-0" role="alert" groups="base_marketplace.group_base_marketplace" invisible="not updated_in_marketplace">
                         <strong>
                             Order has been successfully updated/fulfilled in marketplace.
                         </strong>
                     </div>
-                    <div class="alert alert-success mb-0" role="alert" invisible="not cancel_in_marketplace">
+                    <div class="alert alert-success mb-0" role="alert" groups="base_marketplace.group_base_marketplace" invisible="not cancel_in_marketplace">
                         <strong>
                             The order has already been canceled on the marketplace.
                         </strong>

@@ -4,6 +4,7 @@ import datetime
 from odoo import models, fields, api, _
 from odoo.tools.misc import split_every
 from dateutil.relativedelta import relativedelta
+from odoo.exceptions import AccessError
 from odoo.addons.base_marketplace.models.exceptions import MarketplaceException
 
 _logger = logging.getLogger("Teqstars:Base Marketplace")
@@ -81,7 +82,7 @@ class MkQueueJob(models.Model):
         return queue_job_line_obj.create(line_vals)
 
     def action_view_queue_lines(self):
-        action = self.env.ref('base_marketplace.action_queue_job_line_all').read()[0]
+        action = self.sudo().env.ref('base_marketplace.action_queue_job_line_all').read()[0]
         context = {}
         if self.env.context.get('show_draft', False):
             context.update({'search_default_draft': 1})
@@ -112,8 +113,10 @@ class MkQueueJob(models.Model):
         Task: T7493 - Added MarketplaceException error.
         """
         try:
-            process_queue_cron_id = self.env.ref('base_marketplace.mk_process_queue_job')
+            process_queue_cron_id = self.env.ref('base_marketplace.mk_process_queue_job').sudo()
             self.env['mk.operation']._check_process_cron_job(process_queue_cron_id)
+        except AccessError:
+            raise
         except Exception:
             cron_message = _("Restricted! The processing of Queue Job is already running. Proceeding with this action may result in duplicate records.")
             raise MarketplaceException(cron_message)
@@ -176,7 +179,7 @@ class MkQueueJob(models.Model):
         activity_date_deadline_range_type = mk_instance_id.activity_date_deadline_range_type
         activity_date_deadline_range = mk_instance_id.activity_date_deadline_range
         activity_type_id = mk_instance_id.mk_activity_type_id
-        model_id = self.env['ir.model'].search([('model', '=', 'mk.queue.job')]).id
+        model_id = self.env['ir.model']._get('mk.queue.job').id
         if activity_type_id and activity_date_deadline_range_type:
             date_deadline = fields.Date.context_today(mk_instance_id) + relativedelta(**{activity_date_deadline_range_type: activity_date_deadline_range})
             queue_activity_user_ids = self.activity_ids.user_id.ids
@@ -227,7 +230,7 @@ class MkQueueJob(models.Model):
                        Acceptable values are 'complete' to mark activities as done or 'cancel' to delete them.
         :return: True if the action was performed, False otherwise.
         """
-        model_id = self.env['ir.model'].search([('model', '=', 'mk.queue.job')]).id
+        model_id = self.env['ir.model']._get('mk.queue.job').id
 
         # Search for mail activities related to the current record and model
         activity_ids = self.env['mail.activity'].search([('res_id', '=', self.id), ('res_model_id', '=', model_id)])

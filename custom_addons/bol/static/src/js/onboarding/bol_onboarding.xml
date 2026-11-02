@@ -1,0 +1,450 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <!-- ============== Inherit base template: inject left-side instruction block ============== -->
+    <t t-name="bol.MarketplaceOnboardingMain" t-inherit="base_marketplace.MarketplaceOnboardingMain" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('o_mk_edge_step_image')]" position="after">
+            <t t-if="state.marketplace === 'bol'">
+               <div t-if="this.currentStepInfo?.card_heading or this.currentStepInfo?.substeps or this.currentStepInfo?.screen_help or this.currentStepInfo?.doc_url"
+                    class="o_mk_bol_instructions">
+                    <div t-if="this.currentStepInfo?.card_heading" class="o_mk_bol_card_head">
+                        <div class="o_mk_bol_kicker_icon">
+                            <i t-att-class="'fa ' + (this.currentStepInfo.icon || 'fa-circle')" aria-hidden="true"/>
+                        </div>
+                        <h3 class="o_mk_bol_card_heading" t-esc="this.currentStepInfo.card_heading"/>
+                    </div>
+
+                   <p t-if="this.currentStepInfo?.card_intro" class="o_mk_bol_card_intro" t-out="this.markupHtml(this.currentStepInfo.card_intro)"/>
+
+                   <div t-if="this.currentStepInfo?.tip" class="o_mk_bol_tip mb-3">
+                        <i class="fa fa-lightbulb-o me-2 o_mk_bol_tip_icon"/>
+                       <span t-out="this.markupHtml(this.currentStepInfo.tip)"/>
+                    </div>
+
+                   <div t-if="this.currentStepInfo?.substeps" class="o_mk_bol_instr_block mb-3">
+                        <div class="o_mk_bol_instr_title mb-2">
+                            <i class="fa fa-circle o_mk_bol_dot me-2"/>
+                            <t t-esc="this.currentStepInfo.substeps_title"/>
+                        </div>
+                       <ol class="o_mk_bol_substeps">
+                            <t t-foreach="this.currentStepInfo.substeps" t-as="line" t-key="line_index">
+                                <li><t t-out="this.markupHtml(line)"/></li> </t>
+                        </ol>
+                    </div>
+
+                   <div t-if="this.currentStepInfo?.screen_help" class="o_mk_bol_instr_block mb-3">
+                        <div class="o_mk_bol_instr_title mb-2">
+                            <i class="fa fa-circle o_mk_bol_dot me-2"/>
+                            <t t-esc="this.currentStepInfo.screen_help_title"/>
+                        </div>
+                       <ul class="o_mk_bol_help_list">
+                            <t t-foreach="this.currentStepInfo.screen_help" t-as="line" t-key="line_index">
+                                <li><t t-out="this.markupHtml(line)"/></li> </t>
+                        </ul>
+                    </div>
+
+                   <a t-if="this.currentStepInfo?.doc_url" class="o_mk_bol_doc_link" t-att-href="this.currentStepInfo.doc_url" target="_blank">
+                        <i class="fa fa-book me-2"/>
+                       <t t-esc="this.currentStepInfo.doc_label"/>
+                       <i class="fa fa-external-link ms-2"/>
+                    </a>
+                </div>
+            </t>
+        </xpath>
+    </t>
+    <!-- ============== STEP 1: Connection ============== -->
+    <t t-name="bol.MarketplaceOnboarding_bol_step_1">
+        <div class="o_mk_bol_step1">
+            <h6 class="fw-semibold mb-3 o_mk_bol_card_title">Connection</h6>
+
+            <div class="mb-3">
+                <label class="form-label fw-medium">Instance Name</label>
+                <div class="form-text mb-1">Choose a meaningful name (e.g. <i>Bol NL</i>).</div>
+                <input type="text" class="form-control" required="required" autocomplete="off"
+                       placeholder="e.g. Bol NL"
+                       t-att-value="state.formData.name"
+                       t-on-input="onInput('name')"/>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-medium">bol API Key</label>
+                <div class="form-text mb-1">Client ID generated from the bol seller portal.</div>
+                <input type="text" class="form-control" autocomplete="off"
+                       placeholder="bol Client ID"
+                       t-att-value="state.formData.bol_client_id"
+                       t-on-input="onInput('bol_client_id')"/>
+            </div>
+
+            <div class="mb-0">
+                <label class="form-label fw-medium">bol API Secret</label>
+                <div class="form-text mb-1">Client Secret paired with the API Key. Stored encrypted.</div>
+                <input type="password" class="form-control" autocomplete="off"
+                       placeholder="bol Client Secret"
+                       t-att-value="state.formData.bol_client_secret"
+                       t-on-input="onInput('bol_client_secret')"/>
+            </div>
+        </div>
+    </t>
+
+    <!-- ============== STEP 2: Operation & Workflow ============== -->
+    <t t-name="bol.MarketplaceOnboarding_bol_step_2">
+        <div class="o_mk_bol_step2">
+        <h5 class="fw-semibold mb-4">Operation &amp; Workflow</h5>
+
+            <!-- Operation Type -->
+            <div class="mb-3">
+            <label class="form-label fw-medium">Operation Type</label>
+                <select class="form-select"
+                        t-att-value="state.formData.bol_operation_type"
+                        t-on-change="onInput('bol_operation_type')">
+
+                <t t-foreach="state.formData.bol_operation_type_options" t-as="opt" t-key="opt.value">
+                    <option t-att-value="opt.value"
+                            t-esc="opt.label"
+                            t-att-selected="state.formData.bol_operation_type === opt.value"/>
+                </t>
+            </select>
+        </div>
+
+            <!-- FBR Workflow -->
+            <div class="mb-3 o_mk_m2o_field"
+                 t-if="state.formData.bol_operation_type === 'FBR' or state.formData.bol_operation_type === 'Both'">
+                <label class="form-label fw-medium">FBR Workflow</label>
+                <div class="o_mk_m2o_row d-flex align-items-stretch">
+                    <div class="flex-grow-1 o_mk_m2o_input">
+                        <Many2XAutocomplete t-props="getFbrWorkflowProps()"/>
+                    </div>
+                    <button type="button"
+                            class="btn btn-outline-secondary o_mk_m2o_open"
+                            title="Open Workflow"
+                            t-att-disabled="!(state.formData.bol_fbr_workflow_id or (state.formData.bol_fbr_workflow_name and state.formData.bol_fbr_workflow_name.trim()))"
+                            t-on-click="openFbrWorkflowFormView">
+                        <i class="fa fa-external-link"/>
+                    </button>
+                </div>
+            </div>
+
+            <!-- FBB Workflow -->
+            <div class="mb-3 o_mk_m2o_field"
+                 t-if="state.formData.bol_operation_type === 'FBB' or state.formData.bol_operation_type === 'Both'">
+                <label class="form-label fw-medium">FBB Workflow</label>
+                <div class="o_mk_m2o_row d-flex align-items-stretch">
+                    <div class="flex-grow-1 o_mk_m2o_input">
+                        <Many2XAutocomplete t-props="getFbbWorkflowProps()"/>
+                    </div>
+                    <button type="button"
+                            class="btn btn-outline-secondary o_mk_m2o_open"
+                            title="Open Workflow"
+                            t-att-disabled="!(state.formData.bol_fbb_workflow_id or (state.formData.bol_fbb_workflow_name and state.formData.bol_fbb_workflow_name.trim()))"
+                            t-on-click="openFbbWorkflowFormView">
+                        <i class="fa fa-external-link"/>
+                    </button>
+                </div>
+            </div>
+    </div>
+    </t>
+
+    <!-- ============== STEP 3: Product Settings ============== -->
+    <t t-name="bol.MarketplaceOnboarding_bol_step_3">
+
+        <!-- Sync Products -->
+        <div class="d-flex flex-column mb-3">
+            <h5 class="fw-semibold mb-1">Sync products by</h5>
+            <p class="text-muted small mb-2">Match Odoo products using barcode, SKU, or either.</p>
+            <div>
+                <t t-foreach="state.formData.sync_product_with_options" t-as="opt" t-key="opt.value">
+                    <div class="o_mk_radio_card mb-2"
+                         t-att-class="state.formData.sync_product_with === opt.value ? 'is-selected' : ''"
+                         t-on-click="makeSelectSyncHandler(opt.value)">
+                        <div class="fw-medium" t-esc="opt.label"/>
+                    </div>
+                </t>
+            </div>
+        </div>
+
+        <div class="form-check form-switch mb-3">
+            <input class="form-check-input"
+                   type="checkbox"
+                   id="mk_onb_create_products"
+                   t-att-checked="state.formData.is_create_products"
+                   t-on-change="onInput('is_create_products')"/>
+            <label class="form-check-label" for="mk_onb_create_products">
+                Create Odoo products if missing during sync
+            </label>
+        </div>
+
+        <div class="o_mk_bol_step3">
+
+            <!-- Condition -->
+            <h5 class="fw-semibold mb-3">Condition</h5>
+            <div class="mb-2">
+                <label class="form-label fw-medium mb-1">Default Condition Category</label>
+                <select class="form-select"
+                        t-att-value="state.formData.bol_default_condition_category"
+                        t-on-change="onInput('bol_default_condition_category')">
+                    <t t-foreach="state.formData.bol_default_condition_category_options" t-as="opt" t-key="opt.value">
+                        <option t-att-value="opt.value"
+                                t-att-selected="state.formData.bol_default_condition_category === opt.value"
+                                t-esc="opt.label"/>
+                    </t>
+                </select>
+            </div>
+
+            <!-- SECONDHAND -->
+            <div class="mb-2"
+                 t-if="state.formData.bol_default_condition_category === 'SECONDHAND'">
+                <label class="form-label fw-medium mb-1">Default Condition State</label>
+                <select class="form-select"
+                        t-att-value="state.formData.bol_default_condition_state || ''"
+                        t-on-change="onInput('bol_default_condition_state')">
+                    <option value="" disabled="disabled">— Select —</option>
+                    <t t-foreach="state.formData.bol_default_condition_state_options" t-as="opt" t-key="opt.value">
+                        <option t-att-value="opt.value"
+                                t-att-selected="state.formData.bol_default_condition_state === opt.value"
+                                t-esc="opt.label"/>
+                    </t>
+                </select>
+            </div>
+
+            <!-- REFURBISHED -->
+            <div class="mb-2"
+                 t-if="state.formData.bol_default_condition_category === 'REFURBISHED'">
+                <label class="form-label fw-medium mb-1">Refurbished Grade</label>
+                <select class="form-select"
+                        t-att-value="state.formData.bol_default_condition_grade || ''"
+                        t-on-change="onInput('bol_default_condition_grade')">
+                    <option value="" disabled="disabled">— Select —</option>
+                    <t t-foreach="state.formData.bol_default_condition_grade_options" t-as="opt" t-key="opt.value">
+                        <option t-att-value="opt.value"
+                                t-att-selected="state.formData.bol_default_condition_grade === opt.value"
+                                t-esc="opt.label"/>
+                    </t>
+                </select>
+            </div>
+
+            <div class="form-check mb-3"
+                 t-if="state.formData.bol_default_condition_category === 'REFURBISHED'">
+                <input class="form-check-input"
+                       type="checkbox"
+                       id="mk_onb_bol_margin"
+                       t-att-checked="state.formData.bol_default_condition_margin"
+                       t-on-change="onInput('bol_default_condition_margin')"/>
+                <label class="form-check-label" for="mk_onb_bol_margin">
+                    Margin Adjustment
+                </label>
+            </div>
+
+            <!-- Delivery -->
+            <h5 class="fw-semibold mb-3">Delivery</h5>
+            <div class="mb-2">
+                <label class="form-label fw-medium mb-1">Default Fulfilment Schedule</label>
+                <select class="form-select"
+                        t-att-value="state.formData.bol_default_fulfilment_schedule"
+                        t-on-change="onInput('bol_default_fulfilment_schedule')">
+                    <t t-foreach="state.formData.bol_default_fulfilment_schedule_options" t-as="opt" t-key="opt.value">
+                        <option t-att-value="opt.value"
+                                t-att-selected="state.formData.bol_default_fulfilment_schedule === opt.value"
+                                t-esc="opt.label"/>
+                    </t>
+                </select>
+            </div>
+
+            <!-- Delivery Days -->
+            <div class="row g-2 mb-2"
+                 t-if="state.formData.bol_default_fulfilment_schedule === 'BOL_DELIVERY_PROMISE'">
+                <div class="col-6">
+                    <label class="form-label fw-medium mb-1">Min Days</label>
+                    <input type="number" min="0" class="form-control"
+                           t-att-value="state.formData.bol_default_delivery_min_days"
+                           t-on-input="onInput('bol_default_delivery_min_days')"/>
+                </div>
+                <div class="col-6">
+                    <label class="form-label fw-medium mb-1">Max Days</label>
+                    <input type="number" min="0" class="form-control"
+                           t-att-value="state.formData.bol_default_delivery_max_days"
+                           t-on-input="onInput('bol_default_delivery_max_days')"/>
+                </div>
+            </div>
+
+            <!-- Ultimate Order Time -->
+            <div class="mb-3"
+                 t-if="state.formData.bol_default_fulfilment_schedule === 'BOL_DELIVERY_PROMISE'
+                       and state.formData.bol_default_delivery_min_days == 0
+                       and state.formData.bol_default_delivery_max_days == 1">
+                <label class="form-label fw-medium mb-1">Ultimate Order Time</label>
+                <select class="form-select"
+                        t-att-value="state.formData.bol_default_ultimate_order_time || ''"
+                        t-on-change="onInput('bol_default_ultimate_order_time')">
+                    <option value="" disabled="disabled">— Select —</option>
+                    <t t-foreach="state.formData.bol_default_ultimate_order_time_options" t-as="opt" t-key="opt.value">
+                        <option t-att-value="opt.value"
+                                t-att-selected="state.formData.bol_default_ltimate_order_time === opt.value"
+                                t-esc="opt.label"/>
+                    </t>
+                </select>
+            </div>
+
+            <!-- Warehouse -->
+            <div class="mb-2">
+                <label class="form-label fw-medium mb-1">Warehouse</label>
+                <select class="form-select"
+                        required="required"
+                        t-att-value="state.formData.warehouse_id ? '' + state.formData.warehouse_id : ''"
+                        t-on-change="makeTaxAccountSelectHandler('warehouse_id')">
+                    <option value="" disabled="disabled">— Select —</option>
+                    <t t-foreach="state.formData.warehouse_options" t-as="wh" t-key="wh.id">
+                        <option t-att-value="'' + wh.id"
+                                t-att-selected="state.formData.warehouse_id === wh.id"
+                                t-esc="wh.name"/>
+                    </t>
+                </select>
+            </div>
+
+            <!-- FBB Warehouse -->
+            <div class="mb-3"
+                 t-if="state.formData.bol_operation_type === 'FBB' or state.formData.bol_operation_type === 'Both'">
+                <label class="form-label fw-medium mb-1">FBB Warehouse</label>
+                <select class="form-select"
+                        t-att-value="state.formData.bol_fbb_warehouse_id ? '' + state.formData.bol_fbb_warehouse_id : ''"
+                        t-on-change="makeTaxAccountSelectHandler('bol_fbb_warehouse_id')">
+                    <option value="" disabled="disabled">— Select —</option>
+                    <t t-foreach="state.formData.warehouse_options" t-as="wh" t-key="wh.id">
+                        <option t-att-value="'' + wh.id"
+                                t-att-selected="state.formData.bol_fbb_warehouse_id === wh.id"
+                                t-esc="wh.name"/>
+                    </t>
+                </select>
+            </div>
+
+        </div>
+    </t>
+
+
+    <!-- ============== STEP 4: Review & Confirm ============== -->
+    <t t-name="bol.MarketplaceOnboarding_bol_step_4">
+        <div class="o_mk_bol_step5">
+            <h5 class="fw-semibold mb-4">Review &amp; Confirm</h5>
+            <div class="o_mk_review_section">
+                <h6>Connect Your Store</h6>
+                <div class="small">
+                    <strong>Instance name: </strong>
+                    <t t-esc="state.formData.name"/>
+                </div>
+                <div class="small mt-1">
+                    <strong>Client ID: </strong>
+                    <t t-esc="state.formData.bol_client_id"/>
+                </div>
+            </div>
+
+            <div class="o_mk_review_section">
+                <h6>Operation</h6>
+                <div class="small">
+                    <strong>Operation Type: </strong>
+                    <t t-foreach="state.formData.bol_operation_type_options" t-as="o" t-key="o.value">
+                        <t t-if="o.value === state.formData.bol_operation_type" t-esc="o.label"/>
+                    </t>
+                </div>
+                <t t-if="state.formData.bol_operation_type === 'FBR' or state.formData.bol_operation_type === 'Both'">
+                    <div class="small mt-1">
+                        <strong>FBR Workflow: </strong>
+                        <t t-foreach="state.formData.workflow_options" t-as="w" t-key="w.id">
+                            <t t-if="w.id === state.formData.bol_fbr_workflow_id" t-esc="w.name"/>
+                        </t>
+                    </div>
+                </t>
+                <t t-if="state.formData.bol_operation_type === 'FBB' or state.formData.bol_operation_type === 'Both'">
+                    <div class="small mt-1">
+                        <strong>FBB Workflow: </strong>
+                        <t t-foreach="state.formData.workflow_options" t-as="w" t-key="w.id">
+                            <t t-if="w.id === state.formData.bol_fbb_workflow_id" t-esc="w.name"/>
+                        </t>
+                    </div>
+                </t>
+            </div>
+
+            <div class="o_mk_review_section mb-3">
+                <h6>Product Sync</h6>
+                <div class="small">
+                    <strong>Sync With: </strong>
+                    <t t-foreach="state.formData.sync_product_with_options" t-as="o" t-key="o.value">
+                        <t t-if="o.value === state.formData.sync_product_with" t-esc="o.label"/>
+                    </t>
+                </div>
+            </div>
+
+            <div class="o_mk_review_section">
+                <h6>Condition</h6>
+                <div class="small">
+                    <strong>Category:</strong>
+                    <t t-foreach="state.formData.bol_default_condition_category_options" t-as="o" t-key="o.value">
+                        <t t-if="o.value === state.formData.bol_default_condition_category" t-esc="o.label"/>
+                    </t>
+                </div>
+                <t t-if="state.formData.bol_default_condition_category === 'SECONDHAND'">
+                    <div class="small mt-1">
+                        <strong>State: </strong>
+                        <t t-foreach="state.formData.bol_default_condition_state_options" t-as="o" t-key="o.value">
+                            <t t-if="o.value === state.formData.bol_default_condition_state" t-esc="o.label"/>
+                        </t>
+                    </div>
+                </t>
+                <t t-if="state.formData.bol_default_condition_category === 'REFURBISHED'">
+                    <div class="small mt-1">
+                        <strong>Grade: </strong>
+                        <t t-foreach="state.formData.bol_default_condition_grade_options" t-as="o" t-key="o.value">
+                            <t t-if="o.value === state.formData.bol_default_condition_grade" t-esc="o.label"/>
+                        </t>
+                    </div>
+                    <div class="small mt-1">
+                        <strong>Margin: </strong>
+                        <t t-if="state.formData.bol_default_condition_margin">Yes</t>
+                        <t t-else="">No</t>
+                    </div>
+                </t>
+            </div>
+
+            <div class="o_mk_review_section">
+                <h6>Delivery</h6>
+                <div class="small">
+                    <strong>Schedule: </strong>
+                    <t t-foreach="state.formData.bol_default_fulfilment_schedule_options" t-as="o" t-key="o.value">
+                        <t t-if="o.value === state.formData.bol_default_fulfilment_schedule" t-esc="o.label"/>
+                    </t>
+                </div>
+                <t t-if="state.formData.bol_default_fulfilment_schedule === 'BOL_DELIVERY_PROMISE'">
+                    <div class="small mt-1">
+                        <strong>Min / Max Days: </strong>
+                        <t t-esc="state.formData.bol_default_delivery_min_days"/>
+                        /
+                        <t t-esc="state.formData.bol_default_delivery_max_days"/>
+                    </div>
+                    <t t-if="state.formData.bol_default_delivery_min_days  == 0
+                                     and state.formData.bol_default_delivery_min_days  == 1">
+                        <div class="small mt-1">
+                            <strong>Ultimate Order Time: </strong>
+                            <t t-esc="state.formData.bol_default_ultimate_order_time"/>
+                        </div>
+                    </t>
+                </t>
+            </div>
+
+            <div class="o_mk_review_section">
+                <div class="small mt-1">
+                    <strong>Warehouse: </strong>
+                    <t t-foreach="state.formData.warehouse_options" t-as="w" t-key="w.id">
+                        <t t-if="w.id === state.formData.warehouse_id" t-esc="w.name"/>
+                    </t>
+                </div>
+                <t t-if="state.formData.bol_operation_type === 'FBB' or state.formData.bol_operation_type === 'Both'">
+                    <div class="small mt-1">
+                        <strong>FBB Warehouse: </strong>
+                        <t t-foreach="state.formData.warehouse_options" t-as="w" t-key="w.id">
+                            <t t-if="w.id === state.formData.bol_fbb_warehouse_id" t-esc="w.name"/>
+                        </t>
+                    </div>
+                </t>
+            </div>
+        </div>
+    </t>
+
+</templates>

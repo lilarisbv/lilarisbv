@@ -18,7 +18,7 @@ class DeliveryCarrier(models.Model):
                 if not bol_transporter_id:
                     bol_transporter_id = self.env['bol.transporter.code'].create({'name': transporter_code, 'code': transporter_code})
                 if not delivery_product:
-                    delivery_template = self.env['product.template'].create({'name': transporter_code, 'type': 'service'})
+                    delivery_template = self.env['product.template'].sudo().create({'name': transporter_code, 'type': 'service'})
                     delivery_product = delivery_template.product_variant_ids
-                carrier = self.create({'name': transporter_code, 'bol_transporter_id': bol_transporter_id.id, 'product_id': delivery_product.id})
+                carrier = self.sudo().create({'name': transporter_code, 'bol_transporter_id': bol_transporter_id.id, 'product_id': delivery_product.id}).sudo(False)
         return carrier

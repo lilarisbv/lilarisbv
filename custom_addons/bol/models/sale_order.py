@@ -1,12 +1,15 @@
 import logging
 import pprint
+from odoo.tools.profiler import Profiler, ExecutionContext
 
 from psycopg2 import OperationalError
 
 from odoo import models, fields, tools, api, _
 from odoo.fields import Domain
 from odoo.addons.base_marketplace.models.exceptions import MarketplaceException
+from .marketplace_instance import BOL_OFFERS_ACCEPT_V11
 from .misc import convert_bol_datetime_to_utc, log_traceback_for_exception
+from .stock_picking import BOL_SHIPMENT_MAX_RETRY
 
 _logger = logging.getLogger("TeqStars:bol")
 
@@ -62,10 +65,10 @@ class SaleOrder(models.Model):
         fpos = self.env['account.fiscal.position'].with_company(mk_instance_id.company_id)._get_fiscal_position(billing_customer_id, shipping_customer_id)
         taxes = odoo_product_id.taxes_id.filtered(lambda t: t.company_id == mk_instance_id.company_id)
         taxes = fpos.map_tax(taxes)
-        if taxes and any([not tax.price_include_override for tax in taxes]):
+        if taxes and any([not tax.price_include_override or tax.price_include_override == 'tax_excluded' for tax in taxes]):
             log_message = _(
                 "IMPORT ORDER: Taxes on product '{}' must have 'Included in Price' set since Bol.com always gives tax included in price. Taxes on products that needs to correct are below \n{} \n\nOR\n\n You can tick 'Managing Excluded Taxes on Odoo Product' in instance >> Products and try again.".format(
-                    odoo_product_id.display_name, ',\n'.join([tax.name for tax in taxes.filtered(lambda x: not x.price_include_override)])))
+                    odoo_product_id.display_name, ',\n'.join([tax.name for tax in taxes.filtered(lambda x: not x.price_include_override or x.price_include_override == 'tax_excluded')])))
             self.env['mk.log'].create_update_log(mk_log_id=mk_log_id, mk_log_line_dict={'error': [{'log_message': log_message, 'queue_job_line_id': queue_line_id and queue_line_id.id or False}]})
             return False
         return True
@@ -86,7 +89,7 @@ class SaleOrder(models.Model):
                             break
                     continue
                 try:
-                    offer_response_dict = mk_instance_id._send_bol_request('retailer/offers/{}'.format(offer_id), {})
+                    offer_response_dict = mk_instance_id._send_bol_request('retailer/offers/{}'.format(offer_id), {}, method='GET', accept=BOL_OFFERS_ACCEPT_V11)
                 except Exception as e:
                     log_message = "Cannot find Offer ID {} in Bol, Order reference {}.".format(offer_id, order_number)
                     self.env['mk.log'].create_update_log(mk_log_id=mk_log_id, mk_log_line_dict={'error': [{'log_message': log_message, 'queue_job_line_id': queue_line_id and queue_line_id.id or False}]})
@@ -106,7 +109,7 @@ class SaleOrder(models.Model):
         if mk_instance_id and mk_instance_id.bol_payment_term_id:
             payment_term_id = mk_instance_id.bol_payment_term_id
             if payment_term_id:
-                customer_id.write({'property_payment_term_id': payment_term_id.id})
+                customer_id.sudo().with_company(mk_instance_id.company_id).write({'property_payment_term_id': payment_term_id.id})
 
     def create_bol_sale_order(self, bol_order_dict, mk_instance_id, billing_customer_id, shipping_customer_id):
         self._set_payment_term_to_bol_customer(billing_customer_id, mk_instance_id)
@@ -130,6 +133,7 @@ class SaleOrder(models.Model):
             'fiscal_position_id': fiscal_position_id.id or False,
             'pricelist_id': mk_instance_id.pricelist_id.id or False,
             'team_id': mk_instance_id.team_id.id or False,
+            'client_order_ref': bol_order_dict.get('orderId'),
         }
         sale_order_vals = self.prepare_sales_order_vals_ts(sale_order_vals, mk_instance_id)
 
@@ -163,17 +167,22 @@ class SaleOrder(models.Model):
         sale_order_line_obj = self.env['sale.order.line']
         mk_instance_id = order_id.mk_instance_id
         price = order_line_dict.get('unitPrice')
+        # Bol sends the discounts of an item as a total amount, unitPrice is the price before them.
+        # A discount is never negative: a negative total (not a valid Bol answer) is ignored, so the percent and the amount always agree.
+        discount_amount = max(sum(discount.get('amount', 0.0) or 0.0 for discount in order_line_dict.get('discounts') or []), 0.0)
+        line_amount = (price or 0.0) * (order_line_dict.get('quantity', 1) or 1)
+        discount_percent = min(max(discount_amount / line_amount * 100, 0.0), 100.0) if discount_amount and line_amount else 0.0
         if mk_instance_id.bol_managing_excluded_taxes_on_product:
             fpos = self.env['account.fiscal.position'].with_company(mk_instance_id.company_id)._get_fiscal_position(order_id.partner_id, order_id.partner_shipping_id)
             taxes = odoo_product_id.taxes_id.filtered(lambda t: t.company_id == mk_instance_id.company_id)
             taxes = fpos.map_tax(taxes)
-            taxes_res = taxes.filtered(lambda x: not x.price_include_override).with_context(force_price_include=True).compute_all(price, order_id.currency_id, 1, product=odoo_product_id, partner=order_id.partner_shipping_id)
+            taxes_res = taxes.filtered(lambda x: not x.price_include_override or  x.price_include_override == 'tax_excluded').with_context(force_price_include=True).compute_all(price, order_id.currency_id, 1, product=odoo_product_id, partner=order_id.partner_shipping_id)
             price -= tools.float_round(taxes_res['total_included'] - taxes_res['total_excluded'], precision_digits=self.env['decimal.precision'].precision_get('Product Price'))
         description = order_line_dict.get('product', {}).get('title')
         line_vals = {'name': description if description else odoo_product_id.name, 'product_id': odoo_product_id.id or False, 'order_id': order_id.id, 'company_id': order_id.company_id.id,
                      'product_uom': odoo_product_id.uom_id and odoo_product_id.uom_id.id or False, 'price_unit': price, 'order_qty': order_line_dict.get('quantity', 1) or 1, }
         order_line_data = self.env['sale.order.line'].prepare_sale_order_line_ts(line_vals, mk_instance_id)
-        order_line_data.update({'name': description if description else odoo_product_id.name, 'is_delivery': is_delivery, 'is_discount': is_discount, 'mk_id': order_line_dict.get('orderItemId'), 'bol_commission': order_line_dict.get('commission', 0.0) or 0, })
+        order_line_data.update({'name': description if description else odoo_product_id.name, 'discount': discount_percent, 'marketplace_discount_amount': discount_amount, 'is_delivery': is_delivery, 'is_discount': is_discount, 'mk_id': order_line_dict.get('orderItemId'), 'bol_commission': order_line_dict.get('commission', 0.0) or 0, })
         order_line = sale_order_line_obj.create(order_line_data)
         return order_line
 
@@ -208,7 +217,6 @@ class SaleOrder(models.Model):
         if billing_details.get('company'):
             domain = [('is_company', '=', True)]
             if billing_details.get('vatNumber'):
-                # domain = expression.AND([('vat', '=ilike', billing_details.get('vatNumber'))])
                 domain = Domain.OR([
                     [('vat', '=ilike', billing_details.get('vatNumber'))],
                     [('name', '=ilike', billing_details.get('company'))]
@@ -284,7 +292,7 @@ class SaleOrder(models.Model):
             return self
 
         if not self.create_sale_order_line_bol(mk_instance_id, bol_order_dict, order_id):
-            order_id.unlink()
+            order_id.sudo().unlink()
             return self
 
         is_fulfilled_order = all([item.get('quantity') == item.get('quantityShipped') for item in bol_order_dict.get('orderItems')])
@@ -295,6 +303,7 @@ class SaleOrder(models.Model):
         return order_id
 
     def bol_import_orders(self, mk_instance_id, type="FBR"):
+        res_id_list = []
         mk_log_id = self.env['mk.log'].create_update_log(mk_instance_id=mk_instance_id, operation_type='import')
         bol_order_list = self.fetch_orders_from_bol(mk_instance_id, type)
         if bol_order_list:
@@ -318,9 +327,14 @@ class SaleOrder(models.Model):
                     queue_id = mk_instance_id.action_create_queue(type='order')
                     for line_vals in line_vals_list:
                         queue_id.action_create_queue_lines(line_vals)
+                    res_id_list.append(queue_id.id)
         if not mk_log_id.log_line_ids and not self.env.context.get('log_id', False):
             mk_log_id.unlink()
         mk_instance_id.last_order_sync_date = fields.Datetime.now()
+        if res_id_list:
+            return mk_instance_id.action_open_model_view(res_id_list, 'mk.queue.job', 'Bol.com Order Queue')
+        if mk_log_id.exists():
+            return mk_instance_id.action_open_model_view(mk_log_id.ids, 'mk.log', 'Log')
         return True
 
     def bol_import_order_by_ids(self, mk_instance_id, mk_order_ids=[]):
@@ -345,30 +359,42 @@ class SaleOrder(models.Model):
                 if not mk_log_id.exists():
                     mk_log_id = self.env['mk.log'].create_update_log(mk_instance_id=mk_instance_id, operation_type='import')
                 self.env['mk.log'].create_update_log(mk_log_id=mk_log_id, mk_log_line_dict={'error': [{'log_message': log_message}]})
+                self.env.cr.commit()
                 payload = {'title': "Import Failed", 'message': e, 'sticky': False, 'type': 'danger', 'message_is_html': False}
                 self.env['bus.bus']._sendone(self.env.user.partner_id, 'marketplace_notification', payload)
                 continue
             self.env.cr.commit()
         if not mk_log_id.log_line_ids and not self.env.context.get('log_id', False):
             mk_log_id.unlink()
+        self.env.cr.commit()
         if sale_order_ids:
             return mk_instance_id.action_open_model_view(sale_order_ids.ids, 'sale.order', 'Bol.com Order')
+        if mk_log_id.exists():
+            return mk_instance_id.action_open_model_view(mk_log_id.ids, 'mk.log', 'Log')
         return True
 
     def bol_update_order_status(self, mk_instance_ids):
         if not isinstance(mk_instance_ids, list):
             mk_instance_ids = [mk_instance_ids]
+        log_ids = self.env['mk.log']
+        last_instance_id = False
         for mk_instance_id in mk_instance_ids:
+            last_instance_id = mk_instance_id
             mk_log_id = self.env['mk.log'].create_update_log(mk_instance_id=mk_instance_id, operation_type='export')
             mk_log_line_dict = self.env.context.get('mk_log_line_dict', {'error': [], 'success': []})
             picking_ids = self.env['stock.picking'].search(
                 ['|', ('mk_instance_id', '=', mk_instance_id.id), ('backorder_id.mk_instance_id', '=', mk_instance_id.id), ('updated_in_marketplace', '=', False), ('bol_fulfilment_method', '=', 'FBR'), ('state', '=', 'done'),
-                 ('location_dest_id.usage', '=', 'customer'), ('is_marketplace_exception', '=', False)], order='id asc')
+                 ('location_dest_id.usage', '=', 'customer'), ('is_marketplace_exception', '=', False),
+                 '|', ('no_of_retry_count', '<', BOL_SHIPMENT_MAX_RETRY), ('no_of_retry_count', '=', False)], order='id asc')
             picking_ids.filtered(lambda x: not x.mk_instance_id).write({'mk_instance_id': mk_instance_id.id})
             picking_ids.with_context(mk_log_line_dict=mk_log_line_dict, mk_log_id=mk_log_id).do_bol_update_order_status(manual_process=False)
             self.env['mk.log'].create_update_log(mk_instance_id=mk_instance_id, mk_log_id=mk_log_id, mk_log_line_dict=mk_log_line_dict)
             if not mk_log_id.log_line_ids and not self.env.context.get('log_id', False):
                 mk_log_id.unlink()
+            elif mk_log_id.exists():
+                log_ids |= mk_log_id
+        if log_ids and last_instance_id:
+            return last_instance_id.action_open_model_view(log_ids.ids, 'mk.log', 'Bol.com Update Order Status Log')
         return True
 
     def _get_available_item_for_cancel_in_bol(self):
@@ -385,6 +411,26 @@ class SaleOrder(models.Model):
                 raise MarketplaceException(_("We couldn't find any items eligible for cancellation. It appears that the items may have already been shipped or cancelled on bol.com"))
             item_to_be_cancelled |= order.order_line.filtered(lambda x: x.mk_id in order_items_available_to_cancel)
         return item_to_be_cancelled
+
+    def _bol_apply_cancelled_items(self):
+        """Odoo side of a cancel in Bol.com: all items cancelled marks the order, some items cancelled sets their quantity to 0 and reconfirms the order."""
+        self.ensure_one()
+        cancelled_lines = self.order_line.filtered('bol_item_cancelled')
+        if not cancelled_lines:
+            return False
+        if all(self.order_line.mapped('bol_item_cancelled')):
+            self.write({'canceled_in_marketplace': True})
+            self.message_post(body=_("Order '{}' has been successfully cancelled in bol.com".format(self.name)))
+            return True
+        lines_to_zero = cancelled_lines.filtered('product_uom_qty')
+        if lines_to_zero:
+            if self.state in ['cancel', 'sent']:
+                self.action_draft()
+                lines_to_zero.write({'product_uom_qty': 0.0})
+                self.action_confirm()
+            else:
+                lines_to_zero.write({'product_uom_qty': 0.0})
+        return True
 
     def prepare_cancel_wizard_vals(self):
         bol_cancel_item_ids = self.env['bol.cancel.item.line']
@@ -434,3 +480,19 @@ class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
     bol_commission = fields.Float('Bol Commission', help="Amount of commission was added by Bol for order line.")
+    bol_cancel_process_id = fields.Many2one('bol.process.status', string="Cancel Process", copy=False, readonly=True, ondelete='set null',
+                                            help="Bol.com process status of the last cancel request of this item. Odoo finishes the cancel when Bol.com answers, even hours later.")
+    bol_item_cancelled = fields.Boolean("Cancelled in Bol.com", copy=False, readonly=True)
+
+    def _apply_bol_cancel_result(self, process_id):
+        """Called once by bol.process.status when the cancel request of the item leaves pending. SUCCESS finishes the item in Odoo,
+        failure or timeout only leaves a note. Safe to call again: a cancelled item is not cancelled twice."""
+        for line in self:
+            order = line.order_id
+            if process_id.state == 'success':
+                if not line.bol_item_cancelled:
+                    line.bol_item_cancelled = True
+                    order._bol_apply_cancelled_items()
+            elif process_id.state in ['failure', 'timeout']:
+                order.message_post(body=_("Bol.com could not cancel order item '%s' (process status %s, %s): %s") % (
+                    line.name, process_id.mk_id, (process_id.state or '').upper(), process_id.error_message or ''))
