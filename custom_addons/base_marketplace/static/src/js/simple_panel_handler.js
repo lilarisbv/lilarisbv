@@ -211,8 +211,26 @@ class MarketplaceOnboardingPanel {
         return isDashboard;
     }
 
+    async isMarketplaceManager() {
+        // The Setup Wizard creates mk.instance records, and mk.instance perm_create is 0 for
+        // base_marketplace.group_base_marketplace. Without this gate a Marketplace User can walk
+        // the whole wizard and only fails on the final save. Cached so repeated panel
+        // re-initialisations (navigation, MutationObserver, retries) do not re-issue the RPC.
+        if (this._isManagerPromise === undefined) {
+            this._isManagerPromise = user
+                .hasGroup("base_marketplace.group_base_marketplace_manager")
+                .catch(() => false);
+        }
+        return this._isManagerPromise;
+    }
+
     async initPanel() {
         this.bindWebClientServices();
+
+        // Quick Onboarding is a Manager-only surface; bail out before touching the DOM.
+        if (!(await this.isMarketplaceManager())) {
+            return;
+        }
 
         // Don't show panel on mobile devices
         if (window.innerWidth < 768) {

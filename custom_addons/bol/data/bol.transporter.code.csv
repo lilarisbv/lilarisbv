@@ -28,3 +28,8 @@ bol_transporter_26,Bezorgafspraak,COURIER
 bol_transporter_27,NedWRK (Red je pakketje),RJP
 bol_transporter_28,Parts Express,PES
 bol_transporter_29,DHL Parcel,SLV
+bol_transporter_30,Cycloon,CYCLOON
+bol_transporter_31,DHL Same Day,DHL-SD
+bol_transporter_32,Dragonfly,DRAGONFLY
+bol_transporter_33,GOFO,GOFO
+bol_transporter_34,Trunkrs,TRUNKRS

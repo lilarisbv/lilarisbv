@@ -27,6 +27,13 @@ class MarketplaceException(Exception):
         super().__init__(message, title, additional_context)
 
 
+class MarketplaceGoLiveSkip(MarketplaceException):
+    """
+    Raised by check_go_live during a cron run when the instance is neutralized and Go Live is off.
+    The cron runner (ir.actions.server) catches it, logs the message and ends the cron quietly.
+    """
+
+
 safe_eval._BUBBLEUP_EXCEPTIONS = (
         safe_eval._BUBBLEUP_EXCEPTIONS + (MarketplaceException,)
 )

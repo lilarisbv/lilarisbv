@@ -43,10 +43,9 @@
             </menuitem>
 
             <!-- Configuration -->
-            <!-- TODO: Group needed (Marketplace wise or general)? -->
             <menuitem id="menu_marketplace_configuration" name="Configuration" sequence="100">
                 <menuitem id="menu_marketplace_instance" name="Instance" sequence="5" action="action_marketplace_instance"/>
-                <menuitem id="menu_menu_marketplace_automation" name="Marketplace Automation" action="action_order_workflow" sequence="50"/>
+                <menuitem id="menu_menu_marketplace_automation" name="Marketplace Automation" action="action_order_workflow" sequence="50" groups="base_marketplace.group_base_marketplace_manager"/>
             </menuitem>
 
         </menuitem>

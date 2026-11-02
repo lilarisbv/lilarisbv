@@ -6,7 +6,7 @@
         <field name="inherit_id" ref="sale.view_order_form"/>
         <field name="arch" type="xml">
             <xpath expr="//notebook" position="inside">
-                <page string="Marketplace Detail" invisible="not mk_instance_id">
+                <page string="Marketplace Detail" invisible="not mk_instance_id" groups="base_marketplace.group_base_marketplace">
                     <group name="main_group">
                         <group name="sub_group1">
                             <field name="mk_instance_id" readonly="1"/>
@@ -25,19 +25,23 @@
                 <field name="marketplace_discount_amount" optional="hide"/>
             </xpath>
             <div name="button_box" position="inside">
-                <button type="object" name="open_sale_order_in_marketplace" class="oe_stat_button" icon='fa-eye' string="Show in Marketplace" invisible="not mk_id"/>
+                <button type="object" name="open_sale_order_in_marketplace" class="oe_stat_button" icon='fa-eye' string="Show in Marketplace" invisible="not mk_id" groups="base_marketplace.group_base_marketplace"/>
             </div>
             <field name="show_update_fpos" position="after">
-                <field name="order_workflow_id" options="{'no_create': True}" readonly="1" invisible="not mk_instance_id"/>
+                <field name="order_workflow_id" options="{'no_create': True, 'no_create_edit': True, 'no_open': True}" readonly="1" invisible="not mk_instance_id" groups="base_marketplace.group_base_marketplace"/>
+                <field name="mk_instance_id" invisible="1" groups="!base_marketplace.group_base_marketplace"/>
+                <field name="mk_id" invisible="1" groups="!base_marketplace.group_base_marketplace"/>
+                <field name="marketplace" invisible="1" groups="!base_marketplace.group_base_marketplace"/>
+                <field name="canceled_in_marketplace" invisible="1" groups="!base_marketplace.group_base_marketplace"/>
             </field>
             <xpath expr="//button[@name='action_view_invoice']" position="before">
-                <button type="object" name="action_view_stock_moves_ts" class="oe_stat_button" invisible="not stock_moves_count" icon="fa-truck" groups="base.group_user">
+                <button type="object" name="action_view_stock_moves_ts" class="oe_stat_button" invisible="not stock_moves_count" icon="fa-truck" groups="base_marketplace.group_base_marketplace">
                     <field name="stock_moves_count" widget="statinfo"/>
                 </button>
             </xpath>
             <button name="action_cancel" position="before">
                 <button type="action" name="%(base_marketplace.act_stock_return_picking_ts)d" context="{'default_sale_order_id':id}"
-                        string="Return" invisible="not stock_moves_count" groups="base.group_user">
+                        string="Return" invisible="not stock_moves_count" groups="base_marketplace.group_base_marketplace">
                 </button>
             </button>
         </field>
@@ -83,7 +87,7 @@
         <field name="inherit_id" ref="sale.view_sales_order_filter"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='name']" position="after">
-                <field name="mk_id"/>
+                <field name="mk_id" groups="base_marketplace.group_base_marketplace"/>
             </xpath>
         </field>
     </record>

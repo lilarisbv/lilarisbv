@@ -5,7 +5,7 @@ class ResPartnerMk(models.Model):
     _name = "res.partner.mk"
     _description = "Partner Marketplaces"
 
-    partner_id = fields.Many2one("res.partner", string="Partner", required=True)
+    partner_id = fields.Many2one("res.partner", string="Partner", required=True, ondelete="cascade")
     mk_id = fields.Char("Marketplace Identification", copy=False, required=True)
     mk_instance_id = fields.Many2one('mk.instance', string="Instance", ondelete="cascade", copy=False, required=True)
 
@@ -52,8 +52,9 @@ class ResPartner(models.Model):
                 if not res_partner.phone and partner_vals.get('phone', False):
                     update_partner_vals.update({'phone': partner_vals.get('phone')})
                 not parent_id and update_partner_vals.update({'mk_instance_ids': [(4, mk_instance_id.id)]})
-                update_partner_vals and res_partner.write(update_partner_vals)
-                log_message = _("EXISTING CUSTOMER FOUND: Found customer with same address, CUSTOMER NAME: %s (%s)") % (res_partner.name, res_partner.email)
+                update_partner_vals and res_partner.sudo().write(update_partner_vals)
+                customer_email = res_partner.email if res_partner.email and '@' in res_partner.email else ''
+                log_message = _("EXISTING CUSTOMER FOUND: Found customer with same address, CUSTOMER NAME: %s%s") % (res_partner.name, " (%s)" % customer_email if customer_email else "")
                 self.env['mk.log'].create_update_log(mk_log_id=mk_log_id,
                                                      mk_log_line_dict={'success': [{'log_message': log_message, 'queue_job_line_id': queue_line_id and queue_line_id.id or False}]})
                 if not self.env.context.get('skip_queue_change_state', False):
@@ -64,9 +65,10 @@ class ResPartner(models.Model):
                 partner_vals.update({'property_account_receivable_id': mk_instance_id.account_receivable_id.id})
             if not partner_vals.get('email', False) and parent_id:
                 partner_vals.update({'email': parent_id.email})
-            res_partner = self.with_context(tracking_disable=True).create({'lang': mk_instance_id.lang or self.env.user.lang, 'parent_id': parent_id and parent_id.id or False,
+            res_partner = self.sudo().with_company(mk_instance_id.company_id or self.env.company).with_context(tracking_disable=True).create({'lang': mk_instance_id.lang or self.env.user.lang, 'parent_id': parent_id and parent_id.id or False,
                                                                            'property_product_pricelist': mk_instance_id.pricelist_id.id, **partner_vals})
-            log_message = _("IMPORT CUSTOMER: Successfully created new customer with name: %s (%s)") % (res_partner.name, res_partner.email)
+            customer_email = res_partner.email if res_partner.email and '@' in res_partner.email else ''
+            log_message = _("IMPORT CUSTOMER: Successfully created new customer with name: %s%s") % (res_partner.name, " (%s)" % customer_email if customer_email else "")
             self.env['mk.log'].create_update_log(mk_log_id=mk_log_id,
                                                  mk_log_line_dict={'success': [{'log_message': log_message, 'queue_job_line_id': queue_line_id and queue_line_id.id or False}]})
             if not self.env.context.get('skip_queue_change_state', False):

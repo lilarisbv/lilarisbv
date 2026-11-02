@@ -1,0 +1,307 @@
+// BOL onboarding step 2 - workflow Many2XAutocomplete styling.
+// Goals (scoped strictly to .o_marketplace_onboarding so nothing leaks):
+//   1. Make the FBR/FBB workflow autocomplete look identical to the white
+//      Operation Type select on the same step.
+//   2. Release the dropdown clip caused by the transformed
+//      .o_mk_edge_slide_zone containing block + overflow:hidden / auto on
+//      .o_mk_edge_media_frame and .o_mk_onboarding_card.o_mk_edge_card_inner,
+//      but only while bol step 2 is mounted.
+
+.o_marketplace_onboarding {
+    .o_mk_m2o_field {
+        .o-autocomplete {
+            display: block;
+            width: 100%;
+            background: #fff;
+            border: 1px solid #c8d0d8;
+            border-radius: 8px;
+        }
+        .o-autocomplete input {
+            background: #fff !important;
+            color: #1a1a1a !important;
+            border: 0 !important;
+            outline: 0;
+            width: 100%;
+            padding: 0.375rem 0.75rem;
+            border-radius: 8px;
+        }
+        .o-autocomplete input::placeholder {
+            color: #6c757d;
+        }
+    }
+
+    .o-autocomplete--dropdown-menu {
+        background: #fff !important;
+        color: #1a1a1a !important;
+        border: 1px solid #c8d0d8;
+        z-index: 1080;
+
+        .o-autocomplete--dropdown-item.ui-state-active,
+        .o-autocomplete--dropdown-item:hover {
+            background: #f1f5f9;
+            color: #1a1a1a;
+        }
+
+        .o_m2o_dropdown_option {
+            color: #0d6efd;
+            font-weight: 500;
+        }
+    }
+
+    &:has(.o_mk_bol_step2) {
+        // Neutralise the transform on .o_mk_edge_slide_zone so the
+        // autocomplete dropdown's position:fixed resolves against the
+        // viewport instead of the slide zone, escaping every overflow:hidden
+        // ancestor in the onboarding chrome.
+        .o_mk_edge_slide_zone {
+            transform: none !important;
+        }
+        .o_mk_edge_media_frame {
+            overflow: visible !important;
+        }
+        .o_mk_onboarding_card.o_mk_edge_card_inner {
+            overflow: visible !important;
+        }
+    }
+
+    .o_mk_m2o_field {
+        .o_mk_m2o_row {
+            width: 100%;
+        }
+        .o_mk_m2o_input {
+            min-width: 0;
+        }
+        .o_mk_m2o_open {
+            background: #fff;
+            color: #1a1a1a;
+            border-color: #c8d0d8;
+            border-radius: 8px;
+            margin-left: 0.25rem;
+            &:hover:not(:disabled) {
+                background: #f1f5f9;
+            }
+            &:disabled {
+                opacity: 0.55;
+            }
+        }
+    }
+
+    // ===== Step 1 left-side instruction block (Mirakl-style) =====
+    .o_mk_bol_instructions {
+        position: relative;
+        max-width: 56rem;
+        color: rgba(255, 255, 255, 0.85);
+        background: rgba(110, 201, 255, 0.07);
+        border-top: 1px solid rgba(110, 201, 255, 0.28);
+        border-right: 1px solid rgba(110, 201, 255, 0.28);
+        border-bottom: 1px solid rgba(110, 201, 255, 0.28);
+        border-left: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 16px;
+        padding: 1.5rem 1.75rem 1.5rem 2rem;
+        box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+
+       &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: 4px;
+            background: linear-gradient(180deg, #6ec9ff 0%, #6ec9ff 100%);
+            border-radius: 4px 0 0 4px; // cleaner curve
+       }
+
+
+    .o_mk_bol_card_head {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            margin-bottom: 0.5rem;
+    }
+
+    .o_mk_bol_kicker_icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 10px;
+        background: rgba(110, 201, 255, 0.12);
+        border: 1px solid rgba(110, 201, 255, 0.25);
+        color: #6ec9ff;
+        font-size: 1.05rem;
+        flex-shrink: 0;
+    }
+
+    .o_mk_bol_card_heading {
+        color: #ffffff;
+        font-size: 1.4rem;
+        font-weight: 600;
+        margin: 0;
+        letter-spacing: -0.01em;
+        line-height: 1.25;
+    }
+
+    .o_mk_bol_card_intro {
+        color: rgba(255, 255, 255, 0.72);
+        font-size: 0.92rem;
+        line-height: 1.55;
+        margin-bottom: 1.1rem;
+    }
+
+    .o_mk_bol_instr_block {
+        background: rgba(110, 201, 255, 0.07);
+        border: 1px solid rgba(110, 201, 255, 0.28);
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        margin-bottom: 0.85rem;
+
+        &.mb-3 { margin-bottom: 0.85rem !important; }
+
+        .o_mk_bol_instr_title {
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+            color: #ffffff;
+            font-size: 0.95rem;
+
+            .o_mk_bol_dot {
+                font-size: 0.5rem;
+                color: #6ec9ff;
+            }
+        }
+    }
+
+    .o_mk_bol_substeps {
+        list-style: none;
+        counter-reset: bol-step;
+        padding-left: 0;
+        margin-bottom: 0;
+
+        li {
+            counter-increment: bol-step;
+            position: relative;
+            padding-left: 2.25rem;
+            margin-bottom: 0.4rem;
+            color: rgba(255, 255, 255, 0.78);
+            line-height: 1.45;
+            font-size: 0.9rem;
+
+            &::before {
+                content: counter(bol-step);
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 1.5rem;
+                height: 1.5rem;
+                border-radius: 50%;
+                background: rgba(110, 201, 255, 0.15);
+                color: #6ec9ff;
+                font-size: 0.78rem;
+                font-weight: 600;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 1;
+            }
+
+            &:not(:last-child)::after {
+                content: "";
+                position: absolute;
+                left: 0.75rem;
+                top: 1.5rem;
+                bottom: -0.4rem;
+                width: 1px;
+                background: rgba(110, 201, 255, 0.3);
+                transform: translateX(-0.5px);
+                z-index: 0;
+            }
+        }
+    }
+
+    .o_mk_bol_help_list {
+        list-style: disc;
+        padding-left: 1.1rem;
+        margin-bottom: 0;
+
+        li {
+            color: rgba(255, 255, 255, 0.78);
+            margin-bottom: 0.25rem;
+            line-height: 1.45;
+            font-size: 0.9rem;
+
+            &::marker { color: #6ec9ff; }
+        }
+    }
+
+    .o_mk_bol_warning {
+        display: flex;
+        align-items: flex-start;
+        background: rgba(255, 196, 0, 0.08);
+        border: 1px solid rgba(255, 196, 0, 0.3);
+        border-radius: 10px;
+        padding: 0.65rem 0.85rem;
+        color: #ffd86b;
+        font-size: 0.86rem;
+        line-height: 1.4;
+
+        &.mb-3 { margin-bottom: 0.75rem !important; }
+
+        .fa { margin-top: 0.15rem; }
+    }
+
+    .o_mk_bol_doc_link {
+        display: inline-flex;
+        align-items: center;
+        background: rgba(110, 201, 255, 0.1);
+        border: 1px solid rgba(110, 201, 255, 0.4);
+        color: #6ec9ff;
+        border-radius: 8px;
+        padding: 0.55rem 1rem;
+        font-weight: 500;
+        font-size: 0.9rem;
+        text-decoration: none;
+        transition: background 0.15s ease, border-color 0.15s ease;
+
+        &:hover {
+            background: rgba(110, 201, 255, 0.18);
+            border-color: #6ec9ff;
+            color: #ffffff;
+        }
+    }
+
+    b, strong {
+        color: #ffffff;
+        font-weight: 700;
+    }
+
+    .o_mk_bol_tip {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.5rem;
+        background: rgba(110, 201, 255, 0.07);
+        border: 1px solid rgba(110, 201, 255, 0.28);
+        border-radius: 10px;
+        padding: 0.65rem 0.85rem;
+        color: rgba(255, 255, 255, 0.85);
+        font-size: 0.875rem;
+        line-height: 1.45;
+
+        .o_mk_bol_tip_icon {
+            color: #6ec9ff;
+            margin-top: 0.1rem;
+            flex-shrink: 0;
+        }
+
+        b, strong {
+            color: #ffffff;
+            font-weight: 700;
+        }
+    }
+}
+
+    .o_mk_bol_card_title {
+        color: #1a1a1a;
+        font-size: 1rem;
+    }
+}

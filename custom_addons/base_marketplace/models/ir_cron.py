@@ -22,6 +22,7 @@ class IrCron(models.Model):
         return res
 
     def create_marketplace_cron(self, mk_instance_id, name, method_name='', model_name='', interval_type='minutes', interval_number=20):
+        self = self.sudo()
         code = f"model.{method_name}({mk_instance_id.id})"
         cron_id = self.with_context(active_test=False).search([('code', '=', code)])
         if cron_id:
@@ -38,7 +39,7 @@ class IrCron(models.Model):
                 'model_id': self.env['ir.model'].search([('model', '=', model_name)]).id,
                 'mk_instance_id': mk_instance_id.id,
                 'user_id': self.env.user.id}
-        return self.sudo().create(vals)
+        return self.create(vals)
 
     def setup_schedule_actions(self, mk_instance_id):
         """

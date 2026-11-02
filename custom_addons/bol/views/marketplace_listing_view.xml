@@ -6,6 +6,46 @@
             <field name="model">mk.listing</field>
             <field name="inherit_id" ref="base_marketplace.mk_listing_form_view"/>
             <field name="arch" type="xml">
+                <field name="is_listed" position="after">
+                    <field name="bol_skip_listing_sync" invisible="1"/><!-- always invisible: technical field required by view logic -->
+                </field>
+                <div class="oe_button_box" position="inside">
+                    <button name="bol_toggle_listing_sync" type="object" class="oe_stat_button o_stat_text o_value text-success" icon="fa-refresh" string="Allow Sync"
+                            invisible="not bol_skip_listing_sync or not is_listed or marketplace != 'bol'"
+                            help="Toggle whether this listing can be synced with Bol.com."/>
+                    <button name="bol_toggle_listing_sync" type="object" class="oe_stat_button o_stat_text o_value text-danger" icon="fa-refresh" string="No Allow Sync"
+                            invisible="bol_skip_listing_sync or not is_listed or marketplace != 'bol'"
+                            help="Toggle whether this listing can be synced with Bol.com."/>
+                </div>
+                <xpath expr="//form/sheet" position="inside">
+                    <div style="position: absolute; top: 10px; right: 10px; z-index: 10;" invisible="marketplace != 'bol'">
+                        <div invisible="bol_skip_listing_sync" style="display: flex; align-items: center; gap: 6px; background-color: #28a745; color: white; padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: 500;">
+                            <i class="fa fa-circle"/><span>Allowed Sync</span>
+                        </div>
+                        <div invisible="not bol_skip_listing_sync" style="display: flex; align-items: center; gap: 6px; background-color: #dc3545; color: white; padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: 500;">
+                            <i class="fa fa-circle"/><span>Not Allowed Sync</span>
+                        </div>
+                    </div>
+                </xpath>
+                <field name="listing_update_date" position="after">
+                    <div colspan="2" invisible="marketplace != 'bol' or not is_listed or bol_skip_listing_sync"
+                         style="display: flex; gap: 8px; padding: 8px 0;">
+                        <button name="bol_sync_listing_to_odoo" type="object"
+                                class="btn btn-primary d-inline-flex flex-row align-items-center gap-2 text-nowrap"
+                                help="Update this listing by importing the latest product data from Bol.com.">
+                            <i class="fa fa-cloud-download"/>
+                            <span>Sync to Odoo</span>
+                        </button>
+                        <div invisible="not mk_id" style="display: contents;">
+                            <button name="bol_sync_listing_to_bol" type="object"
+                                    class="btn btn-success d-inline-flex flex-row align-items-center gap-2 text-nowrap"
+                                    help="Update this offer on Bol.com with the latest product data from Odoo.">
+                                <i class="fa fa-cloud-upload"/>
+                                <span style="color:#fff;">Sync to Bol.com</span>
+                            </button>
+                        </div>
+                    </div>
+                </field>
                 <button name="open_listing_in_marketplace" position="before">
                     <button class="oe_stat_button o_stat_text o_value text-danger" name="bol_published"
                             type="object" icon="fa-globe"
@@ -22,12 +62,35 @@
 
                     <page string="Information" invisible="marketplace != 'bol'">
                         <group>
-                            <group>
+                            <group string="Fulfilment">
                                 <field name="bol_fulfilment_method" widget="radio" required="marketplace == 'bol'"/>
-                                <field name="bol_delivery_code" required="marketplace == 'bol'"/>
+                                <field name="bol_fulfilment_schedule"
+                                       invisible="bol_fulfilment_method != 'FBR'"
+                                       required="marketplace == 'bol' and bol_fulfilment_method == 'FBR'"/>
+                                <field name="bol_delivery_min_days"
+                                       invisible="bol_fulfilment_schedule != 'BOL_DELIVERY_PROMISE'"
+                                       required="bol_fulfilment_schedule == 'BOL_DELIVERY_PROMISE'"/>
+                                <field name="bol_delivery_max_days"
+                                       invisible="bol_fulfilment_schedule != 'BOL_DELIVERY_PROMISE'"
+                                       required="bol_fulfilment_schedule == 'BOL_DELIVERY_PROMISE'"/>
+                                <field name="bol_ultimate_order_time"
+                                       invisible="bol_fulfilment_schedule != 'BOL_DELIVERY_PROMISE' or bol_delivery_min_days != 0 or bol_delivery_max_days != 1"
+                                       required="bol_fulfilment_schedule == 'BOL_DELIVERY_PROMISE' and bol_delivery_min_days == 0 and bol_delivery_max_days == 1"/>
+                                <field name="bol_delivery_code" readonly="1"/>
                             </group>
-                            <group>
-                                <field name="bol_condition" required="marketplace == 'bol'"/>
+                            <group string="Condition">
+                                <field name="bol_condition_category" required="marketplace == 'bol'"/>
+                                <field name="bol_condition_state"
+                                       invisible="bol_condition_category != 'SECONDHAND'"
+                                       required="bol_condition_category == 'SECONDHAND'"/>
+                                <field name="bol_condition_comment"
+                                       invisible="bol_condition_category != 'SECONDHAND'"/>
+                                <field name="bol_condition_grade"
+                                       invisible="bol_condition_category != 'REFURBISHED'"
+                                       required="bol_condition_category == 'REFURBISHED'"/>
+                                <field name="bol_condition_margin"
+                                       invisible="bol_condition_category != 'REFURBISHED'"/>
+                                <field name="bol_condition" readonly="1" invisible="True"/>
                             </group>
                         </group>
                         <group>

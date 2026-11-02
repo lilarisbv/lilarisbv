@@ -55,7 +55,7 @@ class SaleReport(models.Model):
 
     def redirect_to_mk_sale_report(self):
         odoo_version = odoo.service.common.exp_version()
-        if odoo_version['server_version'] == '17.0+e':
+        if odoo_version['server_version'] == '19.0+e':
             return self.env.ref('base_marketplace.marketplace_ent_sale_report_action_dashboard').read()[0]
         else:
             return self.env.ref('base_marketplace.marketplace_comm_sale_report_action_dashboard').read()[0]

@@ -11,6 +11,17 @@
             <field name="invoice_policy">order</field>
         </record>
 
+        <!-- One cron for every Bol.com instance (no mk_instance_id, so not listed in an instance's Automatic Jobs tab). -->
+        <record id="bol_check_pending_process_status" model="ir.cron">
+            <field name="name">Bol.com : Check Pending Process Status</field>
+            <field name="model_id" ref="model_bol_process_status"/>
+            <field name="state">code</field>
+            <field name="code">model.cron_check_pending_process_status()</field>
+            <field name="interval_number">15</field>
+            <field name="interval_type">minutes</field>
+            <field name="active" eval="True"/>
+        </record>
+
         <record id="res_partner_category_bol" model="res.partner.category">
             <field name="name">Bol.com</field>
             <field name="color" eval="4"/>

@@ -982,12 +982,23 @@
   padding: 12px;
   background: transparent;
   border-radius: 12px;
+  height: 140px;
   min-height: 120px;
+  max-height: 140px;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
 
   .o_sample_data_label {
     font-size: 10px;
     padding: 4px 8px;
     border-radius: 4px;
+  }
+
+  .o_dashboard_graph {
+    position: relative;
+    width: 100%;
+    height: 100%;
   }
 }
 
@@ -1390,13 +1401,21 @@
   .mk-saas-graph-section {
     margin-top: 12px !important;
     padding: 10px !important;
-    min-height: 80px !important;
-    max-height: 120px !important;
+    height: 110px !important;
+    min-height: 110px !important;
+    max-height: 110px !important;
+    position: relative !important;
+    overflow: hidden !important;
+    flex-shrink: 0 !important;
   }
 
-  // Hide activity section on tablet
+  // Keep activity section (title + View Logs) visible on tablet
   .mk-saas-activity-section {
-    display: none;
+    margin-top: 14px !important;
+  }
+
+  .mk-saas-activity-title {
+    font-size: 13px !important;
   }
 
   // Tablet footer - remove extra space
@@ -1448,16 +1467,6 @@
   .mk-saas-alert-action {
     font-size: 11px;
     padding: 5px 10px;
-  }
-
-  // Remove any extra spacing from hidden elements
-  .mk-saas-graph-section,
-  .mk-saas-activity-section {
-    display: none !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    height: 0 !important;
-    min-height: 0 !important;
   }
 }
 
@@ -1789,17 +1798,28 @@
   }
 
   // ============================================================
-  // MOBILE GRAPH - Hide on mobile (too complex)
+  // MOBILE GRAPH - Keep visible, taller so all bars render clearly
   // ============================================================
   .mk-saas-graph-section {
-    display: none;
+    margin-top: 10px;
+    padding: 8px;
+    height: 140px;
+    min-height: 140px;
+    max-height: 140px;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
   }
 
   // ============================================================
-  // MOBILE ACTIVITY - Hide completely on mobile
+  // MOBILE ACTIVITY - Keep visible, compact
   // ============================================================
   .mk-saas-activity-section {
-    display: none;
+    margin-top: 12px;
+  }
+
+  .mk-saas-activity-title {
+    font-size: 12px;
   }
 
   // ============================================================
@@ -1928,6 +1948,14 @@
   // Even more compact activity section
   .mk-saas-activity-section {
     padding: 8px 12px;
+  }
+
+  // Slightly reduced padding on extra-small screens, same graph height
+  .mk-saas-graph-section {
+    height: 130px;
+    min-height: 130px;
+    max-height: 130px;
+    padding: 6px;
   }
 
   .mk-saas-activity-title {

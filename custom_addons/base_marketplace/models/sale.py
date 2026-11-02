@@ -73,7 +73,7 @@ class SaleOrder(models.Model):
             ('name', '=', tax_title),
             ('amount', '=', rate),
             ('type_tax_use', '=', 'sale'),
-            ('company_id', '=', company_id.id)
+            ('company_id', 'parent_of', company_id.id)
         ]
 
         if tax_included_override == 'tax_excluded':
@@ -98,7 +98,7 @@ class SaleOrder(models.Model):
 
         # If tax is found but inactive, reactivate it
         if tax_id and not tax_id.active:
-            tax_id.active = True
+            tax_id.sudo().active = True
 
         # Create new tax if not found
         if not tax_id:
@@ -133,8 +133,7 @@ class SaleOrder(models.Model):
             'description': f"{rate}% {'Included' if tax_included_override == 'tax_included' else 'Excluded'}"
         }
 
-        # Create the tax in Odoo
-        tax_id = tax_obj.create(tax_vals)
+        tax_id = tax_obj.sudo().create(tax_vals)
 
         # Set accounts if defined on the marketplace instance
         self._assign_tax_accounts(tax_id, mk_instance_id)
@@ -143,7 +142,7 @@ class SaleOrder(models.Model):
         log_message = _("IMPORT ORDER: Tax not found, so created new Tax '%s' for Company '%s' with rate %s%%.") % (tax_title, company_id.name, rate)
         mk_log_line_dict['success'].append({'log_message': log_message, 'queue_job_line_id': queue_line_id and queue_line_id.id or False})
 
-        return tax_id
+        return tax_id.sudo(False)
 
     def _assign_tax_accounts(self, tax_id, mk_instance_id):
         """
@@ -153,6 +152,7 @@ class SaleOrder(models.Model):
             tax_id: The newly created tax record.
             mk_instance_id: The marketplace instance object.
         """
+        tax_id = tax_id.sudo()
         # Assign tax account
         if mk_instance_id.tax_account_id:
             tax_repartition_lines = tax_id.invoice_repartition_line_ids.filtered(lambda x: x.repartition_type == 'tax')
@@ -225,12 +225,13 @@ class SaleOrder(models.Model):
 
     def _prepare_invoice(self):
         invoice_vals = super(SaleOrder, self)._prepare_invoice()
-        if self.order_workflow_id:
-            if self.order_workflow_id.sale_journal_id:
-                invoice_vals.update({'journal_id': self.order_workflow_id.sale_journal_id.id})
-            if self.order_workflow_id.force_invoice_date:
+        order_workflow_id = self.order_workflow_id.sudo()
+        if order_workflow_id:
+            if order_workflow_id.sale_journal_id:
+                invoice_vals.update({'journal_id': order_workflow_id.sale_journal_id.id})
+            if order_workflow_id.force_invoice_date:
                 invoice_vals.update({'invoice_date': self.date_order})
-            if self.order_workflow_id.is_force_payment_reference:
+            if order_workflow_id.is_force_payment_reference:
                 invoice_vals.update({'payment_reference': self.mk_order_number})
         if self.mk_instance_id:
             invoice_vals.update({'mk_instance_id': self.mk_instance_id.id,'fiscal_position_id':self.fiscal_position_id.id})
@@ -256,7 +257,7 @@ class SaleOrder(models.Model):
         self.ensure_one()
         should_lock = super(SaleOrder, self)._should_be_locked()
         if self.mk_instance_id:
-            return should_lock and self.order_workflow_id.is_lock_order
+            return should_lock and self.order_workflow_id.sudo().is_lock_order
         else:
             return should_lock
 
@@ -295,6 +296,7 @@ class SaleOrder(models.Model):
         Returns:
             bool: Always returns True when processing completes successfully.
         """
+        self = self.sudo()
         try:
             if self.state not in ['sale']:
                 fulfillment_status = self._get_order_fulfillment_status()
@@ -361,6 +363,7 @@ class SaleOrder(models.Model):
         Returns:
             bool: True if the method completes without errors.
         """
+        self = self.sudo()
         try:
             if order_workflow_id.is_create_invoice and self.state == 'sale' and self._check_fiscalyear_lock_date():
                 if not self.invoice_ids and not (self.mk_instance_id.is_create_single_invoice and self.order_line.filtered(
@@ -652,18 +655,19 @@ class SaleOrder(models.Model):
         return True
 
     def _action_cancel(self):
-        res = super(SaleOrder, self)._action_cancel()
+        res = super(SaleOrder, self.sudo())._action_cancel()
         # While cancel the order, revert the stock move.
         for sale_order in self:
             if sale_order.stock_moves_count:
-                return_wizard_vals = self.env['stock.return.picking'].with_context(active_model='sale.order', active_id=sale_order.id).default_get([])
-                return_wizard_id = self.env['stock.return.picking'].create(return_wizard_vals)
+                return_picking_obj = self.env['stock.return.picking'].sudo()
+                return_wizard_vals = return_picking_obj.with_context(active_model='sale.order', active_id=sale_order.id).default_get([])
+                return_wizard_id = return_picking_obj.create(return_wizard_vals)
                 return_wizard_id.with_context(skip_error=True).action_create_returns_ts()
         return res
 
     def _get_existing_order(self, mk_id, mk_instance_id):
         """Retrieve an existing Odoo order by Marketplace ID and marketplace instance."""
-        return self.search([('mk_id', '=', mk_id), ('mk_instance_id', '=', mk_instance_id.id)])
+        return self.sudo().search([('mk_id', '=', mk_id), ('mk_instance_id', '=', mk_instance_id.id)])
 
 
 class SaleOrderLine(models.Model):

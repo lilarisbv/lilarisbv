@@ -9,13 +9,14 @@ import babel
 from babel.dates import format_datetime, format_date as babel_format_date
 from dateutil.relativedelta import relativedelta
 from lxml import etree
-from odoo.exceptions import RedirectWarning
+from odoo.exceptions import AccessError, RedirectWarning
 from odoo.http import request
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, date_utils, float_round, html_escape
 from odoo.tools.misc import format_date, get_lang
 
 from odoo import models, fields, api, _
 from odoo.addons.base_marketplace.models.exceptions import MarketplaceException
+from odoo.addons.base_marketplace.models.misc import marketplace_db_token
 
 
 class MkInstance(models.Model):
@@ -145,6 +146,10 @@ class MkInstance(models.Model):
     color = fields.Integer('Color Index')
     sequence = fields.Integer(default=1, help="The sequence field is used to define Instance Sequence.")
     marketplace = fields.Selection(selection=[], string='Marketplace', default='')
+    # Task: T9113 - Whether this instance's public URLs (webhooks) carry the database token instead of the database name. It stays False
+    # for instances created before a connector adopts the token, so URLs already registered on the marketplace keep working; each
+    # connector sets it on its new instances. See _get_marketplace_url_db_segment().
+    use_db_token_in_url = fields.Boolean("Use Database Token in URL", copy=False)
     state = fields.Selection(selection=[('draft', 'Draft'), ('confirmed', 'Confirmed'), ('error', 'Error')], default='draft')
     company_id = fields.Many2one('res.company', 'Company', default=lambda self: self.env.company, ondelete="restrict",)
     country_id = fields.Many2one('res.country', string='Country', default=lambda self: self.env.company.country_id)
@@ -174,7 +179,7 @@ class MkInstance(models.Model):
 
     # Stock Fields
     stock_field_id = fields.Many2one('ir.model.fields', string='Stock Based On', help="At the time of Export/Update inventory this field is used.",
-                                     default=lambda self: self.env['ir.model.fields'].search([('model_id.model', '=', 'product.product'), ('name', '=', 'qty_available')]))
+                                     default=lambda self: self.env['ir.model.fields'].sudo().search([('model_id.model', '=', 'product.product'), ('name', '=', 'qty_available')], limit=1))
     last_stock_update_date = fields.Datetime("Last Stock Exported On", copy=False, help="Date were stock updated to marketplace.")
     last_stock_import_date = fields.Datetime("Last Stock Imported On", copy=False, help="Date were stock imported from marketplace.")
     is_validate_adjustment = fields.Boolean("Validate Inventory Adjustment?", help="If true then validate Inventory adjustment at the time of Import Stock Operation.")
@@ -199,6 +204,15 @@ class MkInstance(models.Model):
     tax_refund_account_id = fields.Many2one('account.account', string='Tax Account on Credit Notes', help="Account that will be set while creating tax.")
     tax_rounding = fields.Integer(string="Tax Rounding", default=2)
     salesperson_user_id = fields.Many2one('res.users', string='Salesperson', domain="[('share', '=', False)]", help="Selected sales person will be used to process order.")
+
+    is_marketplace_manager = fields.Boolean(string="Is Marketplace Manager?", compute='_compute_is_marketplace_manager',
+                                            help="Used to control the visibility of marketplace elements based on user access.")
+
+    def _compute_is_marketplace_manager(self):
+        is_manager = self.env.user.has_group('base_marketplace.group_base_marketplace_manager')
+        for record in self:
+            record.is_marketplace_manager = is_manager
+
     use_marketplace_currency = fields.Boolean("Use Marketplace Order Currency?", default=True,
                                               help="If it's true, the order will be imported with the currency that is available in the marketplace. Otherwise, it will use the company's currency.")
     is_create_single_invoice = fields.Boolean("Create Single Invoice?", default=True, help="Create invoice only when all products are ready to be invoiced.")
@@ -352,7 +366,6 @@ class MkInstance(models.Model):
         vals = {
             'kanban_badge_color': default_code,
             'image': image,
-            'environment': 'production',
         }
         if not self.delivery_product_id and hasattr(self, '_get_%s_delivery_product' % self.marketplace):
             delivery = getattr(self, '_get_%s_delivery_product' % self.marketplace)()
@@ -367,6 +380,7 @@ class MkInstance(models.Model):
     @api.onchange('marketplace')
     def _onchange_marketplace(self):
         vals = self._get_marketplace_connector_default_values()
+        self.environment = 'production'
         for fname, fval in vals.items():
             self[fname] = fval
 
@@ -384,6 +398,18 @@ class MkInstance(models.Model):
             self.delivery_product_id = getattr(self, '_get_%s_delivery_product' % self.marketplace)()
         if not self.discount_product_id and hasattr(self, '_get_%s_discount_product' % self.marketplace):
             self.discount_product_id = getattr(self, '_get_%s_discount_product' % self.marketplace)()
+
+    def _get_marketplace_url_db_segment(self):
+        """
+        Task: T9113 - Return the database part of this instance's public marketplace URLs (webhooks).
+            Connectors build their webhook URL with this instead of self.env.cr.dbname. Requests to either form are routed to the right
+            database by base_marketplace (models/ir_http.py) and opened with _safe_open_db_registry() (controllers/main.py).
+            To adopt the token, a connector only sets use_db_token_in_url=True on its newly created instances.
+        Returns:
+            str: The database token when use_db_token_in_url is set, otherwise the database name.
+        """
+        self.ensure_one()
+        return marketplace_db_token(self.env.cr.dbname) if self.use_db_token_in_url else self.env.cr.dbname
 
     @api.model_create_multi
     def create(self, vals):
@@ -478,7 +504,7 @@ class MkInstance(models.Model):
 
     def get_marketplace_operation_wizard(self):
         if hasattr(self, '%s_marketplace_operation_wizard' % self.marketplace):
-            return getattr(self, '%s_marketplace_operation_wizard' % self.marketplace)()
+            return getattr(self.sudo(), '%s_marketplace_operation_wizard' % self.marketplace)()
         else:
             raise MarketplaceException(_("Something went wrong! Please contact your integration provider."))
 
@@ -997,7 +1023,7 @@ class MkInstance(models.Model):
         pricelist_vals = {'name': f"{self.marketplace.title()}: {self.name}",
                           'currency_id': currency_id.id,
                           'company_id': self.company_id.id}
-        pricelist_id = self.env['product.pricelist'].create(pricelist_vals)
+        pricelist_id = self.env['product.pricelist'].sudo().create(pricelist_vals)
         return pricelist_id
 
     def set_pricelist(self, currency_name):
@@ -1006,7 +1032,7 @@ class MkInstance(models.Model):
         if not currency_id:
             currency_id = currency_obj.search([('name', '=', currency_name), ('active', '=', False)])
             if currency_id:
-                currency_id.write({'active': True})
+                currency_id.sudo().write({'active': True})
         if not self.check_instance_pricelist(currency_id):
             raise MarketplaceException(_("Set Pricelist currency %s is not match with %s Store Currency %s") % (self.pricelist_id.currency_id.name, self.marketplace.title(), currency_name))
         if not self.pricelist_id:
@@ -1368,8 +1394,14 @@ class MkInstance(models.Model):
             return self._get_dates_period(*date_utils.get_fiscal_year(date_to), mode, period_type='year')
         return None
 
+    def _check_marketplace_manager(self):
+        if not self.env.user.has_group('base_marketplace.group_base_marketplace_manager'):
+            raise AccessError(_("Only Marketplace Managers can access the Marketplace Setup Wizard."))
+        return True
+
     def action_open_onboarding(self):
         self.ensure_one()
+        self._check_marketplace_manager()
         if self.state != 'draft':
             raise MarketplaceException(_("Setup Wizard is only available while the instance is in draft state."))
         return {
@@ -1383,6 +1415,7 @@ class MkInstance(models.Model):
     @api.model
     def action_open_setup_wizard_header(self):
         """Open Setup Wizard from the kanban control panel (next to the search bar). No draft instance required."""
+        self._check_marketplace_manager()
         return {
             'type': 'ir.actions.client',
             'tag': 'marketplace_onboarding',
@@ -1459,6 +1492,7 @@ class MkInstance(models.Model):
         * **Open from a draft instance form** (``active_id`` set): resume that record if the
           marketplace matches, or bind a placeholder draft that has no marketplace yet.
         """
+        self._check_marketplace_manager()
         selection_list = self.env['mk.instance'].fields_get()['marketplace'].get('selection') or []
         labels = {k: v for k, v in selection_list if k}
         if marketplace_key not in labels:
@@ -1484,6 +1518,7 @@ class MkInstance(models.Model):
     @api.model
     def get_onboarding_wizard_state(self, active_id=None):
         """Decide picker vs steps: single connector skips picker; multiple shows grid unless draft has marketplace."""
+        self._check_marketplace_manager()
         active_id = active_id and int(active_id) or None
         connectors = self.get_installed_marketplace_connectors()
         if not connectors:
@@ -1584,6 +1619,7 @@ class MkInstance(models.Model):
         """Create and save a new instance from onboarding data.
         This is called when user clicks Save button - instance is only created here.
         """
+        self._check_marketplace_manager()
         values = values or {}
         selection_list = self.fields_get()['marketplace'].get('selection') or []
         labels = {k: v for k, v in selection_list if k}

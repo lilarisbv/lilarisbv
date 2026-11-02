@@ -40,6 +40,7 @@
                                 <field name="expected_quantity" readonly="1"/>
                                 <field name="received_quantity" readonly="state == 'handled'" required="state != 'unhandled'" />
                                 <field name="handling_action" readonly="state != 'unhandled'" invisible="state == 'handled'" />
+                                <field name="handle_process_id" readonly="1" invisible="not handle_process_id"/>
                             </group>
                         </group>
                         <notebook>

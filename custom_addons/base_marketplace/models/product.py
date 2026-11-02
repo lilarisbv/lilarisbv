@@ -149,7 +149,7 @@ class ProductProduct(models.Model):
     def prepare_vals_for_create_listing_item(self, instance, sequence, listing_id):
         self.ensure_one()
         vals = {
-            'name': self.with_context(display_default_code=False).display_name,
+            'name': self.with_context(display_default_code=False, lang=instance.lang).display_name,
             'sequence': sequence,
             'mk_instance_id': instance.id,
             'product_id': self.id,
@@ -274,7 +274,7 @@ class ProductTemplateAttributeLine(models.Model):
                 return False
             attribute_value_id = self.env['product.attribute.value'].search([('name', '=ilike', value), ('attribute_id', '=', ptal_id.attribute_id.id)], limit=1)
             if not attribute_value_id:
-                attribute_value_id = self.env['product.attribute.value'].create({'name': value, 'attribute_id': ptal_id.attribute_id.id})
+                attribute_value_id = self.env['product.attribute.value'].sudo().create({'name': value, 'attribute_id': ptal_id.attribute_id.id})
             if attribute_value_id not in ptal_id.value_ids:
-                ptal_id.write({'value_ids': [(4, attribute_value_id.id, False)]})
+                ptal_id.sudo().write({'value_ids': [(4, attribute_value_id.id, False)]})
         return True

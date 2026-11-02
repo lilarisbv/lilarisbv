@@ -36,6 +36,8 @@ class MKLog(models.Model):
         log_line_list, log_level = [], mk_instance_id.log_level
         operation_type = self.env.context.get('operation_type', operation_type)
         marketplace_log_id = self.env.context.get('log_id', False) if not mk_log_id else mk_log_id
+        if marketplace_log_id and not marketplace_log_id.exists():
+            marketplace_log_id = False
         mk_log_line_dict = mk_log_line_dict or self.env.context.get('mk_log_line_dict', {})
         if mk_log_line_dict:
             for log_type, log_list in mk_log_line_dict.items():

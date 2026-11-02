@@ -3,12 +3,17 @@ import pprint
 from psycopg2 import OperationalError
 
 from odoo import models, fields, _
+from odoo.addons.base_marketplace.models.exceptions import MarketplaceException
 from odoo.tools.safe_eval import safe_eval
+from .marketplace_instance import BOL_OFFERS_ACCEPT_V11
 from .misc import log_traceback_for_exception
 
 
 class MkQueueJob(models.Model):
     _inherit = "mk.queue.job"
+
+    type = fields.Selection(selection_add=[('product_export', 'Product Export')],
+                            ondelete={'product_export': 'cascade'})
 
     def bol_return_queue_process(self):
         bol_return_obj, mk_instance_id = self.env['bol.return'], self.mk_instance_id
@@ -71,23 +76,90 @@ class MkQueueJob(models.Model):
         mk_instance_id, queue_job_line_obj, listing_obj = self.mk_instance_id, self.env['mk.queue.job.line'], self.env['mk.listing']
         draft_queue_line_ids = self.mk_queue_line_ids.filtered(lambda x: x.state == 'draft')
         for line in draft_queue_line_ids:
-            bol_product_dict = safe_eval(line.data_to_process)
+            # data_to_process defaults to False (native field default) until a caller has populated it -
+            # safe_eval(False) crashes, so only parse it when there's actually a pformatted dict string.
+            bol_product_dict = safe_eval(line.data_to_process) if line.data_to_process else False
             if not bol_product_dict:
-                bol_product_dict = self.mk_instance_id._send_bol_request('retailer/offers/{}'.format(line.mk_id), {})
+                bol_product_dict = self.mk_instance_id._send_bol_request('retailer/offers/{}'.format(line.mk_id), {}, method='GET', accept=BOL_OFFERS_ACCEPT_V11)
                 line.write({'data_to_process': pprint.pformat(bol_product_dict)})
             mk_listing_id = listing_obj.search([('mk_instance_id', '=', mk_instance_id.id), ('mk_id', '=', line.mk_id)])
-
+            bol_product_dict.update({'offer_title': line.name})
             update_product_price = True if not mk_listing_id else line.queue_id.update_product_price
             is_update_existing_products = True if not mk_listing_id else line.queue_id.update_existing_product
-            processed = listing_obj.with_context(queue_line_id=line, mk_log_id=line.queue_id.mk_log_id).create_update_bol_product(bol_product_dict, mk_instance_id, update_product_price=update_product_price,
+            mk_listing_id = listing_obj.with_context(queue_line_id=line, mk_log_id=line.queue_id.mk_log_id).create_update_bol_product(bol_product_dict, mk_instance_id, update_product_price=update_product_price,
                                                                                                                                              is_update_existing_products=is_update_existing_products)
-            line.write({'processed_date': fields.Datetime.now(), 'state': 'processed' if processed else 'failed'})
+            line.write({'processed_date': fields.Datetime.now(), 'state': 'processed' if mk_listing_id else 'failed','mk_listing_id': mk_listing_id and mk_listing_id.id or False})
             self.env.cr.commit()
         if not self.env.context.get('hide_notification', False):
             success_count = self.env['mk.queue.job.line'].search_count([('state', '=', 'processed'), ('id', 'in', draft_queue_line_ids.ids)])
             error_count = self.env['mk.queue.job.line'].search_count([('state', '=', 'failed'), ('id', 'in', draft_queue_line_ids.ids)])
             mk_instance_id.send_smart_notification('is_product_import', 'error', error_count)
             mk_instance_id.send_smart_notification('is_product_import', 'success', success_count)
+
+    def bol_product_export_queue_process(self):
+        instance = self.mk_instance_id
+        listing_obj = self.env['mk.listing']
+        draft_queue_line_ids = self.mk_queue_line_ids.filtered(lambda x: x.state in ['draft', 'failed'])
+        for line in draft_queue_line_ids:
+            try:
+                data = safe_eval(line.data_to_process) or {}
+                listing = listing_obj.browse(data.get('listing_id'))
+                if not listing.exists():
+                    line.write({'state': 'cancelled', 'processed_date': fields.Datetime.now()})
+                    self.env.cr.commit()
+                    continue
+                with self.env.cr.savepoint():
+                    request_vals = listing._bol_prepare_offer_payload()
+                    publish_flag = data.get('publish_flag') or 'publish'
+                    # Catalog first: Bol.com sells an offer only once its barcode has a product in the catalog. When it has none, the
+                    # catalog product is requested here; the offer itself is still published and Bol.com starts selling it once the product exists.
+                    listing._bol_prepare_catalog_for_export(request_vals.get('ean'))
+                    request_vals['onHoldByRetailer'] = publish_flag == 'hold'
+                    response = instance._send_bol_request('retailer/offers', request_vals, method='POST', accept=BOL_OFFERS_ACCEPT_V11)
+                    offer_id = isinstance(response, dict) and response.get('offerId')
+                    if not offer_id:
+                        raise MarketplaceException(_("No offerId in response: %s") % response)
+                    listing.write({
+                        'is_listed': True,
+                        'is_published': publish_flag == 'publish',
+                        'bol_onhold_by_retailer': publish_flag == 'hold',
+                        'mk_id': offer_id,
+                    })
+                    listing.listing_item_ids.write({'is_listed': True, 'mk_id': offer_id})
+                    listing._bol_fetch_not_for_sale_reasons()
+                line.write({
+                    'state': 'processed',
+                    'processed_date': fields.Datetime.now(),
+                    'mk_listing_id': listing.id,
+                    'mk_id': offer_id,
+                })
+                log_message = "EXPORT PRODUCT: Listing {} sent to Bol (EAN {})".format(listing.name, request_vals.get('ean'))
+                self.env['mk.log'].create_update_log(
+                    mk_log_id=self.mk_log_id,operation_type='export',
+                    mk_log_line_dict={'success': [{'log_message': log_message, 'queue_job_line_id': line.id}]})
+            except OperationalError:
+                self.env.cr.rollback()
+            except Exception as e:
+                log_traceback_for_exception()
+                self.env.cr.rollback()
+                log_message = "EXPORT PRODUCT: Listing {} failed: {}".format(line.name, e)
+                self.env['mk.log'].create_update_log(
+                    mk_log_id=self.mk_log_id, mk_instance_id=instance,operation_type='export',
+                    mk_log_line_dict={'error': [{'log_message': log_message, 'queue_job_line_id': line.id}]})
+                line.write({'state': 'failed', 'processed_date': fields.Datetime.now()})
+            self.env.cr.commit()
+        if not self.env.context.get('hide_notification', False):
+            success_count = self.env['mk.queue.job.line'].search_count([('state', '=', 'processed'), ('id', 'in', draft_queue_line_ids.ids)])
+            error_count = self.env['mk.queue.job.line'].search_count([('state', '=', 'failed'), ('id', 'in', draft_queue_line_ids.ids)])
+            instance.send_smart_notification('is_product_export', 'error', error_count)
+            instance.send_smart_notification('is_product_export', 'success', success_count)
+            if error_count:
+                self.create_activity_action("Please check queue job for its fail reason.")
+
+    def bol_product_export_retry_failed_queue(self):
+        failed_queue_line_ids = self.mk_queue_line_ids.filtered(lambda ql: ql.state == 'failed')
+        failed_queue_line_ids and failed_queue_line_ids.bol_product_export_retry_failed_queue()
+        return True
 
     def bol_product_retry_failed_queue(self):
         failed_queue_line_ids = self.mk_queue_line_ids.filtered(lambda ql: ql.state == 'failed')
@@ -110,9 +182,15 @@ class MkQueueJobLine(models.Model):
 
     def bol_product_retry_failed_queue(self):
         for line in self.filtered(lambda x: x.mk_id):
-            offer_response = line.queue_id.mk_instance_id._send_bol_request('retailer/offers/{}'.format(line.mk_id), {})
+            offer_response = line.queue_id.mk_instance_id._send_bol_request('retailer/offers/{}'.format(line.mk_id), {}, method='GET', accept=BOL_OFFERS_ACCEPT_V11)
             line.write({'state': 'draft', 'data_to_process': pprint.pformat(offer_response)})
             line.queue_id.with_context(hide_notification=True).bol_product_queue_process()
+        return True
+
+    def bol_product_export_retry_failed_queue(self):
+        for line in self.filtered(lambda x: x.mk_id):
+            line.write({'state': 'draft'})
+            line.queue_id.with_context(hide_notification=True).bol_product_export_queue_process()
         return True
 
     def bol_order_retry_failed_queue(self):
@@ -120,6 +198,7 @@ class MkQueueJobLine(models.Model):
             line.write({'state': 'draft'})
             line.queue_id.with_context(hide_notification=True).bol_order_queue_process()
         return True
+
 
     def bol_return_retry_failed_queue(self):
         for line in self.filtered(lambda x: x.mk_id):

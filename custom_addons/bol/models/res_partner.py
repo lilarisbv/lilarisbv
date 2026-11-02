@@ -62,10 +62,10 @@ class Partner(models.Model):
             if partner_vals:
                 partner = self.get_marketplace_partners(partner_vals, mk_instance_id, type=type, parent_id=parent_id)
                 if not partner.phone and customer_dict.get('deliveryPhoneNumber', False):
-                    partner.write({'phone': customer_dict.get('deliveryPhoneNumber', '')})
+                    partner.sudo().write({'phone': customer_dict.get('deliveryPhoneNumber', '')})
                 bol_category_id = self.env.ref('bol.res_partner_category_bol', raise_if_not_found=False)
                 if bol_category_id:
-                    partner.category_id = [(4, bol_category_id.id)]
+                    partner.sudo().write({'category_id': [(4, bol_category_id.id)]})
         except Exception as err:
             log_message = _('IMPORT CUSTOMER: TECHNICAL EXCEPTION : {}'.format(err))
             self.env['mk.log'].create_update_log(mk_log_id=mk_log_id, mk_log_line_dict={'error': [{'log_message': log_message, 'queue_job_line_id': queue_line_id and queue_line_id.id or False}]})
