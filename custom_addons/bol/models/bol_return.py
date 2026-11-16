@@ -128,11 +128,15 @@ class BolReturn(models.Model):
         if mrp_installed:
             bom = self.env['mrp.bom'].sudo()._bom_find(products=self.product_id, company_id=self.order_id.company_id.id, bom_type='phantom')[self.product_id]
             if bom:
-                factor = self.product_id.uom_id._compute_quantity(self.received_quantity, bom.uom_id) / bom.product_qty
+                factor = self.product_id.uom_id._compute_quantity(self.received_quantity, bom.product_uom_id) / bom.product_qty
                 boms, lines = bom.sudo().explode(self.product_id, factor, picking_type=bom.picking_type_id)
                 for bom_line, line_data in lines:
                     product_to_return.update({bom_line.product_id: line_data['qty']})
-        new_picking = picking_id._create_return()
+        return_wizard = self.env['stock.return.picking'].with_context(active_id=picking_id.id, active_model='stock.picking').create({'picking_id': picking_id.id})
+        remaining_qty = dict(product_to_return)
+        for return_line in return_wizard.product_return_moves:
+            return_line.quantity = remaining_qty.pop(return_line.product_id, 0)
+        new_picking = return_wizard._create_return()
         return_moves = new_picking.move_ids.filtered(
             lambda m: product_to_return.get(m.product_id) and m.origin_returned_move_id.location_dest_usage != 'inventory')
         (new_picking.move_ids - return_moves).unlink()

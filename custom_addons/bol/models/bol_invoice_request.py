@@ -288,7 +288,7 @@ class BolInvoiceRequest(models.Model):
                         'Missing Invoice Report configuration for instance "{}". Configure it in Instance -> Orders: enable "Export Invoices to Bol.com" and select an "Invoice Report"'.format(
                             instance.name), manual_process=manual_process)
                 continue
-            requests = self.env['bol.invoice.request'].concat(requests)
+            requests = self.env['bol.invoice.request'].concat(*requests)
             for request in requests:
                 order = request.sale_order_id
                 if not order:

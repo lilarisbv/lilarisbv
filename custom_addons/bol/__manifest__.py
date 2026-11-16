@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Bol.com Connector | Bol.com Odoo Integration | Bol.com Marketplace Integration",
-    "version": "19.0.1.1.4",
+    "version": "19.0.1.1.5",
     "category": "eCommerce",
     'summary': """TeqStars Bol.com Integration for Odoo helps businesses manage Bol.com marketplace operations directly from Odoo. This Bol.com connector supports product synchronization, order import, inventory management, shipment updates, and marketplace workflow automation. The Bol.com integration simplifies daily eCommerce operations, and reduces manual marketplace management. This app is also part of the TeqStars marketplace connector solution for Odoo users.
                   Sell on Bol.com from Odoo — Connect with bol.com, the Odoo Bol.com Connector and Bol.com Integration for Odoo, with offer sync, order import and stock updates, built on TeqStars Base Marketplace, the shared core behind every TeqStars marketplace connector.""",
