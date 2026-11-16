@@ -39,3 +39,22 @@ class SaleOrder(models.Model):
             if not remaining:
                 break
         return (discountable, per_tax) if discountable else (False, False)
+
+    def _update_programs_and_rewards(self):
+        result = super()._update_programs_and_rewards()
+        if self.env.context.get('siveno_promo_second_pass') or not self.website_id:
+            return result
+        params = self.env['ir.config_parameter'].sudo()
+        promo_id = params.get_param('siveno_2plus1.program_id', default='0')
+        coupon_id = params.get_param('siveno_2plus1.coupon_program_id', default='0')
+        if not promo_id.isdecimal() or not coupon_id.isdecimal():
+            return result
+        promo = self.order_line.filtered(lambda line: line.reward_id.program_id.id == int(promo_id))
+        coupon = self.order_line.filtered(lambda line: line.reward_id.program_id.id == int(coupon_id))
+        if not promo or not coupon or promo[0].reward_id.program_id.website_id != self.website_id:
+            return result
+        base = max(self.order_line.filtered(lambda line: not line.reward_id).mapped('sequence'), default=10) + 1
+        promo.filtered(lambda line: line.sequence != base).with_context(siveno_promo_second_pass=True).write({'sequence': base})
+        coupon.filtered(lambda line: line.sequence != base + 1).with_context(siveno_promo_second_pass=True).write({'sequence': base + 1})
+        self.with_context(siveno_promo_second_pass=True)._update_programs_and_rewards()
+        return result
