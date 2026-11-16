@@ -381,7 +381,7 @@ class StockPicking(models.Model):
                 continue
             transporter_code = shipment_data.get('transport', {}).get('transporterCode', '')
             carrier_wise_shipment_dict.setdefault(transporter_code, []).append(shipment_data)
-        precision_digits = self.env['decimal.precision'].precision_get('Product Unit of Measure')
+        precision_digits = self.env['decimal.precision'].precision_get('Product Unit')
         bol_shipment_numbers = set([])
         for code, shipments in carrier_wise_shipment_dict.items():
             picking_id = order.picking_ids.filtered(lambda x: x.state not in ['done', 'cancel'])
@@ -398,7 +398,7 @@ class StockPicking(models.Model):
                     if mrp_installed:
                         bom = self.env['mrp.bom'].sudo()._bom_find(products=product_id, company_id=order.company_id.id, bom_type='phantom')[product_id]
                         if bom:
-                            factor = product_id.uom_id._compute_quantity(float(shipment_item.get('quantity')), bom.uom_id) / bom.product_qty
+                            factor = product_id.uom_id._compute_quantity(float(shipment_item.get('quantity')), bom.product_uom_id) / bom.product_qty
                             boms, bom_lines = bom.sudo().explode(product_id, factor, picking_type=bom.picking_type_id)
                     if bom_lines:
                         for bom_line, line_data in bom_lines:

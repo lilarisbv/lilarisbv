@@ -61,7 +61,7 @@ class MkListingItem(models.Model):
     def create_or_update_pricelist_item_for_bol(self, bol_pricing, update_product_price=False):
         self.ensure_one()
         instance_id = self.mk_instance_id or self.mk_listing_id.mk_instance_id
-        bundle_prices = bol_pricing.get('bundlePrices')
+        bundle_prices = (bol_pricing or {}).get('bundlePrices') or []
         pricelist_items_to_remove = self.env['product.pricelist.item'].search([('pricelist_id', '=', instance_id.pricelist_id.id), ('product_id', '=', self.product_id.id)])
         for price_dict in bundle_prices:
             quantity, bol_price = price_dict.get('quantity'), price_dict.get('unitPrice')

@@ -1,3 +1,7 @@
+19.0.1.1.5 (12-November-2026):
+
+- Resolved an issue where updating existing listings, or using Sync from Bol.com on a listing, failed with a "missing 2 required positional arguments" error.
+
 19.0.1.1.4 (02-November-2026):
 
 - Improved discount synchronization to correctly apply Bol.com promotional discounts (such as Buy 2, Get 1 Free) to order lines and invoices.

@@ -353,7 +353,7 @@ class MkListing(models.Model):
             self.env['mk.log'].create_update_log(mk_log_id=mk_log_id, mk_log_line_dict={'error': [{'log_message': log_message, 'queue_job_line_id': queue_line_id and queue_line_id.id or False}]})
             return False
 
-        validated, log_message = self.check_validation_for_import_product(listing_item_validation_dict, existing_odoo_product, existing_mk_product)
+        validated, log_message = self.check_validation_for_import_product(mk_instance_id.sync_product_with, listing_item_validation_dict, odoo_product_template, existing_odoo_product, existing_mk_product)
         if not validated:
             self.env['mk.log'].create_update_log(mk_log_id=mk_log_id, mk_log_line_dict={'error': [{'log_message': log_message, 'queue_job_line_id': queue_line_id and queue_line_id.id or False}]})
             return False
